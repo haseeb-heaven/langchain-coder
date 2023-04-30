@@ -1,280 +1,2617 @@
-05:51:04 [INFO] __main__ - Running code: 
+07:26:48 [INFO] __main__ - Running code: 
 
-import requests 
-import json
+#include<stdio.h> 
+int getMedian(int ar1[], int ar2[], int n) 
+{ 
+    int i = 0;  
+    int j = 0; 
+    int count; 
+    int m1 = -1, m2 = -1; 
+  
+    /* Since there are 2n elements, median will  
+    be average of elements at index n-1 and n in 
+    the array obtained after merging ar1 and ar2 */
+    for (count = 0; count <= n; count++) 
+    { 
+        /* Below is to handle case where all elements 
+        of ar1[] are smaller than smallest(or first) 
+        element of ar2[] */
+        if (i == n) 
+        { 
+            m1 = m2; 
+            m2 = ar2[0]; 
+            break; 
+        } 
+  
+        /* Below is to handle case where all elements 
+        of ar2[] are smaller than smallest(or first) 
+        element of ar1[] */
+        else if (j == n) 
+        { 
+            m1 = m2; 
+            m2 = ar1[0]; 
+            break; 
+        } 
+  
+        if (ar1[i] < ar2[j]) 
+        { 
+            /* Store the prev median */
+            m1 = m2;  
+            m2 = ar1[i]; 
+            i++; 
+        } 
+        else
+        { 
+            /* Store the prev median */
+            m1 = m2;  
+            m2 = ar2[j]; 
+            j++; 
+        } 
+    } 
+  
+    return (m1 + m2)/2; 
+} 
+  
+/* Driver program to test above function */
+int main() 
+{ 
+    int ar1[] = {1, 3, 5, 7, 9}; 
+    int ar2[] = {2, 4, 6, 8, 10}; 
+  
+    int n1 = sizeof(ar1)/sizeof(ar1[0]); 
+    int n2 = sizeof(ar2)/sizeof(ar2[0]); 
+    if (n1 == n2) 
+        printf("Median is %d", getMedian(ar1, ar2, n1)); 
+    else
+        printf("Doesn't work for arrays of unequal size"); 
+    getchar(); 
+    return 0; 
+} in language: C
+07:26:48 [INFO] __main__ - Running code: 
 
-url = "https://dummyjson.com/products/search?q=Laptop"
+#include<stdio.h> 
+int getMedian(int ar1[], int ar2[], int n) 
+{ 
+    int i = 0;  
+    int j = 0; 
+    int count; 
+    int m1 = -1, m2 = -1; 
+  
+    /* Since there are 2n elements, median will  
+    be average of elements at index n-1 and n in 
+    the array obtained after merging ar1 and ar2 */
+    for (count = 0; count <= n; count++) 
+    { 
+        /* Below is to handle case where all elements 
+        of ar1[] are smaller than smallest(or first) 
+        element of ar2[] */
+        if (i == n) 
+        { 
+            m1 = m2; 
+            m2 = ar2[0]; 
+            break; 
+        } 
+  
+        /* Below is to handle case where all elements 
+        of ar2[] are smaller than smallest(or first) 
+        element of ar1[] */
+        else if (j == n) 
+        { 
+            m1 = m2; 
+            m2 = ar1[0]; 
+            break; 
+        } 
+  
+        if (ar1[i] < ar2[j]) 
+        { 
+            /* Store the prev median */
+            m1 = m2;  
+            m2 = ar1[i]; 
+            i++; 
+        } 
+        else
+        { 
+            /* Store the prev median */
+            m1 = m2;  
+            m2 = ar2[j]; 
+            j++; 
+        } 
+    } 
+  
+    return (m1 + m2)/2; 
+} 
+  
+/* Driver program to test above function */
+int main() 
+{ 
+    int ar1[] = {1, 3, 5, 7, 9}; 
+    int ar2[] = {2, 4, 6, 8, 10}; 
+  
+    int n1 = sizeof(ar1)/sizeof(ar1[0]); 
+    int n2 = sizeof(ar2)/sizeof(ar2[0]); 
+    if (n1 == n2) 
+        printf("Median is %d", getMedian(ar1, ar2, n1)); 
+    else
+        printf("Doesn't work for arrays of unequal size"); 
+    getchar(); 
+    return 0; 
+} in language: C
+07:26:48 [INFO] __main__ - Input file: /var/folders/q0/rj0k1xgn28x14thfz4gnbm5c0000gn/T/tmpymf8odr7.c
+07:26:48 [INFO] __main__ - Output file: /var/folders/q0/rj0k1xgn28x14thfz4gnbm5c0000gn/T/tmp5vchvlc2
+07:29:17 [INFO] __main__ - Running code:  Output: Median of two sorted arrays is 5.5
 
-response = requests.get(url)
-data = response.text
+#include <stdio.h> 
+  
+/* Function to get median of a sorted array */
+float median(int arr[], int n) 
+{ 
+    if (n % 2 == 0) 
+        return (arr[n / 2] + arr[n / 2 - 1]) / 2.0; 
+    else
+        return arr[n / 2]; 
+} 
+  
+/* Function to get median of two sorted arrays of 
+   same size */
+float getMedian(int ar1[], int ar2[], int n) 
+{ 
+    /* return -1  for invalid input */
+    if (n <= 0) 
+        return -1; 
+    if (n == 1) 
+        return (ar1[0] + ar2[0]) / 2.0; 
+    if (n == 2) 
+        return (max(ar1[0], ar2[0]) + min(ar1[1], ar2[1])) / 2.0; 
+  
+    /* get the median of the first array */
+    float m1 = median(ar1, n);  
+  
+    /* get the median of the second array */
+    float m2 = median(ar2, n);  
+  
+    /* If medians are equal then return either m1 or m2 */
+    if (m1 == m2) 
+        return m1; 
+  
+    /* if m1 < m2 then median must exist in ar1[m1....] and ar2[....m2] */
+    if (m1 < m2) 
+    { 
+        if (n % 2 == 0) 
+            return getMedian(ar1 + n / 2 - 1, ar2, n - n / 2 + 1); 
+        else
+            return getMedian(ar1 + n / 2, ar2, n - n / 2); 
+    } 
+  
+    /* if m1 > m2 then median must exist in ar1[....m1] and ar2[m2...] */
+    else
+    { 
+        if (n % 2 == 0) 
+            return getMedian(ar2 + n / 2 - 1, ar1, n - n / 2 + 1); 
+        else
+            return getMedian(ar2 + n / 2, ar1, n - n / 2); 
+    } 
+} 
+  
+/* Driver program to test above function */
+int main() 
+{ 
+    int ar1[] = {1, 3, 5, 7, 9}; 
+    int ar2[] = {2, 4, 6, 8, 10}; 
+    int n1 = sizeof(ar1) / sizeof(ar1[0]); 
+    int n2 = sizeof(ar2) / sizeof(ar2[0]); 
+    if (n1 == n2) 
+        printf("Median is %f", getMedian(ar1, ar2, n1)); 
+    else
+        printf("Doesn't work for arrays of unequal size"); 
+    return 0; 
+} in language: C
+07:29:17 [INFO] __main__ - Running code:  Output: Median of two sorted arrays is 5.5
 
-parsed = json.loads(data)
-indented = json.dumps(parsed, indent=4)
+#include <stdio.h> 
+  
+/* Function to get median of a sorted array */
+float median(int arr[], int n) 
+{ 
+    if (n % 2 == 0) 
+        return (arr[n / 2] + arr[n / 2 - 1]) / 2.0; 
+    else
+        return arr[n / 2]; 
+} 
+  
+/* Function to get median of two sorted arrays of 
+   same size */
+float getMedian(int ar1[], int ar2[], int n) 
+{ 
+    /* return -1  for invalid input */
+    if (n <= 0) 
+        return -1; 
+    if (n == 1) 
+        return (ar1[0] + ar2[0]) / 2.0; 
+    if (n == 2) 
+        return (max(ar1[0], ar2[0]) + min(ar1[1], ar2[1])) / 2.0; 
+  
+    /* get the median of the first array */
+    float m1 = median(ar1, n);  
+  
+    /* get the median of the second array */
+    float m2 = median(ar2, n);  
+  
+    /* If medians are equal then return either m1 or m2 */
+    if (m1 == m2) 
+        return m1; 
+  
+    /* if m1 < m2 then median must exist in ar1[m1....] and ar2[....m2] */
+    if (m1 < m2) 
+    { 
+        if (n % 2 == 0) 
+            return getMedian(ar1 + n / 2 - 1, ar2, n - n / 2 + 1); 
+        else
+            return getMedian(ar1 + n / 2, ar2, n - n / 2); 
+    } 
+  
+    /* if m1 > m2 then median must exist in ar1[....m1] and ar2[m2...] */
+    else
+    { 
+        if (n % 2 == 0) 
+            return getMedian(ar2 + n / 2 - 1, ar1, n - n / 2 + 1); 
+        else
+            return getMedian(ar2 + n / 2, ar1, n - n / 2); 
+    } 
+} 
+  
+/* Driver program to test above function */
+int main() 
+{ 
+    int ar1[] = {1, 3, 5, 7, 9}; 
+    int ar2[] = {2, 4, 6, 8, 10}; 
+    int n1 = sizeof(ar1) / sizeof(ar1[0]); 
+    int n2 = sizeof(ar2) / sizeof(ar2[0]); 
+    if (n1 == n2) 
+        printf("Median is %f", getMedian(ar1, ar2, n1)); 
+    else
+        printf("Doesn't work for arrays of unequal size"); 
+    return 0; 
+} in language: C
+07:29:17 [INFO] __main__ - Input file: /var/folders/q0/rj0k1xgn28x14thfz4gnbm5c0000gn/T/tmpe3sd8_kg.c
+07:29:17 [INFO] __main__ - Output execution: /var/folders/q0/rj0k1xgn28x14thfz4gnbm5c0000gn/T/tmpe3sd8_kg.c:1:2: warning: type specifier missing, defaults to 'int' [-Wimplicit-int]
+ Output: Median of two sorted arrays is 5.5
+ ^
+/var/folders/q0/rj0k1xgn28x14thfz4gnbm5c0000gn/T/tmpe3sd8_kg.c:1:8: error: expected ';' after top level declarator
+ Output: Median of two sorted arrays is 5.5
+       ^
+       ;
+/var/folders/q0/rj0k1xgn28x14thfz4gnbm5c0000gn/T/tmpe3sd8_kg.c:1:10: error: unknown type name 'Median'
+ Output: Median of two sorted arrays is 5.5
+         ^
+/var/folders/q0/rj0k1xgn28x14thfz4gnbm5c0000gn/T/tmpe3sd8_kg.c:1:19: error: expected ';' after top level declarator
+ Output: Median of two sorted arrays is 5.5
+                  ^
+                  ;
+/var/folders/q0/rj0k1xgn28x14thfz4gnbm5c0000gn/T/tmpe3sd8_kg.c:24:17: error: call to undeclared function 'max'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+        return (max(ar1[0], ar2[0]) + min(ar1[1], ar2[1])) / 2.0; 
+                ^
+/var/folders/q0/rj0k1xgn28x14thfz4gnbm5c0000gn/T/tmpe3sd8_kg.c:24:39: error: call to undeclared function 'min'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+        return (max(ar1[0], ar2[0]) + min(ar1[1], ar2[1])) / 2.0; 
+                                      ^
+1 warning and 5 errors generated.
 
-print(indented) in language: Python
-05:51:04 [INFO] __main__ - Running code: 
+07:29:17 [ERROR] __main__ - Error in code execution: /var/folders/q0/rj0k1xgn28x14thfz4gnbm5c0000gn/T/tmpe3sd8_kg.c:1:2: warning: type specifier missing, defaults to 'int' [-Wimplicit-int]
+ Output: Median of two sorted arrays is 5.5
+ ^
+/var/folders/q0/rj0k1xgn28x14thfz4gnbm5c0000gn/T/tmpe3sd8_kg.c:1:8: error: expected ';' after top level declarator
+ Output: Median of two sorted arrays is 5.5
+       ^
+       ;
+/var/folders/q0/rj0k1xgn28x14thfz4gnbm5c0000gn/T/tmpe3sd8_kg.c:1:10: error: unknown type name 'Median'
+ Output: Median of two sorted arrays is 5.5
+         ^
+/var/folders/q0/rj0k1xgn28x14thfz4gnbm5c0000gn/T/tmpe3sd8_kg.c:1:19: error: expected ';' after top level declarator
+ Output: Median of two sorted arrays is 5.5
+                  ^
+                  ;
+/var/folders/q0/rj0k1xgn28x14thfz4gnbm5c0000gn/T/tmpe3sd8_kg.c:24:17: error: call to undeclared function 'max'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+        return (max(ar1[0], ar2[0]) + min(ar1[1], ar2[1])) / 2.0; 
+                ^
+/var/folders/q0/rj0k1xgn28x14thfz4gnbm5c0000gn/T/tmpe3sd8_kg.c:24:39: error: call to undeclared function 'min'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+        return (max(ar1[0], ar2[0]) + min(ar1[1], ar2[1])) / 2.0; 
+                                      ^
+1 warning and 5 errors generated.
 
-import requests 
-import json
+07:29:36 [WARNING] __main__ - Trying to run fixed code:  
 
-url = "https://dummyjson.com/products/search?q=Laptop"
+/* Output: Median of two sorted arrays is 5.5 */
 
-response = requests.get(url)
-data = response.text
-
-parsed = json.loads(data)
-indented = json.dumps(parsed, indent=4)
-
-print(indented) in language: Python
-05:51:04 [INFO] __main__ - Input file: /var/folders/q0/rj0k1xgn28x14thfz4gnbm5c0000gn/T/tmpsmyzh0ok.py
-05:51:08 [INFO] __main__ - Output execution: {
-    "products": [
-        {
-            "id": 7,
-            "title": "Samsung Galaxy Book",
-            "description": "Samsung Galaxy Book S (2020) Laptop With Intel Lakefield Chip, 8GB of RAM Launched",
-            "price": 1499,
-            "discountPercentage": 4.15,
-            "rating": 4.25,
-            "stock": 50,
-            "brand": "Samsung",
-            "category": "laptops",
-            "thumbnail": "https://i.dummyjson.com/data/products/7/thumbnail.jpg",
-            "images": [
-                "https://i.dummyjson.com/data/products/7/1.jpg",
-                "https://i.dummyjson.com/data/products/7/2.jpg",
-                "https://i.dummyjson.com/data/products/7/3.jpg",
-                "https://i.dummyjson.com/data/products/7/thumbnail.jpg"
-            ]
-        },
-        {
-            "id": 8,
-            "title": "Microsoft Surface Laptop 4",
-            "description": "Style and speed. Stand out on HD video calls backed by Studio Mics. Capture ideas on the vibrant touchscreen.",
-            "price": 1499,
-            "discountPercentage": 10.23,
-            "rating": 4.43,
-            "stock": 68,
-            "brand": "Microsoft Surface",
-            "category": "laptops",
-            "thumbnail": "https://i.dummyjson.com/data/products/8/thumbnail.jpg",
-            "images": [
-                "https://i.dummyjson.com/data/products/8/1.jpg",
-                "https://i.dummyjson.com/data/products/8/2.jpg",
-                "https://i.dummyjson.com/data/products/8/3.jpg",
-                "https://i.dummyjson.com/data/products/8/4.jpg",
-                "https://i.dummyjson.com/data/products/8/thumbnail.jpg"
-            ]
-        },
-        {
-            "id": 10,
-            "title": "HP Pavilion 15-DK1056WM",
-            "description": "HP Pavilion 15-DK1056WM Gaming Laptop 10th Gen Core i5, 8GB, 256GB SSD, GTX 1650 4GB, Windows 10",
-            "price": 1099,
-            "discountPercentage": 6.18,
-            "rating": 4.43,
-            "stock": 89,
-            "brand": "HP Pavilion",
-            "category": "laptops",
-            "thumbnail": "https://i.dummyjson.com/data/products/10/thumbnail.jpeg",
-            "images": [
-                "https://i.dummyjson.com/data/products/10/1.jpg",
-                "https://i.dummyjson.com/data/products/10/2.jpg",
-                "https://i.dummyjson.com/data/products/10/3.jpg",
-                "https://i.dummyjson.com/data/products/10/thumbnail.jpeg"
-            ]
-        }
-    ],
-    "total": 3,
-    "skip": 0,
-    "limit": 3
+#include <stdio.h> 
+#include <stdlib.h>
+  
+/* Function to get median of a sorted array */
+float median(int arr[], int n) 
+{ 
+    if (n % 2 == 0) 
+        return (arr[n / 2] + arr[n / 2 - 1]) / 2.0; 
+    else
+        return arr[n / 2]; 
+} 
+  
+/* Function to get median of two sorted arrays of 
+   same size */
+float getMedian(int ar1[], int ar2[], int n) 
+{ 
+    /* return -1  for invalid input */
+    if (n <= 0) 
+        return -1; 
+    if (n == 1) 
+        return (ar1[0] + ar2[0]) / 2.0; 
+    if (n == 2) 
+        return (max(ar1[0], ar2[0]) + min(ar1[1], ar2[1])) / 2.0; 
+  
+    /* get the median of the first array */
+    float m1 = median(ar1, n);  
+  
+    /* get the median of the second array */
+    float m2 = median(ar2, n);  
+  
+    /* If medians are equal then return either m1 or m2 */
+    if (m1 == m2) 
+        return m1; 
+  
+    /* if m1 < m2 then median must exist in ar1[m1....] and ar2[....m2] */
+    if (m1 < m2) 
+    { 
+        if (n % 2 == 0) 
+            return getMedian(ar1 + n / 2 - 1, ar2, n - n / 2 + 1); 
+        else
+            return getMedian(ar1 + n / 2, ar2, n - n / 2); 
+    } 
+  
+    /* if m1 > m2 then median must exist in ar1[....m1] and ar2[m2...] */
+    else
+    { 
+        if (n % 2 == 0) 
+            return getMedian(ar2 + n / 2 - 1, ar1, n - n / 2 + 1); 
+        else
+            return getMedian(ar2 + n / 2, ar1, n - n / 2); 
+    } 
+} 
+  
+/* Driver program to test above function */
+int main() 
+{ 
+    int ar1[] = {1, 3, 5, 7, 9}; 
+    int ar2[] = {2, 4, 6, 8, 10}; 
+    int n1 = sizeof(ar1) / sizeof(ar1[0]); 
+    int n2 = sizeof(ar2) / sizeof(ar2[0]); 
+    if (n1 == n2) 
+        printf("Median is %.1f", getMedian(ar1, ar2, n1)); 
+    else
+        printf("Doesn't work for arrays of unequal size"); 
+    return 0; 
 }
+07:29:36 [INFO] __main__ - Running code:  
 
-05:51:08 [INFO] __main__ - Output execution: {
-    "products": [
+/* Output: Median of two sorted arrays is 5.5 */
+
+#include <stdio.h> 
+#include <stdlib.h>
+  
+/* Function to get median of a sorted array */
+float median(int arr[], int n) 
+{ 
+    if (n % 2 == 0) 
+        return (arr[n / 2] + arr[n / 2 - 1]) / 2.0; 
+    else
+        return arr[n / 2]; 
+} 
+  
+/* Function to get median of two sorted arrays of 
+   same size */
+float getMedian(int ar1[], int ar2[], int n) 
+{ 
+    /* return -1  for invalid input */
+    if (n <= 0) 
+        return -1; 
+    if (n == 1) 
+        return (ar1[0] + ar2[0]) / 2.0; 
+    if (n == 2) 
+        return (max(ar1[0], ar2[0]) + min(ar1[1], ar2[1])) / 2.0; 
+  
+    /* get the median of the first array */
+    float m1 = median(ar1, n);  
+  
+    /* get the median of the second array */
+    float m2 = median(ar2, n);  
+  
+    /* If medians are equal then return either m1 or m2 */
+    if (m1 == m2) 
+        return m1; 
+  
+    /* if m1 < m2 then median must exist in ar1[m1....] and ar2[....m2] */
+    if (m1 < m2) 
+    { 
+        if (n % 2 == 0) 
+            return getMedian(ar1 + n / 2 - 1, ar2, n - n / 2 + 1); 
+        else
+            return getMedian(ar1 + n / 2, ar2, n - n / 2); 
+    } 
+  
+    /* if m1 > m2 then median must exist in ar1[....m1] and ar2[m2...] */
+    else
+    { 
+        if (n % 2 == 0) 
+            return getMedian(ar2 + n / 2 - 1, ar1, n - n / 2 + 1); 
+        else
+            return getMedian(ar2 + n / 2, ar1, n - n / 2); 
+    } 
+} 
+  
+/* Driver program to test above function */
+int main() 
+{ 
+    int ar1[] = {1, 3, 5, 7, 9}; 
+    int ar2[] = {2, 4, 6, 8, 10}; 
+    int n1 = sizeof(ar1) / sizeof(ar1[0]); 
+    int n2 = sizeof(ar2) / sizeof(ar2[0]); 
+    if (n1 == n2) 
+        printf("Median is %.1f", getMedian(ar1, ar2, n1)); 
+    else
+        printf("Doesn't work for arrays of unequal size"); 
+    return 0; 
+} in language: C
+07:29:36 [INFO] __main__ - Input file: /var/folders/q0/rj0k1xgn28x14thfz4gnbm5c0000gn/T/tmpnlnozz1e.c
+07:29:36 [WARNING] __main__ - Fixed code output: /var/folders/q0/rj0k1xgn28x14thfz4gnbm5c0000gn/T/tmpnlnozz1e.c:27:17: error: call to undeclared function 'max'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+        return (max(ar1[0], ar2[0]) + min(ar1[1], ar2[1])) / 2.0; 
+                ^
+/var/folders/q0/rj0k1xgn28x14thfz4gnbm5c0000gn/T/tmpnlnozz1e.c:27:39: error: call to undeclared function 'min'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+        return (max(ar1[0], ar2[0]) + min(ar1[1], ar2[1])) / 2.0; 
+                                      ^
+2 errors generated.
+
+07:29:36 [INFO] __main__ - Execution Output: /var/folders/q0/rj0k1xgn28x14thfz4gnbm5c0000gn/T/tmpnlnozz1e.c:27:17: error: call to undeclared function 'max'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+        return (max(ar1[0], ar2[0]) + min(ar1[1], ar2[1])) / 2.0; 
+                ^
+/var/folders/q0/rj0k1xgn28x14thfz4gnbm5c0000gn/T/tmpnlnozz1e.c:27:39: error: call to undeclared function 'min'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+        return (max(ar1[0], ar2[0]) + min(ar1[1], ar2[1])) / 2.0; 
+                                      ^
+2 errors generated.
+
+07:30:22 [INFO] __main__ - Running code: 
+
+#include <iostream> 
+using namespace std; 
+  
+int getMedian(int ar1[], int ar2[], int n) 
+{ 
+    int i = 0;  
+    int j = 0; 
+    int count; 
+    int m1 = -1, m2 = -1; 
+  
+    for (count = 0; count <= n; count++) 
+    { 
+        if (i == n) 
+        { 
+            m1 = m2; 
+            m2 = ar2[0]; 
+            break; 
+        } 
+        else if (j == n) 
+        { 
+            m1 = m2; 
+            m2 = ar1[0]; 
+            break; 
+        } 
+        if (ar1[i] < ar2[j]) 
+        { 
+            m1 = m2;  
+            m2 = ar1[i]; 
+            i++; 
+        } 
+        else
+        { 
+            m1 = m2;  
+            m2 = ar2[j]; 
+            j++; 
+        } 
+    } 
+  
+    return (m1 + m2)/2; 
+} 
+  
+int main() 
+{ 
+    int ar1[] = {1, 3, 5, 7, 9}; 
+    int ar2[] = {2, 4, 6, 8, 10}; 
+  
+    int n1 = sizeof(ar1)/sizeof(ar1[0]); 
+    int n2 = sizeof(ar2)/sizeof(ar2[0]); 
+    if (n1 == n2) 
+        cout << "Median is " 
+             << getMedian(ar1, ar2, n1) ; 
+    else
+        cout << "arrays are of unequal size" ; 
+    return 0; 
+} in language: Cpp
+07:30:22 [INFO] __main__ - Running code: 
+
+#include <iostream> 
+using namespace std; 
+  
+int getMedian(int ar1[], int ar2[], int n) 
+{ 
+    int i = 0;  
+    int j = 0; 
+    int count; 
+    int m1 = -1, m2 = -1; 
+  
+    for (count = 0; count <= n; count++) 
+    { 
+        if (i == n) 
+        { 
+            m1 = m2; 
+            m2 = ar2[0]; 
+            break; 
+        } 
+        else if (j == n) 
+        { 
+            m1 = m2; 
+            m2 = ar1[0]; 
+            break; 
+        } 
+        if (ar1[i] < ar2[j]) 
+        { 
+            m1 = m2;  
+            m2 = ar1[i]; 
+            i++; 
+        } 
+        else
+        { 
+            m1 = m2;  
+            m2 = ar2[j]; 
+            j++; 
+        } 
+    } 
+  
+    return (m1 + m2)/2; 
+} 
+  
+int main() 
+{ 
+    int ar1[] = {1, 3, 5, 7, 9}; 
+    int ar2[] = {2, 4, 6, 8, 10}; 
+  
+    int n1 = sizeof(ar1)/sizeof(ar1[0]); 
+    int n2 = sizeof(ar2)/sizeof(ar2[0]); 
+    if (n1 == n2) 
+        cout << "Median is " 
+             << getMedian(ar1, ar2, n1) ; 
+    else
+        cout << "arrays are of unequal size" ; 
+    return 0; 
+} in language: Cpp
+07:30:22 [INFO] __main__ - Input file: /var/folders/q0/rj0k1xgn28x14thfz4gnbm5c0000gn/T/tmp4iipi5nu.cpp
+07:30:22 [INFO] __main__ - Output file: /var/folders/q0/rj0k1xgn28x14thfz4gnbm5c0000gn/T/tmp004r5kl4
+07:30:23 [INFO] __main__ - Output execution: Median is 5
+07:30:23 [INFO] __main__ - Output execution: Median is 5
+07:30:23 [INFO] __main__ - Execution Output: Median is 5
+07:30:48 [INFO] __main__ - Running code: 
+
+#include <stdio.h> 
+#include <stdlib.h> 
+
+int getMedian(int ar1[], int ar2[], int n) 
+{ 
+	int i = 0;  
+	int j = 0; 
+	int count; 
+	int m1 = -1, m2 = -1; 
+
+	for (count = 0; count <= n; count++) 
+	{ 
+		if (i == n) 
+		{ 
+			m1 = m2; 
+			m2 = ar2[0]; 
+			break; 
+		} 
+		else if (j == n) 
+		{ 
+			m1 = m2; 
+			m2 = ar1[0]; 
+			break; 
+		} 
+
+		if (ar1[i] < ar2[j]) 
+		{ 
+			m1 = m2;   
+			m2 = ar1[i]; 
+			i++; 
+		} 
+		else
+		{ 
+			m1 = m2;  
+			m2 = ar2[j]; 
+			j++; 
+		} 
+	} 
+
+	return (m1 + m2)/2; 
+} 
+
+int main() 
+{ 
+	int ar1[] = {1, 3, 5, 7, 9}; 
+	int ar2[] = {2, 4, 6, 8, 10}; 
+	int n1 = sizeof(ar1)/sizeof(ar1[0]); 
+	int n2 = sizeof(ar2)/sizeof(ar2[0]); 
+	if (n1 == n2) 
+		printf("Median is %d", getMedian(ar1, ar2, n1)); 
+	else
+		printf("Doesn't work for arrays of unequal size"); 
+	getchar(); 
+	return 0; 
+} in language: C
+07:30:48 [INFO] __main__ - Running code: 
+
+#include <stdio.h> 
+#include <stdlib.h> 
+
+int getMedian(int ar1[], int ar2[], int n) 
+{ 
+	int i = 0;  
+	int j = 0; 
+	int count; 
+	int m1 = -1, m2 = -1; 
+
+	for (count = 0; count <= n; count++) 
+	{ 
+		if (i == n) 
+		{ 
+			m1 = m2; 
+			m2 = ar2[0]; 
+			break; 
+		} 
+		else if (j == n) 
+		{ 
+			m1 = m2; 
+			m2 = ar1[0]; 
+			break; 
+		} 
+
+		if (ar1[i] < ar2[j]) 
+		{ 
+			m1 = m2;   
+			m2 = ar1[i]; 
+			i++; 
+		} 
+		else
+		{ 
+			m1 = m2;  
+			m2 = ar2[j]; 
+			j++; 
+		} 
+	} 
+
+	return (m1 + m2)/2; 
+} 
+
+int main() 
+{ 
+	int ar1[] = {1, 3, 5, 7, 9}; 
+	int ar2[] = {2, 4, 6, 8, 10}; 
+	int n1 = sizeof(ar1)/sizeof(ar1[0]); 
+	int n2 = sizeof(ar2)/sizeof(ar2[0]); 
+	if (n1 == n2) 
+		printf("Median is %d", getMedian(ar1, ar2, n1)); 
+	else
+		printf("Doesn't work for arrays of unequal size"); 
+	getchar(); 
+	return 0; 
+} in language: C
+07:30:48 [INFO] __main__ - Input file: /var/folders/q0/rj0k1xgn28x14thfz4gnbm5c0000gn/T/tmp8drsx65g.c
+07:30:48 [INFO] __main__ - Output file: /var/folders/q0/rj0k1xgn28x14thfz4gnbm5c0000gn/T/tmp63kvogms
+07:32:45 [INFO] __main__ - Running code: 
+
+#include <stdio.h> 
+#include <stdlib.h> 
+
+int getMedian(int ar1[], int ar2[], int n) 
+{ 
+	int i = 0;  
+	int j = 0; 
+	int count; 
+	int m1 = -1, m2 = -1; 
+
+	for (count = 0; count <= n; count++) 
+	{ 
+		if (i == n) 
+		{ 
+			m1 = m2; 
+			m2 = ar2[0]; 
+			break; 
+		} 
+		else if (j == n) 
+		{ 
+			m1 = m2; 
+			m2 = ar1[0]; 
+			break; 
+		} 
+
+		if (ar1[i] < ar2[j]) 
+		{ 
+			m1 = m2;   
+			m2 = ar1[i]; 
+			i++; 
+		} 
+		else
+		{ 
+			m1 = m2;  
+			m2 = ar2[j]; 
+			j++; 
+		} 
+	} 
+
+	return (m1 + m2)/2; 
+} 
+
+int main() 
+{ 
+	int ar1[] = {1, 3, 5, 7, 9}; 
+	int ar2[] = {2, 4, 6, 8, 10}; 
+	int n1 = sizeof(ar1)/sizeof(ar1[0]); 
+	int n2 = sizeof(ar2)/sizeof(ar2[0]); 
+	if (n1 == n2) 
+		printf("Median is %d", getMedian(ar1, ar2, n1)); 
+	else
+		printf("Doesn't work for arrays of unequal size"); 
+	getchar(); 
+	return 0; 
+} in language: C
+07:32:45 [INFO] __main__ - Running code: 
+
+#include <stdio.h> 
+#include <stdlib.h> 
+
+int getMedian(int ar1[], int ar2[], int n) 
+{ 
+	int i = 0;  
+	int j = 0; 
+	int count; 
+	int m1 = -1, m2 = -1; 
+
+	for (count = 0; count <= n; count++) 
+	{ 
+		if (i == n) 
+		{ 
+			m1 = m2; 
+			m2 = ar2[0]; 
+			break; 
+		} 
+		else if (j == n) 
+		{ 
+			m1 = m2; 
+			m2 = ar1[0]; 
+			break; 
+		} 
+
+		if (ar1[i] < ar2[j]) 
+		{ 
+			m1 = m2;   
+			m2 = ar1[i]; 
+			i++; 
+		} 
+		else
+		{ 
+			m1 = m2;  
+			m2 = ar2[j]; 
+			j++; 
+		} 
+	} 
+
+	return (m1 + m2)/2; 
+} 
+
+int main() 
+{ 
+	int ar1[] = {1, 3, 5, 7, 9}; 
+	int ar2[] = {2, 4, 6, 8, 10}; 
+	int n1 = sizeof(ar1)/sizeof(ar1[0]); 
+	int n2 = sizeof(ar2)/sizeof(ar2[0]); 
+	if (n1 == n2) 
+		printf("Median is %d", getMedian(ar1, ar2, n1)); 
+	else
+		printf("Doesn't work for arrays of unequal size"); 
+	getchar(); 
+	return 0; 
+} in language: C
+07:32:45 [INFO] __main__ - Input file: /var/folders/q0/rj0k1xgn28x14thfz4gnbm5c0000gn/T/tmpz8wutfk9.c
+07:32:45 [INFO] __main__ - Output file: /var/folders/q0/rj0k1xgn28x14thfz4gnbm5c0000gn/T/tmp7wxsl_o7
+07:32:52 [INFO] __main__ - Running code: 
+
+#include <stdio.h> 
+#include <stdlib.h> 
+
+int getMedian(int ar1[], int ar2[], int n) 
+{ 
+	int i = 0;  
+	int j = 0; 
+	int count; 
+	int m1 = -1, m2 = -1; 
+
+	for (count = 0; count <= n; count++) 
+	{ 
+		if (i == n) 
+		{ 
+			m1 = m2; 
+			m2 = ar2[0]; 
+			break; 
+		} 
+		else if (j == n) 
+		{ 
+			m1 = m2; 
+			m2 = ar1[0]; 
+			break; 
+		} 
+
+		if (ar1[i] < ar2[j]) 
+		{ 
+			m1 = m2;   
+			m2 = ar1[i]; 
+			i++; 
+		} 
+		else
+		{ 
+			m1 = m2;  
+			m2 = ar2[j]; 
+			j++; 
+		} 
+	} 
+
+	return (m1 + m2)/2; 
+} 
+
+int main() 
+{ 
+	int ar1[] = {1, 3, 5, 7, 9}; 
+	int ar2[] = {2, 4, 6, 8, 10}; 
+	int n1 = sizeof(ar1)/sizeof(ar1[0]); 
+	int n2 = sizeof(ar2)/sizeof(ar2[0]); 
+	if (n1 == n2) 
+		printf("Median is %d", getMedian(ar1, ar2, n1)); 
+	else
+		printf("Doesn't work for arrays of unequal size"); 
+	getchar(); 
+	return 0; 
+} in language: C
+07:32:52 [INFO] __main__ - Running code: 
+
+#include <stdio.h> 
+#include <stdlib.h> 
+
+int getMedian(int ar1[], int ar2[], int n) 
+{ 
+	int i = 0;  
+	int j = 0; 
+	int count; 
+	int m1 = -1, m2 = -1; 
+
+	for (count = 0; count <= n; count++) 
+	{ 
+		if (i == n) 
+		{ 
+			m1 = m2; 
+			m2 = ar2[0]; 
+			break; 
+		} 
+		else if (j == n) 
+		{ 
+			m1 = m2; 
+			m2 = ar1[0]; 
+			break; 
+		} 
+
+		if (ar1[i] < ar2[j]) 
+		{ 
+			m1 = m2;   
+			m2 = ar1[i]; 
+			i++; 
+		} 
+		else
+		{ 
+			m1 = m2;  
+			m2 = ar2[j]; 
+			j++; 
+		} 
+	} 
+
+	return (m1 + m2)/2; 
+} 
+
+int main() 
+{ 
+	int ar1[] = {1, 3, 5, 7, 9}; 
+	int ar2[] = {2, 4, 6, 8, 10}; 
+	int n1 = sizeof(ar1)/sizeof(ar1[0]); 
+	int n2 = sizeof(ar2)/sizeof(ar2[0]); 
+	if (n1 == n2) 
+		printf("Median is %d", getMedian(ar1, ar2, n1)); 
+	else
+		printf("Doesn't work for arrays of unequal size"); 
+	getchar(); 
+	return 0; 
+} in language: C
+07:32:52 [INFO] __main__ - Input file: /var/folders/q0/rj0k1xgn28x14thfz4gnbm5c0000gn/T/tmpjx8lohop.c
+07:32:52 [INFO] __main__ - Output file: /var/folders/q0/rj0k1xgn28x14thfz4gnbm5c0000gn/T/tmpla4ymygh
+07:33:04 [INFO] __main__ - Running code: 
+
+#include <stdio.h>
+ 
+int main()
+{
+    int Low, High, i, flag;
+    printf("Enter two numbers(intervals): ");
+    scanf("%d %d", &Low, &High);
+    printf("Prime numbers between %d and %d are: ", Low, High);
+ 
+    while (Low < High)
+    {
+        flag = 0;
+ 
+        for(i = 2; i <= Low/2; ++i)
         {
-            "id": 7,
-            "title": "Samsung Galaxy Book",
-            "description": "Samsung Galaxy Book S (2020) Laptop With Intel Lakefield Chip, 8GB of RAM Launched",
-            "price": 1499,
-            "discountPercentage": 4.15,
-            "rating": 4.25,
-            "stock": 50,
-            "brand": "Samsung",
-            "category": "laptops",
-            "thumbnail": "https://i.dummyjson.com/data/products/7/thumbnail.jpg",
-            "images": [
-                "https://i.dummyjson.com/data/products/7/1.jpg",
-                "https://i.dummyjson.com/data/products/7/2.jpg",
-                "https://i.dummyjson.com/data/products/7/3.jpg",
-                "https://i.dummyjson.com/data/products/7/thumbnail.jpg"
-            ]
-        },
-        {
-            "id": 8,
-            "title": "Microsoft Surface Laptop 4",
-            "description": "Style and speed. Stand out on HD video calls backed by Studio Mics. Capture ideas on the vibrant touchscreen.",
-            "price": 1499,
-            "discountPercentage": 10.23,
-            "rating": 4.43,
-            "stock": 68,
-            "brand": "Microsoft Surface",
-            "category": "laptops",
-            "thumbnail": "https://i.dummyjson.com/data/products/8/thumbnail.jpg",
-            "images": [
-                "https://i.dummyjson.com/data/products/8/1.jpg",
-                "https://i.dummyjson.com/data/products/8/2.jpg",
-                "https://i.dummyjson.com/data/products/8/3.jpg",
-                "https://i.dummyjson.com/data/products/8/4.jpg",
-                "https://i.dummyjson.com/data/products/8/thumbnail.jpg"
-            ]
-        },
-        {
-            "id": 10,
-            "title": "HP Pavilion 15-DK1056WM",
-            "description": "HP Pavilion 15-DK1056WM Gaming Laptop 10th Gen Core i5, 8GB, 256GB SSD, GTX 1650 4GB, Windows 10",
-            "price": 1099,
-            "discountPercentage": 6.18,
-            "rating": 4.43,
-            "stock": 89,
-            "brand": "HP Pavilion",
-            "category": "laptops",
-            "thumbnail": "https://i.dummyjson.com/data/products/10/thumbnail.jpeg",
-            "images": [
-                "https://i.dummyjson.com/data/products/10/1.jpg",
-                "https://i.dummyjson.com/data/products/10/2.jpg",
-                "https://i.dummyjson.com/data/products/10/3.jpg",
-                "https://i.dummyjson.com/data/products/10/thumbnail.jpeg"
-            ]
+            if(Low % i == 0)
+            {
+                flag = 1;
+                break;
+            }
         }
-    ],
-    "total": 3,
-    "skip": 0,
-    "limit": 3
-}
+ 
+        if (flag == 0)
+            printf("%d ", Low);
+ 
+        ++Low;
+    }
+ 
+    return 0;
+} in language: C
+07:33:04 [INFO] __main__ - Running code: 
 
-05:51:08 [INFO] __main__ - Execution Output: {
-    "products": [
+#include <stdio.h>
+ 
+int main()
+{
+    int Low, High, i, flag;
+    printf("Enter two numbers(intervals): ");
+    scanf("%d %d", &Low, &High);
+    printf("Prime numbers between %d and %d are: ", Low, High);
+ 
+    while (Low < High)
+    {
+        flag = 0;
+ 
+        for(i = 2; i <= Low/2; ++i)
         {
-            "id": 7,
-            "title": "Samsung Galaxy Book",
-            "description": "Samsung Galaxy Book S (2020) Laptop With Intel Lakefield Chip, 8GB of RAM Launched",
-            "price": 1499,
-            "discountPercentage": 4.15,
-            "rating": 4.25,
-            "stock": 50,
-            "brand": "Samsung",
-            "category": "laptops",
-            "thumbnail": "https://i.dummyjson.com/data/products/7/thumbnail.jpg",
-            "images": [
-                "https://i.dummyjson.com/data/products/7/1.jpg",
-                "https://i.dummyjson.com/data/products/7/2.jpg",
-                "https://i.dummyjson.com/data/products/7/3.jpg",
-                "https://i.dummyjson.com/data/products/7/thumbnail.jpg"
-            ]
-        },
-        {
-            "id": 8,
-            "title": "Microsoft Surface Laptop 4",
-            "description": "Style and speed. Stand out on HD video calls backed by Studio Mics. Capture ideas on the vibrant touchscreen.",
-            "price": 1499,
-            "discountPercentage": 10.23,
-            "rating": 4.43,
-            "stock": 68,
-            "brand": "Microsoft Surface",
-            "category": "laptops",
-            "thumbnail": "https://i.dummyjson.com/data/products/8/thumbnail.jpg",
-            "images": [
-                "https://i.dummyjson.com/data/products/8/1.jpg",
-                "https://i.dummyjson.com/data/products/8/2.jpg",
-                "https://i.dummyjson.com/data/products/8/3.jpg",
-                "https://i.dummyjson.com/data/products/8/4.jpg",
-                "https://i.dummyjson.com/data/products/8/thumbnail.jpg"
-            ]
-        },
-        {
-            "id": 10,
-            "title": "HP Pavilion 15-DK1056WM",
-            "description": "HP Pavilion 15-DK1056WM Gaming Laptop 10th Gen Core i5, 8GB, 256GB SSD, GTX 1650 4GB, Windows 10",
-            "price": 1099,
-            "discountPercentage": 6.18,
-            "rating": 4.43,
-            "stock": 89,
-            "brand": "HP Pavilion",
-            "category": "laptops",
-            "thumbnail": "https://i.dummyjson.com/data/products/10/thumbnail.jpeg",
-            "images": [
-                "https://i.dummyjson.com/data/products/10/1.jpg",
-                "https://i.dummyjson.com/data/products/10/2.jpg",
-                "https://i.dummyjson.com/data/products/10/3.jpg",
-                "https://i.dummyjson.com/data/products/10/thumbnail.jpeg"
-            ]
+            if(Low % i == 0)
+            {
+                flag = 1;
+                break;
+            }
         }
-    ],
-    "total": 3,
-    "skip": 0,
-    "limit": 3
-}
+ 
+        if (flag == 0)
+            printf("%d ", Low);
+ 
+        ++Low;
+    }
+ 
+    return 0;
+} in language: C
+07:33:04 [INFO] __main__ - Input file: /var/folders/q0/rj0k1xgn28x14thfz4gnbm5c0000gn/T/tmpqb3o94iv.c
+07:33:04 [INFO] __main__ - Output file: /var/folders/q0/rj0k1xgn28x14thfz4gnbm5c0000gn/T/tmpacltucx5
+07:33:39 [INFO] __main__ - Running code: 
 
-05:51:35 [INFO] __main__ - Running code: 
+#include<stdio.h>
+int main()
+{
+    int i, j, isPrime;
+    printf("Prime numbers from 10 to 20 are: \n");
+    for(i=10; i<=20; i++)
+    {
+        isPrime = 0;
+        for(j=2; j<=i/2; j++)
+        {
+            if(i%j==0)
+            {
+                isPrime=1;
+                break;
+            }
+        }
+        if(isPrime==0 && i!= 1)
+            printf("%d ",i);
+    }
+    return 0;
+} in language: C
+07:33:39 [INFO] __main__ - Running code: 
 
-#include <iostream>
-#include <curl/curl.h>
-#include <json/json.h>
+#include<stdio.h>
+int main()
+{
+    int i, j, isPrime;
+    printf("Prime numbers from 10 to 20 are: \n");
+    for(i=10; i<=20; i++)
+    {
+        isPrime = 0;
+        for(j=2; j<=i/2; j++)
+        {
+            if(i%j==0)
+            {
+                isPrime=1;
+                break;
+            }
+        }
+        if(isPrime==0 && i!= 1)
+            printf("%d ",i);
+    }
+    return 0;
+} in language: C
+07:33:39 [INFO] __main__ - Input file: /var/folders/q0/rj0k1xgn28x14thfz4gnbm5c0000gn/T/tmpio9ovmhl.c
+07:33:39 [INFO] __main__ - Output file: /var/folders/q0/rj0k1xgn28x14thfz4gnbm5c0000gn/T/tmpu7_csnyx
+07:33:40 [INFO] __main__ - Output execution: Prime numbers from 10 to 20 are: 
+11 13 17 19 
+07:33:40 [INFO] __main__ - Output execution: Prime numbers from 10 to 20 are: 
+11 13 17 19 
+07:33:40 [INFO] __main__ - Execution Output: Prime numbers from 10 to 20 are: 
+11 13 17 19 
+07:34:16 [INFO] __main__ - Running code:  -> NULL Output: Linked list with elements 5 -> 4 -> 3 -> 2 -> 1 -> NULL
 
-int main() {
-	CURL *curl;
-	CURLcode res;
-	std::string readBuffer;
+#include <stdio.h> 
+#include <stdlib.h> 
+  
+/* Link list node */
+struct Node 
+{ 
+    int data; 
+    struct Node* next; 
+}; 
+  
+/* Function to reverse the linked list */
+static void reverse(struct Node** head_ref) 
+{ 
+    struct Node* prev   = NULL; 
+    struct Node* current = *head_ref; 
+    struct Node* next; 
+    while (current != NULL) 
+    { 
+        next  = current->next;   
+        current->next = prev;   
+        prev = current; 
+        current = next; 
+    } 
+    *head_ref = prev; 
+} 
+  
+/* Function to push a node */
+void push(struct Node** head_ref, int new_data) 
+{ 
+    /* allocate node */
+    struct Node* new_node = 
+            (struct Node*) malloc(sizeof(struct Node)); 
+  
+    /* put in the data  */
+    new_node->data  = new_data; 
+  
+    /* link the old list off the new node */
+    new_node->next = (*head_ref);     
+  
+    /* move the head to point to the new node */
+    (*head_ref)    = new_node; 
+} 
+  
+/* Function to print linked list */
+void printList(struct Node *head) 
+{ 
+    struct Node *temp = head; 
+    while(temp != NULL) 
+    { 
+        printf("%d  ", temp->data);     
+        temp = temp->next;   
+    } 
+}     
+  
+/* Driver program to test above function*/
+int main() 
+{ 
+    /* Start with the empty list */
+    struct Node* head = NULL; 
+  
+    push(&head, 5); 
+    push(&head, 4); 
+    push(&head, 3); 
+    push(&head, 2); 
+    push(&head, 1);              
+  
+    printf("Given linked list\n"); 
+    printList(head);    
+    reverse(&head);                      
+    printf("\nReversed Linked list \n"); 
+    printList(head);    
+    return 0; 
+} in language: C
+07:34:16 [INFO] __main__ - Running code:  -> NULL Output: Linked list with elements 5 -> 4 -> 3 -> 2 -> 1 -> NULL
 
-	curl = curl_easy_init();
-	if (curl) {
-		curl_easy_setopt(curl, CURLOPT_URL, "https://dummyjson.com/products/search?q=Laptop");
-		curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 0L);
-		curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, WriteCallback);
-		curl_easy_setopt(curl, CURLOPT_WRITEDATA, &readBuffer);
-		res = curl_easy_perform(curl);
-		curl_easy_cleanup(curl);
-
-		if (res != CURLE_OK) {
-			fprintf(stderr in language: Cpp
-05:51:35 [INFO] __main__ - Running code: 
-
-#include <iostream>
-#include <curl/curl.h>
-#include <json/json.h>
-
-int main() {
-	CURL *curl;
-	CURLcode res;
-	std::string readBuffer;
-
-	curl = curl_easy_init();
-	if (curl) {
-		curl_easy_setopt(curl, CURLOPT_URL, "https://dummyjson.com/products/search?q=Laptop");
-		curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 0L);
-		curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, WriteCallback);
-		curl_easy_setopt(curl, CURLOPT_WRITEDATA, &readBuffer);
-		res = curl_easy_perform(curl);
-		curl_easy_cleanup(curl);
-
-		if (res != CURLE_OK) {
-			fprintf(stderr in language: Cpp
-05:51:35 [INFO] __main__ - Input file: /var/folders/q0/rj0k1xgn28x14thfz4gnbm5c0000gn/T/tmplhh2quah.cpp
-05:51:35 [INFO] __main__ - Output execution: /var/folders/q0/rj0k1xgn28x14thfz4gnbm5c0000gn/T/tmplhh2quah.cpp:5:10: fatal error: 'json/json.h' file not found
-#include <json/json.h>
-         ^~~~~~~~~~~~~
+#include <stdio.h> 
+#include <stdlib.h> 
+  
+/* Link list node */
+struct Node 
+{ 
+    int data; 
+    struct Node* next; 
+}; 
+  
+/* Function to reverse the linked list */
+static void reverse(struct Node** head_ref) 
+{ 
+    struct Node* prev   = NULL; 
+    struct Node* current = *head_ref; 
+    struct Node* next; 
+    while (current != NULL) 
+    { 
+        next  = current->next;   
+        current->next = prev;   
+        prev = current; 
+        current = next; 
+    } 
+    *head_ref = prev; 
+} 
+  
+/* Function to push a node */
+void push(struct Node** head_ref, int new_data) 
+{ 
+    /* allocate node */
+    struct Node* new_node = 
+            (struct Node*) malloc(sizeof(struct Node)); 
+  
+    /* put in the data  */
+    new_node->data  = new_data; 
+  
+    /* link the old list off the new node */
+    new_node->next = (*head_ref);     
+  
+    /* move the head to point to the new node */
+    (*head_ref)    = new_node; 
+} 
+  
+/* Function to print linked list */
+void printList(struct Node *head) 
+{ 
+    struct Node *temp = head; 
+    while(temp != NULL) 
+    { 
+        printf("%d  ", temp->data);     
+        temp = temp->next;   
+    } 
+}     
+  
+/* Driver program to test above function*/
+int main() 
+{ 
+    /* Start with the empty list */
+    struct Node* head = NULL; 
+  
+    push(&head, 5); 
+    push(&head, 4); 
+    push(&head, 3); 
+    push(&head, 2); 
+    push(&head, 1);              
+  
+    printf("Given linked list\n"); 
+    printList(head);    
+    reverse(&head);                      
+    printf("\nReversed Linked list \n"); 
+    printList(head);    
+    return 0; 
+} in language: C
+07:34:16 [INFO] __main__ - Input file: /var/folders/q0/rj0k1xgn28x14thfz4gnbm5c0000gn/T/tmp79z3zsk9.c
+07:34:16 [INFO] __main__ - Output execution: /var/folders/q0/rj0k1xgn28x14thfz4gnbm5c0000gn/T/tmp79z3zsk9.c:1:2: error: expected identifier or '('
+ -> NULL Output: Linked list with elements 5 -> 4 -> 3 -> 2 -> 1 -> NULL
+ ^
 1 error generated.
 
-05:51:35 [WARNING] langchain.llms.openai - WARNING! model is not default parameter.
-                    model was transfered to model_kwargs.
-                    Please confirm that model is what you intended.
-05:51:35 [WARNING] langchain.llms.openai - WARNING! api_key is not default parameter.
-                    api_key was transfered to model_kwargs.
-                    Please confirm that api_key is what you intended.
-05:53:14 [WARNING] langchain.llms.openai - WARNING! model is not default parameter.
-                    model was transfered to model_kwargs.
-                    Please confirm that model is what you intended.
-05:53:14 [WARNING] langchain.llms.openai - WARNING! api_key is not default parameter.
-                    api_key was transfered to model_kwargs.
-                    Please confirm that api_key is what you intended.
+07:34:16 [ERROR] __main__ - Error in code execution: /var/folders/q0/rj0k1xgn28x14thfz4gnbm5c0000gn/T/tmp79z3zsk9.c:1:2: error: expected identifier or '('
+ -> NULL Output: Linked list with elements 5 -> 4 -> 3 -> 2 -> 1 -> NULL
+ ^
+1 error generated.
+
+07:34:18 [WARNING] __main__ - Trying to run fixed code: 
+07:34:18 [INFO] __main__ - Running code:  in language: C
+07:34:18 [INFO] __main__ - Input file: /var/folders/q0/rj0k1xgn28x14thfz4gnbm5c0000gn/T/tmp0532sok1.c
+07:34:18 [ERROR] __main__ - Error in code execution: Traceback (most recent call last):
+  File "/Users/haseeb-mir/Documents/Code/Python/LangChain-CoderAI/LangChain-Coder.py", line 211, in <module>
+    output = run_code(fixed_code, st.session_state.code_language)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/haseeb-mir/Documents/Code/Python/LangChain-CoderAI/LangChain-Coder.py", line 144, in run_code
+    with tempfile.NamedTemporaryFile(mode="w", suffix="", delete=True) as exec_file:
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/tempfile.py", line 502, in __exit__
+    self.close()
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/tempfile.py", line 509, in close
+    self._closer.close()
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/tempfile.py", line 446, in close
+    unlink(self.name)
+FileNotFoundError: [Errno 2] No such file or directory: '/var/folders/q0/rj0k1xgn28x14thfz4gnbm5c0000gn/T/tmpzkzi5edt'
+
+07:34:48 [INFO] __main__ - Running code:  Output: A linked list with elements 5 -> 4 -> 3 -> 2 -> 1
+
+#include <iostream>
+using namespace std;
+
+//Defining a Node 
+struct Node 
+{ 
+    int data; 
+    struct Node* next; 
+}; 
+  
+//Function to reverse the linked list 
+void reverse(struct Node** head_ref) 
+{ 
+    struct Node* prev = NULL; 
+    struct Node* current = *head_ref; 
+    struct Node* next; 
+    while (current != NULL) 
+    { 
+        next = current->next;   
+        current->next = prev;    
+        prev = current; 
+        current = next; 
+    } 
+    *head_ref = prev; 
+} 
+
+//Function to print the linked list 
+void printList(struct Node *node) 
+{ 
+    while (node != NULL) 
+    { 
+        cout<<node->data<<" "; 
+        node = node->next; 
+    } 
+} 
+
+// Function to create a new node 
+struct Node *newNode(int data) 
+{ 
+    struct Node *temp = new Node; 
+    temp->data = data; 
+    temp->next = NULL; 
+    return temp; 
+} 
+  
+int main() 
+{ 
+    struct Node* head = newNode(1); 
+    head->next = newNode(2); 
+    head->next->next = newNode(3); 
+    head->next->next->next = newNode(4); 
+    head->next->next->next->next = newNode(5); 
+  
+    cout<<"Given linked list\n"; 
+    printList(head); 
+    reverse(&head); 
+    cout<<"\nReversed Linked list \n"; 
+    printList(head); 
+    return 0; 
+} in language: Cpp
+07:34:48 [INFO] __main__ - Running code:  Output: A linked list with elements 5 -> 4 -> 3 -> 2 -> 1
+
+#include <iostream>
+using namespace std;
+
+//Defining a Node 
+struct Node 
+{ 
+    int data; 
+    struct Node* next; 
+}; 
+  
+//Function to reverse the linked list 
+void reverse(struct Node** head_ref) 
+{ 
+    struct Node* prev = NULL; 
+    struct Node* current = *head_ref; 
+    struct Node* next; 
+    while (current != NULL) 
+    { 
+        next = current->next;   
+        current->next = prev;    
+        prev = current; 
+        current = next; 
+    } 
+    *head_ref = prev; 
+} 
+
+//Function to print the linked list 
+void printList(struct Node *node) 
+{ 
+    while (node != NULL) 
+    { 
+        cout<<node->data<<" "; 
+        node = node->next; 
+    } 
+} 
+
+// Function to create a new node 
+struct Node *newNode(int data) 
+{ 
+    struct Node *temp = new Node; 
+    temp->data = data; 
+    temp->next = NULL; 
+    return temp; 
+} 
+  
+int main() 
+{ 
+    struct Node* head = newNode(1); 
+    head->next = newNode(2); 
+    head->next->next = newNode(3); 
+    head->next->next->next = newNode(4); 
+    head->next->next->next->next = newNode(5); 
+  
+    cout<<"Given linked list\n"; 
+    printList(head); 
+    reverse(&head); 
+    cout<<"\nReversed Linked list \n"; 
+    printList(head); 
+    return 0; 
+} in language: Cpp
+07:34:48 [INFO] __main__ - Input file: /var/folders/q0/rj0k1xgn28x14thfz4gnbm5c0000gn/T/tmpmq_73lr5.cpp
+07:34:48 [INFO] __main__ - Output execution: /var/folders/q0/rj0k1xgn28x14thfz4gnbm5c0000gn/T/tmpmq_73lr5.cpp:1:2: error: unknown type name 'Output'
+ Output: A linked list with elements 5 -> 4 -> 3 -> 2 -> 1
+ ^
+/var/folders/q0/rj0k1xgn28x14thfz4gnbm5c0000gn/T/tmpmq_73lr5.cpp:1:8: error: expected unqualified-id
+ Output: A linked list with elements 5 -> 4 -> 3 -> 2 -> 1
+       ^
+In file included from /var/folders/q0/rj0k1xgn28x14thfz4gnbm5c0000gn/T/tmpmq_73lr5.cpp:3:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/iostream:41:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/ios:220:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__ios/fpos.h:14:
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/iosfwd:115:31: error: unknown type name 'char16_t'; did you mean 'char32_t'?
+template<> struct char_traits<char16_t>;
+                              ^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__config:462:20: note: 'char32_t' declared here
+typedef __char32_t char32_t;
+                   ^
+In file included from /var/folders/q0/rj0k1xgn28x14thfz4gnbm5c0000gn/T/tmpmq_73lr5.cpp:3:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/iostream:41:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/ios:221:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__locale:18:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/memory:841:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__algorithm/copy.h:12:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__algorithm/unwrap_iter.h:13:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__iterator/iterator_traits.h:14:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__iterator/incrementable_traits.h:15:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/concepts:133:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__concepts/arithmetic.h:15:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/type_traits:421:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__functional/invoke.h:15:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__type_traits/apply_cv.h:16:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__type_traits/remove_reference.h:13:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/cstddef:40:
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__type_traits/is_integral.h:33:50: error: unknown type name 'char16_t'; did you mean 'char32_t'?
+template <>          struct __libcpp_is_integral<char16_t>           { enum { value = 1 }; };
+                                                 ^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__config:462:20: note: 'char32_t' declared here
+typedef __char32_t char32_t;
+                   ^
+In file included from /var/folders/q0/rj0k1xgn28x14thfz4gnbm5c0000gn/T/tmpmq_73lr5.cpp:3:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/iostream:41:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/ios:221:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__locale:18:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/memory:841:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__algorithm/copy.h:12:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__algorithm/unwrap_iter.h:13:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__iterator/iterator_traits.h:14:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__iterator/incrementable_traits.h:15:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/concepts:133:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__concepts/arithmetic.h:15:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/type_traits:421:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__functional/invoke.h:15:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__type_traits/apply_cv.h:16:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__type_traits/remove_reference.h:13:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/cstddef:40:
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__type_traits/is_integral.h:34:29: error: redefinition of '__libcpp_is_integral<char32_t>'
+template <>          struct __libcpp_is_integral<char32_t>           { enum { value = 1 }; };
+                            ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__type_traits/is_integral.h:33:29: note: previous definition is here
+template <>          struct __libcpp_is_integral<char16_t>           { enum { value = 1 }; };
+                            ^
+In file included from /var/folders/q0/rj0k1xgn28x14thfz4gnbm5c0000gn/T/tmpmq_73lr5.cpp:3:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/iostream:41:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/ios:221:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__locale:18:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/memory:860:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__memory/shared_ptr.h:28:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__memory/unique_ptr.h:14:
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__functional/hash.h:441:34: error: unknown type name 'char16_t'; did you mean 'char32_t'?
+struct _LIBCPP_TEMPLATE_VIS hash<char16_t>
+                                 ^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__config:462:20: note: 'char32_t' declared here
+typedef __char32_t char32_t;
+                   ^
+In file included from /var/folders/q0/rj0k1xgn28x14thfz4gnbm5c0000gn/T/tmpmq_73lr5.cpp:3:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/iostream:41:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/ios:221:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__locale:18:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/memory:860:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__memory/shared_ptr.h:28:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__memory/unique_ptr.h:14:
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__functional/hash.h:442:31: error: unknown type name 'char16_t'; did you mean 'char32_t'?
+    : public __unary_function<char16_t, size_t>
+                              ^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__config:462:20: note: 'char32_t' declared here
+typedef __char32_t char32_t;
+                   ^
+In file included from /var/folders/q0/rj0k1xgn28x14thfz4gnbm5c0000gn/T/tmpmq_73lr5.cpp:3:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/iostream:41:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/ios:221:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__locale:18:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/memory:860:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__memory/shared_ptr.h:28:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__memory/unique_ptr.h:14:
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__functional/hash.h:445:23: error: unknown type name 'char16_t'; did you mean 'char32_t'?
+    size_t operator()(char16_t __v) const _NOEXCEPT {return static_cast<size_t>(__v);}
+                      ^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__config:462:20: note: 'char32_t' declared here
+typedef __char32_t char32_t;
+                   ^
+In file included from /var/folders/q0/rj0k1xgn28x14thfz4gnbm5c0000gn/T/tmpmq_73lr5.cpp:3:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/iostream:41:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/ios:221:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__locale:18:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/memory:860:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__memory/shared_ptr.h:28:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__memory/unique_ptr.h:14:
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__functional/hash.h:449:29: error: redefinition of 'hash<char32_t>'
+struct _LIBCPP_TEMPLATE_VIS hash<char32_t>
+                            ^~~~~~~~~~~~~~
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__functional/hash.h:441:29: note: previous definition is here
+struct _LIBCPP_TEMPLATE_VIS hash<char16_t>
+                            ^
+In file included from /var/folders/q0/rj0k1xgn28x14thfz4gnbm5c0000gn/T/tmpmq_73lr5.cpp:3:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/iostream:41:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/ios:221:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__locale:18:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/memory:860:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__memory/shared_ptr.h:39:
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/atomic:2596:16: error: unknown type name 'char16_t'; did you mean 'char32_t'?
+typedef atomic<char16_t>           atomic_char16_t;
+               ^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__config:462:20: note: 'char32_t' declared here
+typedef __char32_t char32_t;
+                   ^
+In file included from /var/folders/q0/rj0k1xgn28x14thfz4gnbm5c0000gn/T/tmpmq_73lr5.cpp:3:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/iostream:41:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/ios:221:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__locale:19:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/mutex:191:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__mutex_base:20:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/system_error:151:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/string:536:
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__string/char_traits.h:520:41: error: unknown type name 'char16_t'; did you mean 'char32_t'?
+struct _LIBCPP_TEMPLATE_VIS char_traits<char16_t>
+                                        ^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__config:462:20: note: 'char32_t' declared here
+typedef __char32_t char32_t;
+                   ^
+In file included from /var/folders/q0/rj0k1xgn28x14thfz4gnbm5c0000gn/T/tmpmq_73lr5.cpp:3:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/iostream:41:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/ios:221:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__locale:19:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/mutex:191:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__mutex_base:20:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/system_error:151:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/string:536:
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__string/char_traits.h:522:13: error: unknown type name 'char16_t'; did you mean 'char32_t'?
+    typedef char16_t       char_type;
+            ^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__config:462:20: note: 'char32_t' declared here
+typedef __char32_t char32_t;
+                   ^
+In file included from /var/folders/q0/rj0k1xgn28x14thfz4gnbm5c0000gn/T/tmpmq_73lr5.cpp:3:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/iostream:41:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/ios:221:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__locale:19:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/mutex:191:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__mutex_base:20:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/system_error:151:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/string:536:
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__string/char_traits.h:575:13: error: unknown type name 'char16_t'; did you mean 'char32_t'?
+char_traits<char16_t>::compare(const char_type* __s1, const char_type* __s2, size_t __n) _NOEXCEPT
+            ^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__config:462:20: note: 'char32_t' declared here
+typedef __char32_t char32_t;
+                   ^
+In file included from /var/folders/q0/rj0k1xgn28x14thfz4gnbm5c0000gn/T/tmpmq_73lr5.cpp:3:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/iostream:41:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/ios:221:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__locale:19:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/mutex:191:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__mutex_base:20:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/system_error:151:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/string:536:
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__string/char_traits.h:589:13: error: unknown type name 'char16_t'; did you mean 'char32_t'?
+char_traits<char16_t>::length(const char_type* __s) _NOEXCEPT
+            ^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__config:462:20: note: 'char32_t' declared here
+typedef __char32_t char32_t;
+                   ^
+In file included from /var/folders/q0/rj0k1xgn28x14thfz4gnbm5c0000gn/T/tmpmq_73lr5.cpp:3:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/iostream:41:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/ios:221:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__locale:19:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/mutex:191:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__mutex_base:20:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/system_error:151:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/string:536:
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__string/char_traits.h:598:7: error: unknown type name 'char16_t'; did you mean 'char32_t'?
+const char16_t*
+      ^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__config:462:20: note: 'char32_t' declared here
+typedef __char32_t char32_t;
+                   ^
+In file included from /var/folders/q0/rj0k1xgn28x14thfz4gnbm5c0000gn/T/tmpmq_73lr5.cpp:3:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/iostream:41:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/ios:221:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__locale:19:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/mutex:191:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__mutex_base:20:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/system_error:151:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/string:536:
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__string/char_traits.h:599:13: error: unknown type name 'char16_t'; did you mean 'char32_t'?
+char_traits<char16_t>::find(const char_type* __s, size_t __n, const char_type& __a) _NOEXCEPT
+            ^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__config:462:20: note: 'char32_t' declared here
+typedef __char32_t char32_t;
+                   ^
+In file included from /var/folders/q0/rj0k1xgn28x14thfz4gnbm5c0000gn/T/tmpmq_73lr5.cpp:3:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/iostream:41:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/ios:221:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__locale:19:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/mutex:191:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__mutex_base:20:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/system_error:151:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/string:536:
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__string/char_traits.h:611:29: error: redefinition of 'char_traits<char32_t>'
+struct _LIBCPP_TEMPLATE_VIS char_traits<char32_t>
+                            ^~~~~~~~~~~~~~~~~~~~~
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__string/char_traits.h:520:29: note: previous definition is here
+struct _LIBCPP_TEMPLATE_VIS char_traits<char16_t>
+                            ^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__string/char_traits.h:664:24: error: redefinition of 'compare'
+char_traits<char32_t>::compare(const char_type* __s1, const char_type* __s2, size_t __n) _NOEXCEPT
+                       ^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__string/char_traits.h:575:24: note: previous definition is here
+char_traits<char16_t>::compare(const char_type* __s1, const char_type* __s2, size_t __n) _NOEXCEPT
+                       ^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__string/char_traits.h:678:24: error: redefinition of 'length'
+char_traits<char32_t>::length(const char_type* __s) _NOEXCEPT
+                       ^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__string/char_traits.h:589:24: note: previous definition is here
+char_traits<char16_t>::length(const char_type* __s) _NOEXCEPT
+                       ^
+fatal error: too many errors emitted, stopping now [-ferror-limit=]
+20 errors generated.
+
+07:34:48 [ERROR] __main__ - Error in code execution: /var/folders/q0/rj0k1xgn28x14thfz4gnbm5c0000gn/T/tmpmq_73lr5.cpp:1:2: error: unknown type name 'Output'
+ Output: A linked list with elements 5 -> 4 -> 3 -> 2 -> 1
+ ^
+/var/folders/q0/rj0k1xgn28x14thfz4gnbm5c0000gn/T/tmpmq_73lr5.cpp:1:8: error: expected unqualified-id
+ Output: A linked list with elements 5 -> 4 -> 3 -> 2 -> 1
+       ^
+In file included from /var/folders/q0/rj0k1xgn28x14thfz4gnbm5c0000gn/T/tmpmq_73lr5.cpp:3:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/iostream:41:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/ios:220:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__ios/fpos.h:14:
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/iosfwd:115:31: error: unknown type name 'char16_t'; did you mean 'char32_t'?
+template<> struct char_traits<char16_t>;
+                              ^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__config:462:20: note: 'char32_t' declared here
+typedef __char32_t char32_t;
+                   ^
+In file included from /var/folders/q0/rj0k1xgn28x14thfz4gnbm5c0000gn/T/tmpmq_73lr5.cpp:3:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/iostream:41:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/ios:221:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__locale:18:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/memory:841:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__algorithm/copy.h:12:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__algorithm/unwrap_iter.h:13:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__iterator/iterator_traits.h:14:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__iterator/incrementable_traits.h:15:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/concepts:133:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__concepts/arithmetic.h:15:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/type_traits:421:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__functional/invoke.h:15:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__type_traits/apply_cv.h:16:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__type_traits/remove_reference.h:13:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/cstddef:40:
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__type_traits/is_integral.h:33:50: error: unknown type name 'char16_t'; did you mean 'char32_t'?
+template <>          struct __libcpp_is_integral<char16_t>           { enum { value = 1 }; };
+                                                 ^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__config:462:20: note: 'char32_t' declared here
+typedef __char32_t char32_t;
+                   ^
+In file included from /var/folders/q0/rj0k1xgn28x14thfz4gnbm5c0000gn/T/tmpmq_73lr5.cpp:3:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/iostream:41:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/ios:221:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__locale:18:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/memory:841:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__algorithm/copy.h:12:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__algorithm/unwrap_iter.h:13:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__iterator/iterator_traits.h:14:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__iterator/incrementable_traits.h:15:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/concepts:133:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__concepts/arithmetic.h:15:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/type_traits:421:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__functional/invoke.h:15:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__type_traits/apply_cv.h:16:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__type_traits/remove_reference.h:13:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/cstddef:40:
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__type_traits/is_integral.h:34:29: error: redefinition of '__libcpp_is_integral<char32_t>'
+template <>          struct __libcpp_is_integral<char32_t>           { enum { value = 1 }; };
+                            ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__type_traits/is_integral.h:33:29: note: previous definition is here
+template <>          struct __libcpp_is_integral<char16_t>           { enum { value = 1 }; };
+                            ^
+In file included from /var/folders/q0/rj0k1xgn28x14thfz4gnbm5c0000gn/T/tmpmq_73lr5.cpp:3:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/iostream:41:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/ios:221:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__locale:18:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/memory:860:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__memory/shared_ptr.h:28:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__memory/unique_ptr.h:14:
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__functional/hash.h:441:34: error: unknown type name 'char16_t'; did you mean 'char32_t'?
+struct _LIBCPP_TEMPLATE_VIS hash<char16_t>
+                                 ^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__config:462:20: note: 'char32_t' declared here
+typedef __char32_t char32_t;
+                   ^
+In file included from /var/folders/q0/rj0k1xgn28x14thfz4gnbm5c0000gn/T/tmpmq_73lr5.cpp:3:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/iostream:41:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/ios:221:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__locale:18:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/memory:860:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__memory/shared_ptr.h:28:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__memory/unique_ptr.h:14:
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__functional/hash.h:442:31: error: unknown type name 'char16_t'; did you mean 'char32_t'?
+    : public __unary_function<char16_t, size_t>
+                              ^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__config:462:20: note: 'char32_t' declared here
+typedef __char32_t char32_t;
+                   ^
+In file included from /var/folders/q0/rj0k1xgn28x14thfz4gnbm5c0000gn/T/tmpmq_73lr5.cpp:3:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/iostream:41:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/ios:221:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__locale:18:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/memory:860:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__memory/shared_ptr.h:28:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__memory/unique_ptr.h:14:
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__functional/hash.h:445:23: error: unknown type name 'char16_t'; did you mean 'char32_t'?
+    size_t operator()(char16_t __v) const _NOEXCEPT {return static_cast<size_t>(__v);}
+                      ^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__config:462:20: note: 'char32_t' declared here
+typedef __char32_t char32_t;
+                   ^
+In file included from /var/folders/q0/rj0k1xgn28x14thfz4gnbm5c0000gn/T/tmpmq_73lr5.cpp:3:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/iostream:41:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/ios:221:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__locale:18:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/memory:860:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__memory/shared_ptr.h:28:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__memory/unique_ptr.h:14:
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__functional/hash.h:449:29: error: redefinition of 'hash<char32_t>'
+struct _LIBCPP_TEMPLATE_VIS hash<char32_t>
+                            ^~~~~~~~~~~~~~
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__functional/hash.h:441:29: note: previous definition is here
+struct _LIBCPP_TEMPLATE_VIS hash<char16_t>
+                            ^
+In file included from /var/folders/q0/rj0k1xgn28x14thfz4gnbm5c0000gn/T/tmpmq_73lr5.cpp:3:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/iostream:41:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/ios:221:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__locale:18:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/memory:860:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__memory/shared_ptr.h:39:
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/atomic:2596:16: error: unknown type name 'char16_t'; did you mean 'char32_t'?
+typedef atomic<char16_t>           atomic_char16_t;
+               ^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__config:462:20: note: 'char32_t' declared here
+typedef __char32_t char32_t;
+                   ^
+In file included from /var/folders/q0/rj0k1xgn28x14thfz4gnbm5c0000gn/T/tmpmq_73lr5.cpp:3:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/iostream:41:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/ios:221:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__locale:19:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/mutex:191:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__mutex_base:20:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/system_error:151:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/string:536:
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__string/char_traits.h:520:41: error: unknown type name 'char16_t'; did you mean 'char32_t'?
+struct _LIBCPP_TEMPLATE_VIS char_traits<char16_t>
+                                        ^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__config:462:20: note: 'char32_t' declared here
+typedef __char32_t char32_t;
+                   ^
+In file included from /var/folders/q0/rj0k1xgn28x14thfz4gnbm5c0000gn/T/tmpmq_73lr5.cpp:3:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/iostream:41:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/ios:221:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__locale:19:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/mutex:191:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__mutex_base:20:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/system_error:151:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/string:536:
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__string/char_traits.h:522:13: error: unknown type name 'char16_t'; did you mean 'char32_t'?
+    typedef char16_t       char_type;
+            ^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__config:462:20: note: 'char32_t' declared here
+typedef __char32_t char32_t;
+                   ^
+In file included from /var/folders/q0/rj0k1xgn28x14thfz4gnbm5c0000gn/T/tmpmq_73lr5.cpp:3:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/iostream:41:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/ios:221:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__locale:19:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/mutex:191:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__mutex_base:20:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/system_error:151:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/string:536:
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__string/char_traits.h:575:13: error: unknown type name 'char16_t'; did you mean 'char32_t'?
+char_traits<char16_t>::compare(const char_type* __s1, const char_type* __s2, size_t __n) _NOEXCEPT
+            ^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__config:462:20: note: 'char32_t' declared here
+typedef __char32_t char32_t;
+                   ^
+In file included from /var/folders/q0/rj0k1xgn28x14thfz4gnbm5c0000gn/T/tmpmq_73lr5.cpp:3:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/iostream:41:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/ios:221:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__locale:19:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/mutex:191:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__mutex_base:20:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/system_error:151:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/string:536:
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__string/char_traits.h:589:13: error: unknown type name 'char16_t'; did you mean 'char32_t'?
+char_traits<char16_t>::length(const char_type* __s) _NOEXCEPT
+            ^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__config:462:20: note: 'char32_t' declared here
+typedef __char32_t char32_t;
+                   ^
+In file included from /var/folders/q0/rj0k1xgn28x14thfz4gnbm5c0000gn/T/tmpmq_73lr5.cpp:3:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/iostream:41:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/ios:221:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__locale:19:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/mutex:191:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__mutex_base:20:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/system_error:151:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/string:536:
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__string/char_traits.h:598:7: error: unknown type name 'char16_t'; did you mean 'char32_t'?
+const char16_t*
+      ^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__config:462:20: note: 'char32_t' declared here
+typedef __char32_t char32_t;
+                   ^
+In file included from /var/folders/q0/rj0k1xgn28x14thfz4gnbm5c0000gn/T/tmpmq_73lr5.cpp:3:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/iostream:41:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/ios:221:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__locale:19:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/mutex:191:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__mutex_base:20:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/system_error:151:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/string:536:
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__string/char_traits.h:599:13: error: unknown type name 'char16_t'; did you mean 'char32_t'?
+char_traits<char16_t>::find(const char_type* __s, size_t __n, const char_type& __a) _NOEXCEPT
+            ^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__config:462:20: note: 'char32_t' declared here
+typedef __char32_t char32_t;
+                   ^
+In file included from /var/folders/q0/rj0k1xgn28x14thfz4gnbm5c0000gn/T/tmpmq_73lr5.cpp:3:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/iostream:41:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/ios:221:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__locale:19:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/mutex:191:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__mutex_base:20:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/system_error:151:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/string:536:
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__string/char_traits.h:611:29: error: redefinition of 'char_traits<char32_t>'
+struct _LIBCPP_TEMPLATE_VIS char_traits<char32_t>
+                            ^~~~~~~~~~~~~~~~~~~~~
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__string/char_traits.h:520:29: note: previous definition is here
+struct _LIBCPP_TEMPLATE_VIS char_traits<char16_t>
+                            ^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__string/char_traits.h:664:24: error: redefinition of 'compare'
+char_traits<char32_t>::compare(const char_type* __s1, const char_type* __s2, size_t __n) _NOEXCEPT
+                       ^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__string/char_traits.h:575:24: note: previous definition is here
+char_traits<char16_t>::compare(const char_type* __s1, const char_type* __s2, size_t __n) _NOEXCEPT
+                       ^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__string/char_traits.h:678:24: error: redefinition of 'length'
+char_traits<char32_t>::length(const char_type* __s) _NOEXCEPT
+                       ^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__string/char_traits.h:589:24: note: previous definition is here
+char_traits<char16_t>::length(const char_type* __s) _NOEXCEPT
+                       ^
+fatal error: too many errors emitted, stopping now [-ferror-limit=]
+20 errors generated.
+
+07:34:50 [WARNING] __main__ - Trying to run fixed code: 
+07:34:50 [INFO] __main__ - Running code:  in language: Cpp
+07:34:50 [INFO] __main__ - Input file: /var/folders/q0/rj0k1xgn28x14thfz4gnbm5c0000gn/T/tmpi2yfv8ww.cpp
+07:34:50 [ERROR] __main__ - Error in code execution: Traceback (most recent call last):
+  File "/Users/haseeb-mir/Documents/Code/Python/LangChain-CoderAI/LangChain-Coder.py", line 211, in <module>
+    output = run_code(fixed_code, st.session_state.code_language)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/haseeb-mir/Documents/Code/Python/LangChain-CoderAI/LangChain-Coder.py", line 144, in run_code
+    with tempfile.NamedTemporaryFile(mode="w", suffix="", delete=True) as exec_file:
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/tempfile.py", line 502, in __exit__
+    self.close()
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/tempfile.py", line 509, in close
+    self._closer.close()
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/tempfile.py", line 446, in close
+    unlink(self.name)
+FileNotFoundError: [Errno 2] No such file or directory: '/var/folders/q0/rj0k1xgn28x14thfz4gnbm5c0000gn/T/tmp5l6gikla'
+
+07:34:58 [INFO] __main__ - Running code:  Output: A linked list with elements 5 -> 4 -> 3 -> 2 -> 1
+
+#include <iostream>
+using namespace std;
+
+//Defining a Node 
+struct Node 
+{ 
+    int data; 
+    struct Node* next; 
+}; 
+  
+//Function to reverse the linked list 
+void reverse(struct Node** head_ref) 
+{ 
+    struct Node* prev = NULL; 
+    struct Node* current = *head_ref; 
+    struct Node* next; 
+    while (current != NULL) 
+    { 
+        next = current->next;   
+        current->next = prev;    
+        prev = current; 
+        current = next; 
+    } 
+    *head_ref = prev; 
+} 
+
+//Function to print the linked list 
+void printList(struct Node *node) 
+{ 
+    while (node != NULL) 
+    { 
+        cout<<node->data<<" "; 
+        node = node->next; 
+    } 
+} 
+
+// Function to create a new node 
+struct Node *newNode(int data) 
+{ 
+    struct Node *temp = new Node; 
+    temp->data = data; 
+    temp->next = NULL; 
+    return temp; 
+} 
+  
+int main() 
+{ 
+    struct Node* head = newNode(1); 
+    head->next = newNode(2); 
+    head->next->next = newNode(3); 
+    head->next->next->next = newNode(4); 
+    head->next->next->next->next = newNode(5); 
+  
+    cout<<"Given linked list\n"; 
+    printList(head); 
+    reverse(&head); 
+    cout<<"\nReversed Linked list \n"; 
+    printList(head); 
+    return 0; 
+} in language: Cpp
+07:34:58 [INFO] __main__ - Running code:  Output: A linked list with elements 5 -> 4 -> 3 -> 2 -> 1
+
+#include <iostream>
+using namespace std;
+
+//Defining a Node 
+struct Node 
+{ 
+    int data; 
+    struct Node* next; 
+}; 
+  
+//Function to reverse the linked list 
+void reverse(struct Node** head_ref) 
+{ 
+    struct Node* prev = NULL; 
+    struct Node* current = *head_ref; 
+    struct Node* next; 
+    while (current != NULL) 
+    { 
+        next = current->next;   
+        current->next = prev;    
+        prev = current; 
+        current = next; 
+    } 
+    *head_ref = prev; 
+} 
+
+//Function to print the linked list 
+void printList(struct Node *node) 
+{ 
+    while (node != NULL) 
+    { 
+        cout<<node->data<<" "; 
+        node = node->next; 
+    } 
+} 
+
+// Function to create a new node 
+struct Node *newNode(int data) 
+{ 
+    struct Node *temp = new Node; 
+    temp->data = data; 
+    temp->next = NULL; 
+    return temp; 
+} 
+  
+int main() 
+{ 
+    struct Node* head = newNode(1); 
+    head->next = newNode(2); 
+    head->next->next = newNode(3); 
+    head->next->next->next = newNode(4); 
+    head->next->next->next->next = newNode(5); 
+  
+    cout<<"Given linked list\n"; 
+    printList(head); 
+    reverse(&head); 
+    cout<<"\nReversed Linked list \n"; 
+    printList(head); 
+    return 0; 
+} in language: Cpp
+07:34:58 [INFO] __main__ - Input file: /var/folders/q0/rj0k1xgn28x14thfz4gnbm5c0000gn/T/tmpajy4geyi.cpp
+07:34:58 [INFO] __main__ - Output execution: /var/folders/q0/rj0k1xgn28x14thfz4gnbm5c0000gn/T/tmpajy4geyi.cpp:1:2: error: unknown type name 'Output'
+ Output: A linked list with elements 5 -> 4 -> 3 -> 2 -> 1
+ ^
+/var/folders/q0/rj0k1xgn28x14thfz4gnbm5c0000gn/T/tmpajy4geyi.cpp:1:8: error: expected unqualified-id
+ Output: A linked list with elements 5 -> 4 -> 3 -> 2 -> 1
+       ^
+In file included from /var/folders/q0/rj0k1xgn28x14thfz4gnbm5c0000gn/T/tmpajy4geyi.cpp:3:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/iostream:41:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/ios:220:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__ios/fpos.h:14:
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/iosfwd:115:31: error: unknown type name 'char16_t'; did you mean 'char32_t'?
+template<> struct char_traits<char16_t>;
+                              ^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__config:462:20: note: 'char32_t' declared here
+typedef __char32_t char32_t;
+                   ^
+In file included from /var/folders/q0/rj0k1xgn28x14thfz4gnbm5c0000gn/T/tmpajy4geyi.cpp:3:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/iostream:41:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/ios:221:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__locale:18:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/memory:841:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__algorithm/copy.h:12:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__algorithm/unwrap_iter.h:13:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__iterator/iterator_traits.h:14:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__iterator/incrementable_traits.h:15:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/concepts:133:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__concepts/arithmetic.h:15:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/type_traits:421:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__functional/invoke.h:15:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__type_traits/apply_cv.h:16:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__type_traits/remove_reference.h:13:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/cstddef:40:
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__type_traits/is_integral.h:33:50: error: unknown type name 'char16_t'; did you mean 'char32_t'?
+template <>          struct __libcpp_is_integral<char16_t>           { enum { value = 1 }; };
+                                                 ^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__config:462:20: note: 'char32_t' declared here
+typedef __char32_t char32_t;
+                   ^
+In file included from /var/folders/q0/rj0k1xgn28x14thfz4gnbm5c0000gn/T/tmpajy4geyi.cpp:3:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/iostream:41:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/ios:221:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__locale:18:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/memory:841:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__algorithm/copy.h:12:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__algorithm/unwrap_iter.h:13:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__iterator/iterator_traits.h:14:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__iterator/incrementable_traits.h:15:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/concepts:133:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__concepts/arithmetic.h:15:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/type_traits:421:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__functional/invoke.h:15:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__type_traits/apply_cv.h:16:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__type_traits/remove_reference.h:13:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/cstddef:40:
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__type_traits/is_integral.h:34:29: error: redefinition of '__libcpp_is_integral<char32_t>'
+template <>          struct __libcpp_is_integral<char32_t>           { enum { value = 1 }; };
+                            ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__type_traits/is_integral.h:33:29: note: previous definition is here
+template <>          struct __libcpp_is_integral<char16_t>           { enum { value = 1 }; };
+                            ^
+In file included from /var/folders/q0/rj0k1xgn28x14thfz4gnbm5c0000gn/T/tmpajy4geyi.cpp:3:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/iostream:41:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/ios:221:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__locale:18:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/memory:860:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__memory/shared_ptr.h:28:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__memory/unique_ptr.h:14:
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__functional/hash.h:441:34: error: unknown type name 'char16_t'; did you mean 'char32_t'?
+struct _LIBCPP_TEMPLATE_VIS hash<char16_t>
+                                 ^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__config:462:20: note: 'char32_t' declared here
+typedef __char32_t char32_t;
+                   ^
+In file included from /var/folders/q0/rj0k1xgn28x14thfz4gnbm5c0000gn/T/tmpajy4geyi.cpp:3:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/iostream:41:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/ios:221:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__locale:18:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/memory:860:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__memory/shared_ptr.h:28:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__memory/unique_ptr.h:14:
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__functional/hash.h:442:31: error: unknown type name 'char16_t'; did you mean 'char32_t'?
+    : public __unary_function<char16_t, size_t>
+                              ^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__config:462:20: note: 'char32_t' declared here
+typedef __char32_t char32_t;
+                   ^
+In file included from /var/folders/q0/rj0k1xgn28x14thfz4gnbm5c0000gn/T/tmpajy4geyi.cpp:3:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/iostream:41:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/ios:221:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__locale:18:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/memory:860:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__memory/shared_ptr.h:28:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__memory/unique_ptr.h:14:
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__functional/hash.h:445:23: error: unknown type name 'char16_t'; did you mean 'char32_t'?
+    size_t operator()(char16_t __v) const _NOEXCEPT {return static_cast<size_t>(__v);}
+                      ^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__config:462:20: note: 'char32_t' declared here
+typedef __char32_t char32_t;
+                   ^
+In file included from /var/folders/q0/rj0k1xgn28x14thfz4gnbm5c0000gn/T/tmpajy4geyi.cpp:3:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/iostream:41:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/ios:221:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__locale:18:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/memory:860:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__memory/shared_ptr.h:28:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__memory/unique_ptr.h:14:
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__functional/hash.h:449:29: error: redefinition of 'hash<char32_t>'
+struct _LIBCPP_TEMPLATE_VIS hash<char32_t>
+                            ^~~~~~~~~~~~~~
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__functional/hash.h:441:29: note: previous definition is here
+struct _LIBCPP_TEMPLATE_VIS hash<char16_t>
+                            ^
+In file included from /var/folders/q0/rj0k1xgn28x14thfz4gnbm5c0000gn/T/tmpajy4geyi.cpp:3:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/iostream:41:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/ios:221:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__locale:18:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/memory:860:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__memory/shared_ptr.h:39:
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/atomic:2596:16: error: unknown type name 'char16_t'; did you mean 'char32_t'?
+typedef atomic<char16_t>           atomic_char16_t;
+               ^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__config:462:20: note: 'char32_t' declared here
+typedef __char32_t char32_t;
+                   ^
+In file included from /var/folders/q0/rj0k1xgn28x14thfz4gnbm5c0000gn/T/tmpajy4geyi.cpp:3:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/iostream:41:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/ios:221:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__locale:19:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/mutex:191:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__mutex_base:20:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/system_error:151:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/string:536:
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__string/char_traits.h:520:41: error: unknown type name 'char16_t'; did you mean 'char32_t'?
+struct _LIBCPP_TEMPLATE_VIS char_traits<char16_t>
+                                        ^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__config:462:20: note: 'char32_t' declared here
+typedef __char32_t char32_t;
+                   ^
+In file included from /var/folders/q0/rj0k1xgn28x14thfz4gnbm5c0000gn/T/tmpajy4geyi.cpp:3:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/iostream:41:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/ios:221:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__locale:19:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/mutex:191:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__mutex_base:20:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/system_error:151:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/string:536:
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__string/char_traits.h:522:13: error: unknown type name 'char16_t'; did you mean 'char32_t'?
+    typedef char16_t       char_type;
+            ^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__config:462:20: note: 'char32_t' declared here
+typedef __char32_t char32_t;
+                   ^
+In file included from /var/folders/q0/rj0k1xgn28x14thfz4gnbm5c0000gn/T/tmpajy4geyi.cpp:3:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/iostream:41:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/ios:221:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__locale:19:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/mutex:191:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__mutex_base:20:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/system_error:151:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/string:536:
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__string/char_traits.h:575:13: error: unknown type name 'char16_t'; did you mean 'char32_t'?
+char_traits<char16_t>::compare(const char_type* __s1, const char_type* __s2, size_t __n) _NOEXCEPT
+            ^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__config:462:20: note: 'char32_t' declared here
+typedef __char32_t char32_t;
+                   ^
+In file included from /var/folders/q0/rj0k1xgn28x14thfz4gnbm5c0000gn/T/tmpajy4geyi.cpp:3:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/iostream:41:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/ios:221:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__locale:19:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/mutex:191:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__mutex_base:20:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/system_error:151:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/string:536:
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__string/char_traits.h:589:13: error: unknown type name 'char16_t'; did you mean 'char32_t'?
+char_traits<char16_t>::length(const char_type* __s) _NOEXCEPT
+            ^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__config:462:20: note: 'char32_t' declared here
+typedef __char32_t char32_t;
+                   ^
+In file included from /var/folders/q0/rj0k1xgn28x14thfz4gnbm5c0000gn/T/tmpajy4geyi.cpp:3:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/iostream:41:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/ios:221:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__locale:19:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/mutex:191:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__mutex_base:20:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/system_error:151:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/string:536:
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__string/char_traits.h:598:7: error: unknown type name 'char16_t'; did you mean 'char32_t'?
+const char16_t*
+      ^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__config:462:20: note: 'char32_t' declared here
+typedef __char32_t char32_t;
+                   ^
+In file included from /var/folders/q0/rj0k1xgn28x14thfz4gnbm5c0000gn/T/tmpajy4geyi.cpp:3:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/iostream:41:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/ios:221:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__locale:19:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/mutex:191:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__mutex_base:20:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/system_error:151:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/string:536:
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__string/char_traits.h:599:13: error: unknown type name 'char16_t'; did you mean 'char32_t'?
+char_traits<char16_t>::find(const char_type* __s, size_t __n, const char_type& __a) _NOEXCEPT
+            ^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__config:462:20: note: 'char32_t' declared here
+typedef __char32_t char32_t;
+                   ^
+In file included from /var/folders/q0/rj0k1xgn28x14thfz4gnbm5c0000gn/T/tmpajy4geyi.cpp:3:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/iostream:41:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/ios:221:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__locale:19:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/mutex:191:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__mutex_base:20:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/system_error:151:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/string:536:
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__string/char_traits.h:611:29: error: redefinition of 'char_traits<char32_t>'
+struct _LIBCPP_TEMPLATE_VIS char_traits<char32_t>
+                            ^~~~~~~~~~~~~~~~~~~~~
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__string/char_traits.h:520:29: note: previous definition is here
+struct _LIBCPP_TEMPLATE_VIS char_traits<char16_t>
+                            ^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__string/char_traits.h:664:24: error: redefinition of 'compare'
+char_traits<char32_t>::compare(const char_type* __s1, const char_type* __s2, size_t __n) _NOEXCEPT
+                       ^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__string/char_traits.h:575:24: note: previous definition is here
+char_traits<char16_t>::compare(const char_type* __s1, const char_type* __s2, size_t __n) _NOEXCEPT
+                       ^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__string/char_traits.h:678:24: error: redefinition of 'length'
+char_traits<char32_t>::length(const char_type* __s) _NOEXCEPT
+                       ^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__string/char_traits.h:589:24: note: previous definition is here
+char_traits<char16_t>::length(const char_type* __s) _NOEXCEPT
+                       ^
+fatal error: too many errors emitted, stopping now [-ferror-limit=]
+20 errors generated.
+
+07:34:58 [ERROR] __main__ - Error in code execution: /var/folders/q0/rj0k1xgn28x14thfz4gnbm5c0000gn/T/tmpajy4geyi.cpp:1:2: error: unknown type name 'Output'
+ Output: A linked list with elements 5 -> 4 -> 3 -> 2 -> 1
+ ^
+/var/folders/q0/rj0k1xgn28x14thfz4gnbm5c0000gn/T/tmpajy4geyi.cpp:1:8: error: expected unqualified-id
+ Output: A linked list with elements 5 -> 4 -> 3 -> 2 -> 1
+       ^
+In file included from /var/folders/q0/rj0k1xgn28x14thfz4gnbm5c0000gn/T/tmpajy4geyi.cpp:3:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/iostream:41:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/ios:220:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__ios/fpos.h:14:
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/iosfwd:115:31: error: unknown type name 'char16_t'; did you mean 'char32_t'?
+template<> struct char_traits<char16_t>;
+                              ^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__config:462:20: note: 'char32_t' declared here
+typedef __char32_t char32_t;
+                   ^
+In file included from /var/folders/q0/rj0k1xgn28x14thfz4gnbm5c0000gn/T/tmpajy4geyi.cpp:3:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/iostream:41:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/ios:221:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__locale:18:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/memory:841:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__algorithm/copy.h:12:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__algorithm/unwrap_iter.h:13:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__iterator/iterator_traits.h:14:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__iterator/incrementable_traits.h:15:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/concepts:133:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__concepts/arithmetic.h:15:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/type_traits:421:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__functional/invoke.h:15:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__type_traits/apply_cv.h:16:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__type_traits/remove_reference.h:13:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/cstddef:40:
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__type_traits/is_integral.h:33:50: error: unknown type name 'char16_t'; did you mean 'char32_t'?
+template <>          struct __libcpp_is_integral<char16_t>           { enum { value = 1 }; };
+                                                 ^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__config:462:20: note: 'char32_t' declared here
+typedef __char32_t char32_t;
+                   ^
+In file included from /var/folders/q0/rj0k1xgn28x14thfz4gnbm5c0000gn/T/tmpajy4geyi.cpp:3:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/iostream:41:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/ios:221:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__locale:18:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/memory:841:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__algorithm/copy.h:12:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__algorithm/unwrap_iter.h:13:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__iterator/iterator_traits.h:14:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__iterator/incrementable_traits.h:15:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/concepts:133:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__concepts/arithmetic.h:15:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/type_traits:421:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__functional/invoke.h:15:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__type_traits/apply_cv.h:16:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__type_traits/remove_reference.h:13:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/cstddef:40:
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__type_traits/is_integral.h:34:29: error: redefinition of '__libcpp_is_integral<char32_t>'
+template <>          struct __libcpp_is_integral<char32_t>           { enum { value = 1 }; };
+                            ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__type_traits/is_integral.h:33:29: note: previous definition is here
+template <>          struct __libcpp_is_integral<char16_t>           { enum { value = 1 }; };
+                            ^
+In file included from /var/folders/q0/rj0k1xgn28x14thfz4gnbm5c0000gn/T/tmpajy4geyi.cpp:3:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/iostream:41:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/ios:221:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__locale:18:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/memory:860:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__memory/shared_ptr.h:28:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__memory/unique_ptr.h:14:
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__functional/hash.h:441:34: error: unknown type name 'char16_t'; did you mean 'char32_t'?
+struct _LIBCPP_TEMPLATE_VIS hash<char16_t>
+                                 ^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__config:462:20: note: 'char32_t' declared here
+typedef __char32_t char32_t;
+                   ^
+In file included from /var/folders/q0/rj0k1xgn28x14thfz4gnbm5c0000gn/T/tmpajy4geyi.cpp:3:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/iostream:41:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/ios:221:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__locale:18:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/memory:860:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__memory/shared_ptr.h:28:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__memory/unique_ptr.h:14:
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__functional/hash.h:442:31: error: unknown type name 'char16_t'; did you mean 'char32_t'?
+    : public __unary_function<char16_t, size_t>
+                              ^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__config:462:20: note: 'char32_t' declared here
+typedef __char32_t char32_t;
+                   ^
+In file included from /var/folders/q0/rj0k1xgn28x14thfz4gnbm5c0000gn/T/tmpajy4geyi.cpp:3:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/iostream:41:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/ios:221:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__locale:18:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/memory:860:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__memory/shared_ptr.h:28:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__memory/unique_ptr.h:14:
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__functional/hash.h:445:23: error: unknown type name 'char16_t'; did you mean 'char32_t'?
+    size_t operator()(char16_t __v) const _NOEXCEPT {return static_cast<size_t>(__v);}
+                      ^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__config:462:20: note: 'char32_t' declared here
+typedef __char32_t char32_t;
+                   ^
+In file included from /var/folders/q0/rj0k1xgn28x14thfz4gnbm5c0000gn/T/tmpajy4geyi.cpp:3:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/iostream:41:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/ios:221:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__locale:18:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/memory:860:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__memory/shared_ptr.h:28:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__memory/unique_ptr.h:14:
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__functional/hash.h:449:29: error: redefinition of 'hash<char32_t>'
+struct _LIBCPP_TEMPLATE_VIS hash<char32_t>
+                            ^~~~~~~~~~~~~~
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__functional/hash.h:441:29: note: previous definition is here
+struct _LIBCPP_TEMPLATE_VIS hash<char16_t>
+                            ^
+In file included from /var/folders/q0/rj0k1xgn28x14thfz4gnbm5c0000gn/T/tmpajy4geyi.cpp:3:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/iostream:41:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/ios:221:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__locale:18:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/memory:860:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__memory/shared_ptr.h:39:
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/atomic:2596:16: error: unknown type name 'char16_t'; did you mean 'char32_t'?
+typedef atomic<char16_t>           atomic_char16_t;
+               ^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__config:462:20: note: 'char32_t' declared here
+typedef __char32_t char32_t;
+                   ^
+In file included from /var/folders/q0/rj0k1xgn28x14thfz4gnbm5c0000gn/T/tmpajy4geyi.cpp:3:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/iostream:41:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/ios:221:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__locale:19:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/mutex:191:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__mutex_base:20:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/system_error:151:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/string:536:
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__string/char_traits.h:520:41: error: unknown type name 'char16_t'; did you mean 'char32_t'?
+struct _LIBCPP_TEMPLATE_VIS char_traits<char16_t>
+                                        ^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__config:462:20: note: 'char32_t' declared here
+typedef __char32_t char32_t;
+                   ^
+In file included from /var/folders/q0/rj0k1xgn28x14thfz4gnbm5c0000gn/T/tmpajy4geyi.cpp:3:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/iostream:41:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/ios:221:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__locale:19:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/mutex:191:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__mutex_base:20:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/system_error:151:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/string:536:
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__string/char_traits.h:522:13: error: unknown type name 'char16_t'; did you mean 'char32_t'?
+    typedef char16_t       char_type;
+            ^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__config:462:20: note: 'char32_t' declared here
+typedef __char32_t char32_t;
+                   ^
+In file included from /var/folders/q0/rj0k1xgn28x14thfz4gnbm5c0000gn/T/tmpajy4geyi.cpp:3:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/iostream:41:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/ios:221:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__locale:19:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/mutex:191:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__mutex_base:20:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/system_error:151:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/string:536:
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__string/char_traits.h:575:13: error: unknown type name 'char16_t'; did you mean 'char32_t'?
+char_traits<char16_t>::compare(const char_type* __s1, const char_type* __s2, size_t __n) _NOEXCEPT
+            ^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__config:462:20: note: 'char32_t' declared here
+typedef __char32_t char32_t;
+                   ^
+In file included from /var/folders/q0/rj0k1xgn28x14thfz4gnbm5c0000gn/T/tmpajy4geyi.cpp:3:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/iostream:41:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/ios:221:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__locale:19:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/mutex:191:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__mutex_base:20:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/system_error:151:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/string:536:
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__string/char_traits.h:589:13: error: unknown type name 'char16_t'; did you mean 'char32_t'?
+char_traits<char16_t>::length(const char_type* __s) _NOEXCEPT
+            ^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__config:462:20: note: 'char32_t' declared here
+typedef __char32_t char32_t;
+                   ^
+In file included from /var/folders/q0/rj0k1xgn28x14thfz4gnbm5c0000gn/T/tmpajy4geyi.cpp:3:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/iostream:41:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/ios:221:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__locale:19:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/mutex:191:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__mutex_base:20:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/system_error:151:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/string:536:
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__string/char_traits.h:598:7: error: unknown type name 'char16_t'; did you mean 'char32_t'?
+const char16_t*
+      ^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__config:462:20: note: 'char32_t' declared here
+typedef __char32_t char32_t;
+                   ^
+In file included from /var/folders/q0/rj0k1xgn28x14thfz4gnbm5c0000gn/T/tmpajy4geyi.cpp:3:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/iostream:41:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/ios:221:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__locale:19:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/mutex:191:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__mutex_base:20:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/system_error:151:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/string:536:
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__string/char_traits.h:599:13: error: unknown type name 'char16_t'; did you mean 'char32_t'?
+char_traits<char16_t>::find(const char_type* __s, size_t __n, const char_type& __a) _NOEXCEPT
+            ^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__config:462:20: note: 'char32_t' declared here
+typedef __char32_t char32_t;
+                   ^
+In file included from /var/folders/q0/rj0k1xgn28x14thfz4gnbm5c0000gn/T/tmpajy4geyi.cpp:3:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/iostream:41:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/ios:221:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__locale:19:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/mutex:191:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__mutex_base:20:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/system_error:151:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/string:536:
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__string/char_traits.h:611:29: error: redefinition of 'char_traits<char32_t>'
+struct _LIBCPP_TEMPLATE_VIS char_traits<char32_t>
+                            ^~~~~~~~~~~~~~~~~~~~~
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__string/char_traits.h:520:29: note: previous definition is here
+struct _LIBCPP_TEMPLATE_VIS char_traits<char16_t>
+                            ^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__string/char_traits.h:664:24: error: redefinition of 'compare'
+char_traits<char32_t>::compare(const char_type* __s1, const char_type* __s2, size_t __n) _NOEXCEPT
+                       ^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__string/char_traits.h:575:24: note: previous definition is here
+char_traits<char16_t>::compare(const char_type* __s1, const char_type* __s2, size_t __n) _NOEXCEPT
+                       ^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__string/char_traits.h:678:24: error: redefinition of 'length'
+char_traits<char32_t>::length(const char_type* __s) _NOEXCEPT
+                       ^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__string/char_traits.h:589:24: note: previous definition is here
+char_traits<char16_t>::length(const char_type* __s) _NOEXCEPT
+                       ^
+fatal error: too many errors emitted, stopping now [-ferror-limit=]
+20 errors generated.
+
+07:35:02 [WARNING] __main__ - Trying to run fixed code: 
+07:35:02 [INFO] __main__ - Running code:  in language: Cpp
+07:35:02 [INFO] __main__ - Input file: /var/folders/q0/rj0k1xgn28x14thfz4gnbm5c0000gn/T/tmpgw7qevxr.cpp
+07:35:02 [ERROR] __main__ - Error in code execution: Traceback (most recent call last):
+  File "/Users/haseeb-mir/Documents/Code/Python/LangChain-CoderAI/LangChain-Coder.py", line 211, in <module>
+    output = run_code(fixed_code, st.session_state.code_language)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/haseeb-mir/Documents/Code/Python/LangChain-CoderAI/LangChain-Coder.py", line 144, in run_code
+    with tempfile.NamedTemporaryFile(mode="w", suffix="", delete=True) as exec_file:
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/tempfile.py", line 502, in __exit__
+    self.close()
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/tempfile.py", line 509, in close
+    self._closer.close()
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/tempfile.py", line 446, in close
+    unlink(self.name)
+FileNotFoundError: [Errno 2] No such file or directory: '/var/folders/q0/rj0k1xgn28x14thfz4gnbm5c0000gn/T/tmpo3u62_pf'
+
+07:35:22 [INFO] __main__ - Running code: 
+
+# Define a class Node which has two attributes: data and next  
+class Node: 
+    def __init__(self, data): 
+        self.data = data 
+        self.next = None
+  
+# Define a linked list class with one attribute head  
+class LinkedList: 
+    def __init__(self): 
+        self.head = None
+  
+# Define a function to reverse the linked list 
+def reverse(head): 
+    # Base case 
+    if head is None or head.next is None: 
+        return head 
+  
+    # Reverse the rest of the list 
+    rest = reverse(head.next) 
+  
+    # Put head in the front of the reversed list 
+    head.next.next = head 
+    head.next = None
+  
+    # Return the reversed list 
+    return rest 
+  
+# Create a linked list 
+llist = LinkedList() 
+llist.head = Node(1) 
+second = Node(2) 
+third = Node(3) 
+fourth = Node(4) 
+fifth = Node(5) 
+
+# Link the nodes 
+llist.head.next = second 
+second.next = third 
+third.next = fourth 
+fourth.next = fifth 
+  
+# Print the original list 
+print("Original List:") 
+llist.printList() 
+  
+# Reverse the list 
+llist.head = reverse(llist.head) 
+  
+# Print the reversed list 
+print("Reversed List:") 
+llist.printList() in language: Python
+07:35:22 [INFO] __main__ - Running code: 
+
+# Define a class Node which has two attributes: data and next  
+class Node: 
+    def __init__(self, data): 
+        self.data = data 
+        self.next = None
+  
+# Define a linked list class with one attribute head  
+class LinkedList: 
+    def __init__(self): 
+        self.head = None
+  
+# Define a function to reverse the linked list 
+def reverse(head): 
+    # Base case 
+    if head is None or head.next is None: 
+        return head 
+  
+    # Reverse the rest of the list 
+    rest = reverse(head.next) 
+  
+    # Put head in the front of the reversed list 
+    head.next.next = head 
+    head.next = None
+  
+    # Return the reversed list 
+    return rest 
+  
+# Create a linked list 
+llist = LinkedList() 
+llist.head = Node(1) 
+second = Node(2) 
+third = Node(3) 
+fourth = Node(4) 
+fifth = Node(5) 
+
+# Link the nodes 
+llist.head.next = second 
+second.next = third 
+third.next = fourth 
+fourth.next = fifth 
+  
+# Print the original list 
+print("Original List:") 
+llist.printList() 
+  
+# Reverse the list 
+llist.head = reverse(llist.head) 
+  
+# Print the reversed list 
+print("Reversed List:") 
+llist.printList() in language: Python
+07:35:22 [INFO] __main__ - Input file: /var/folders/q0/rj0k1xgn28x14thfz4gnbm5c0000gn/T/tmp7qug784h.py
+07:35:22 [INFO] __main__ - Output execution: Original List:
+Traceback (most recent call last):
+  File "/var/folders/q0/rj0k1xgn28x14thfz4gnbm5c0000gn/T/tmp7qug784h.py", line 46, in <module>
+    llist.printList() 
+    ^^^^^^^^^^^^^^^
+AttributeError: 'LinkedList' object has no attribute 'printList'
+
+07:35:22 [INFO] __main__ - Output execution: Original List:
+Traceback (most recent call last):
+  File "/var/folders/q0/rj0k1xgn28x14thfz4gnbm5c0000gn/T/tmp7qug784h.py", line 46, in <module>
+    llist.printList() 
+    ^^^^^^^^^^^^^^^
+AttributeError: 'LinkedList' object has no attribute 'printList'
+
+07:35:22 [ERROR] __main__ - Error in code execution: Original List:
+Traceback (most recent call last):
+  File "/var/folders/q0/rj0k1xgn28x14thfz4gnbm5c0000gn/T/tmp7qug784h.py", line 46, in <module>
+    llist.printList() 
+    ^^^^^^^^^^^^^^^
+AttributeError: 'LinkedList' object has no attribute 'printList'
+
+07:35:24 [WARNING] __main__ - Trying to run fixed code: 
+07:35:24 [INFO] __main__ - Running code:  in language: Python
+07:35:24 [INFO] __main__ - Input file: /var/folders/q0/rj0k1xgn28x14thfz4gnbm5c0000gn/T/tmpmutke2jd.py
+07:35:24 [INFO] __main__ - Output execution: 
+07:35:24 [WARNING] __main__ - Fixed code output: 
+07:35:24 [INFO] __main__ - Execution Output: 
+07:36:11 [INFO] __main__ - Output execution: 
+07:36:11 [INFO] __main__ - Output execution: 
+07:36:11 [INFO] __main__ - Output execution: 
+07:36:11 [INFO] __main__ - Output execution: 
+07:36:11 [INFO] __main__ - Output execution: 
+07:36:11 [INFO] __main__ - Output execution: 
+07:36:11 [INFO] __main__ - Output execution: 
+07:36:11 [INFO] __main__ - Output execution: 
+07:36:11 [INFO] __main__ - Output execution: 
+07:36:11 [INFO] __main__ - Output execution: 

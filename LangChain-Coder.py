@@ -40,21 +40,24 @@ code_template = PromptTemplate(
 
 code_fix_template = PromptTemplate(
     input_variables=['topic'],
-    template='Fix any error in the following code in' +
-    f'{code_language} language' + ' for {topic}'
+    template='Fix any error in the following code in ' + f'{code_language} language' + ' for {topic}'
 )
 
 # Memory for the conversation
 memory = ConversationBufferMemory(input_key='topic', memory_key='chat_history')
 
 # LLM Chains definition
+# Create an OpenAI LLM model
 open_ai_llm = OpenAI(temperature=0.7, max_tokens=1000)
-code_chain = LLMChain(llm=open_ai_llm, prompt=code_template,
-                      output_key='code', memory=memory, verbose=True)
-code_fix_chain = LLMChain(llm=open_ai_llm, prompt=code_fix_template,
-                          output_key='code_fix', memory=memory, verbose=True)
-sequential_chain = SequentialChain(chains=[code_chain, code_fix_chain], input_variables=[
-                                   'topic'], output_variables=['code', 'code_fix'])
+
+# Create a chain that generates the code
+code_chain = LLMChain(llm=open_ai_llm, prompt=code_template, output_key='code', memory=memory, verbose=True)
+
+# Create a chain that fixes the code
+code_fix_chain = LLMChain(llm=open_ai_llm, prompt=code_fix_template, output_key='code_fix', memory=memory,verbose=True)
+
+# Create a sequential chain that combines the two chains above
+sequential_chain = SequentialChain(chains=[code_chain, code_fix_chain],input_variables=['topic'],output_variables=['code', 'code_fix'])
 
 global generated_code
 
@@ -74,31 +77,45 @@ log_file = __file__.replace(".py", ".log")
 setup_logging(log_file)
 
 
+# Create a class
 class PythonREPL:
+    # Define the initialization method
     def __init__(self):
         pass
 
+    # Define the run method
     def run(self, command: str) -> str:
+        # Store the current value of sys.stdout
         old_stdout = sys.stdout
+        # Create a new StringIO object
         sys.stdout = mystdout = StringIO()
+        # Try to execute the code
         try:
+            # Execute the code
             exec(command, globals())
             sys.stdout = old_stdout
             output = mystdout.getvalue()
+        # If an error occurs, print the error message
         except Exception as e:
+            # Restore the original value of sys.stdout
             sys.stdout = old_stdout
+            # Get the error message
             output = str(e)
         return output
 
 
 def run_query(query, model_kwargs, max_iterations):
+    # Create a LangChainOpenAI object
     llm = LangChainOpenAI(**model_kwargs)
+    # Create the python REPL tool
     python_repl = lc_agents.Tool("Python REPL", PythonREPL().run,
-                                 "A Python shell. Use this to execute python commands.")
+                                "A Python shell. Use this to execute python commands.")
+    # Create a list of tools
     tools = [python_repl]
+    # Initialize the agent
     agent = lc_agents.initialize_agent(tools, llm, agent=lc_agents.AgentType.ZERO_SHOT_REACT_DESCRIPTION,model_kwargs=model_kwargs, verbose=True, max_iterations=max_iterations)
+    # Run the agent
     response = agent.run(query)
-    return response
 
 
 def run_code(code, language):
@@ -160,6 +177,7 @@ if "generated_code" not in st.session_state:
 if "code_language" not in st.session_state:
     st.session_state.code_language = ""
 
+# Generate the code
 if button_generate or button_generate_run and code_prompt:
     logger = logging.getLogger(__name__)
     try:
@@ -173,29 +191,19 @@ if button_generate or button_generate_run and code_prompt:
         st.write(traceback.format_exc())
         logger.error(f"Error in code generation: {traceback.format_exc()}")
 
-
+# Execute the code
 if button_run or button_generate_run and code_prompt:
     logger = logging.getLogger(__name__)
     try:
-        logger.info(
-            f"Running code: {st.session_state.generated_code} in language: {st.session_state.code_language}")
+        logger.info(f"Running code: {st.session_state.generated_code} in language: {st.session_state.code_language}")
         output = run_code(st.session_state.generated_code,st.session_state.code_language)
         logger.info(f"Output execution: {output}")
 
         if "error" in output.lower() or "exception" in output.lower() or "SyntaxError" in output.lower() or "NameError" in output.lower():
-            model_kwargs = {"temperature": 0.7,"model": "text-davinci-003", "api_key": openai.api_key}
-            max_iterations = 10
-            fixed_code = output
-            iteration = 1
-        
-            while iteration < max_iterations:
-                iteration += 1
-                query = f"Fix the error in the following {code_language} code:\n{fixed_code}\nError message:\n{output} and give me the fixed code only."
-                fixed_code = run_query(query, model_kwargs, max_iterations)
                 
-            #logger.error(f"Error in code execution: {output}")
-            #response = sequential_chain({'topic': code_prompt})
-            #fixed_code = response['code_fix']
+            logger.error(f"Error in code execution: {output}")
+            response = sequential_chain({'topic': st.session_state.generated_code})
+            fixed_code = response['code_fix']
             st.code(fixed_code, language=st.session_state.code_language.lower())
 
             with st.expander('Message History'):
