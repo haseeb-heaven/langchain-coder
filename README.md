@@ -70,7 +70,10 @@ To use LangChain Coder, follow these steps:
 5. If you want to save the code to a file, enter a filename and click on the **Save Code** button.
 
 ## Demo Usage.
-![demo](https://github.com/haseeb-heaven/LangChain-CoderAI/blob/master/resources/LangChainCoderDemo.webm?raw=true "")
+<a href="https://drive.google.com/file/d/1nXdmZYL2kZtQLm0k4TIGaUgU8CW_YHZ7/view?usp=sharing" target="_blank">
+  <img src="https://github.com/haseeb-heaven/LangChain-CoderAI/blob/master/resources/generated_code_ui.png" alt="Demo" width="480" height="320" border="10" />
+</a>
+
 
 ## Author
 This app was created by HeavenHM.
