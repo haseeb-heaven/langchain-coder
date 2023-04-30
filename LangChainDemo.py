@@ -3,6 +3,7 @@ import tempfile
 import subprocess
 import traceback
 import sys
+import os
 from io import StringIO
 import streamlit as st
 from langchain.llms import OpenAI
@@ -14,6 +15,11 @@ from langchain.llms import OpenAI
 import logging
 from datetime import datetime
 from langchain.llms import OpenAI as LangChainOpenAI
+import openai
+from dotenv import load_dotenv
+
+load_dotenv()
+openai.api_key = os.getenv("OPENAI_API_KEY")
 
 # App title and description
 st.title("LangChain Coder - 🦜🔗")
@@ -42,7 +48,7 @@ code_fix_template = PromptTemplate(
 memory = ConversationBufferMemory(input_key='topic', memory_key='chat_history')
 
 # LLM Chains definition
-open_ai_llm = OpenAI(temperature=0.7)
+open_ai_llm = OpenAI(temperature=0.7, max_tokens=1000)
 code_chain = LLMChain(llm=open_ai_llm, prompt=code_template,
                       output_key='code', memory=memory, verbose=True)
 code_fix_chain = LLMChain(llm=open_ai_llm, prompt=code_fix_template,
@@ -90,8 +96,7 @@ def run_query(query, model_kwargs, max_iterations):
     python_repl = lc_agents.Tool("Python REPL", PythonREPL().run,
                                  "A Python shell. Use this to execute python commands.")
     tools = [python_repl]
-    agent = lc_agents.initialize_agent(tools, llm, agent="zero-shot-react-description",
-                                       model_kwargs=model_kwargs, verbose=True, max_iterations=max_iterations)
+    agent = lc_agents.initialize_agent(tools, llm, agent=lc_agents.AgentType.ZERO_SHOT_REACT_DESCRIPTION,model_kwargs=model_kwargs, verbose=True, max_iterations=max_iterations)
     response = agent.run(query)
     return response
 
@@ -160,8 +165,7 @@ if button_generate or button_generate_run and code_prompt:
     try:
         st.session_state.generated_code = code_chain.run(code_prompt)
         st.session_state.code_language = code_language
-        st.code(st.session_state.generated_code,
-                language=st.session_state.code_language.lower())
+        st.code(st.session_state.generated_code,language=st.session_state.code_language.lower())
 
         with st.expander('Message History'):
             st.info(memory.buffer)
@@ -175,14 +179,23 @@ if button_run or button_generate_run and code_prompt:
     try:
         logger.info(
             f"Running code: {st.session_state.generated_code} in language: {st.session_state.code_language}")
-        output = run_code(st.session_state.generated_code,
-                          st.session_state.code_language)
+        output = run_code(st.session_state.generated_code,st.session_state.code_language)
         logger.info(f"Output execution: {output}")
 
         if "error" in output.lower() or "exception" in output.lower() or "SyntaxError" in output.lower() or "NameError" in output.lower():
-            logger.error(f"Error in code execution: {output}")
-            response = sequential_chain({'topic': code_prompt})
-            fixed_code = response['code_fix']
+            model_kwargs = {"temperature": 0.7,"model": "text-davinci-003", "api_key": openai.api_key}
+            max_iterations = 10
+            fixed_code = output
+            iteration = 1
+        
+            while iteration < max_iterations:
+                iteration += 1
+                query = f"Fix the error in the following {code_language} code:\n{fixed_code}\nError message:\n{output} and give me the fixed code only."
+                fixed_code = run_query(query, model_kwargs, max_iterations)
+                
+            #logger.error(f"Error in code execution: {output}")
+            #response = sequential_chain({'topic': code_prompt})
+            #fixed_code = response['code_fix']
             st.code(fixed_code, language=st.session_state.code_language.lower())
 
             with st.expander('Message History'):
@@ -190,9 +203,8 @@ if button_run or button_generate_run and code_prompt:
             logger.warning(f"Trying to run fixed code: {fixed_code}")
             output = run_code(fixed_code, st.session_state.code_language)
             logger.warning(f"Fixed code output: {output}")
-
-        st.code(st.session_state.generated_code,
-                language=st.session_state.code_language.lower())
+        if not button_generate_run:
+            st.code(st.session_state.generated_code,language=st.session_state.code_language.lower())
         st.write("Execution Output:")
         st.write(output)
         logger.info(f"Execution Output: {output}")
