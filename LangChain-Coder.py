@@ -1,3 +1,12 @@
+"""
+Description: This is LangChain Coder a Streamlit app that uses LangChain to generate code and fix code using OpenAI's GPT-3.
+This can generate code in Python, C, C++ and Javascript.
+And can run and save the code generated locally.
+This is alternative to the OpenAI Code Interpreter Plugin.
+Today Date : 30-April-2023
+Author: HeavenHM
+"""
+
 # Importing the libraries
 import tempfile
 import subprocess
@@ -23,10 +32,9 @@ load_dotenv()
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
 # App title and description
-st.title("LangChain Coder - 🦜🔗")
+st.title("LangChain Coder - AI 🦜🔗")
 code_prompt = st.text_input("Enter a prompt to generate the code")
-code_language = st.selectbox("Select the language", [
-                             "C", "Cpp", "Python", "Javascript"])
+code_language = st.selectbox("Select the language", ["C", "Cpp", "Python", "Javascript"])
 
 # Generate and Run Buttons
 button_generate = st.button("Generate Code")
@@ -174,16 +182,8 @@ def run_code(code, language):
     else:
         return "Unsupported language."
 
-
-# Session state variables
-if "generated_code" not in st.session_state:
-    st.session_state.generated_code = ""
-
-if "code_language" not in st.session_state:
-    st.session_state.code_language = ""
-
 # Generate the code
-if button_generate and code_prompt:
+def generate_code():
     logger = logging.getLogger(__name__)
     try:
         st.session_state.generated_code = code_chain.run(code_prompt)
@@ -198,7 +198,7 @@ if button_generate and code_prompt:
         logger.error(f"Error in code generation: {traceback.format_exc()}")
 
 # Save the code to a file
-if button_save and st.session_state.generated_code:
+def save_code():
     logger = logging.getLogger(__name__)
     try:
         file_name = code_file
@@ -209,13 +209,13 @@ if button_save and st.session_state.generated_code:
             st.success(f"Code saved to file {file_name}")
             logger.info(f"Code saved to file {file_name}")
         st.code(st.session_state.generated_code,language=st.session_state.code_language.lower())
+        
     except Exception as e:
         st.write(traceback.format_exc())
         logger.error(f"Error in code saving: {traceback.format_exc()}")
-
-
+        
 # Execute the code
-if button_run and code_prompt:
+def execute_code():
     logger = logging.getLogger(__name__)
     try:
         logger.info(f"Running code: {st.session_state.generated_code} in language: {st.session_state.code_language}")
@@ -246,3 +246,26 @@ if button_run and code_prompt:
         # print stack trace
         st.write(traceback.format_exc())
         logger.error(f"Error in code execution: {traceback.format_exc()}")
+
+# Main method
+if __name__ == "__main__":
+    
+    # Session state variables
+    if "generated_code" not in st.session_state:
+        st.session_state.generated_code = ""
+
+    if "code_language" not in st.session_state:
+        st.session_state.code_language = ""
+        
+    # Generate the code
+    if button_generate and code_prompt:
+        generate_code()
+        
+    # Save the code to a file
+    if button_save and st.session_state.generated_code:
+        save_code()
+        
+    # Execute the code
+    if button_run and code_prompt:
+        execute_code()
+
