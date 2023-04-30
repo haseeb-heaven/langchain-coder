@@ -1,0 +1,280 @@
+05:51:04 [INFO] __main__ - Running code: 
+
+import requests 
+import json
+
+url = "https://dummyjson.com/products/search?q=Laptop"
+
+response = requests.get(url)
+data = response.text
+
+parsed = json.loads(data)
+indented = json.dumps(parsed, indent=4)
+
+print(indented) in language: Python
+05:51:04 [INFO] __main__ - Running code: 
+
+import requests 
+import json
+
+url = "https://dummyjson.com/products/search?q=Laptop"
+
+response = requests.get(url)
+data = response.text
+
+parsed = json.loads(data)
+indented = json.dumps(parsed, indent=4)
+
+print(indented) in language: Python
+05:51:04 [INFO] __main__ - Input file: /var/folders/q0/rj0k1xgn28x14thfz4gnbm5c0000gn/T/tmpsmyzh0ok.py
+05:51:08 [INFO] __main__ - Output execution: {
+    "products": [
+        {
+            "id": 7,
+            "title": "Samsung Galaxy Book",
+            "description": "Samsung Galaxy Book S (2020) Laptop With Intel Lakefield Chip, 8GB of RAM Launched",
+            "price": 1499,
+            "discountPercentage": 4.15,
+            "rating": 4.25,
+            "stock": 50,
+            "brand": "Samsung",
+            "category": "laptops",
+            "thumbnail": "https://i.dummyjson.com/data/products/7/thumbnail.jpg",
+            "images": [
+                "https://i.dummyjson.com/data/products/7/1.jpg",
+                "https://i.dummyjson.com/data/products/7/2.jpg",
+                "https://i.dummyjson.com/data/products/7/3.jpg",
+                "https://i.dummyjson.com/data/products/7/thumbnail.jpg"
+            ]
+        },
+        {
+            "id": 8,
+            "title": "Microsoft Surface Laptop 4",
+            "description": "Style and speed. Stand out on HD video calls backed by Studio Mics. Capture ideas on the vibrant touchscreen.",
+            "price": 1499,
+            "discountPercentage": 10.23,
+            "rating": 4.43,
+            "stock": 68,
+            "brand": "Microsoft Surface",
+            "category": "laptops",
+            "thumbnail": "https://i.dummyjson.com/data/products/8/thumbnail.jpg",
+            "images": [
+                "https://i.dummyjson.com/data/products/8/1.jpg",
+                "https://i.dummyjson.com/data/products/8/2.jpg",
+                "https://i.dummyjson.com/data/products/8/3.jpg",
+                "https://i.dummyjson.com/data/products/8/4.jpg",
+                "https://i.dummyjson.com/data/products/8/thumbnail.jpg"
+            ]
+        },
+        {
+            "id": 10,
+            "title": "HP Pavilion 15-DK1056WM",
+            "description": "HP Pavilion 15-DK1056WM Gaming Laptop 10th Gen Core i5, 8GB, 256GB SSD, GTX 1650 4GB, Windows 10",
+            "price": 1099,
+            "discountPercentage": 6.18,
+            "rating": 4.43,
+            "stock": 89,
+            "brand": "HP Pavilion",
+            "category": "laptops",
+            "thumbnail": "https://i.dummyjson.com/data/products/10/thumbnail.jpeg",
+            "images": [
+                "https://i.dummyjson.com/data/products/10/1.jpg",
+                "https://i.dummyjson.com/data/products/10/2.jpg",
+                "https://i.dummyjson.com/data/products/10/3.jpg",
+                "https://i.dummyjson.com/data/products/10/thumbnail.jpeg"
+            ]
+        }
+    ],
+    "total": 3,
+    "skip": 0,
+    "limit": 3
+}
+
+05:51:08 [INFO] __main__ - Output execution: {
+    "products": [
+        {
+            "id": 7,
+            "title": "Samsung Galaxy Book",
+            "description": "Samsung Galaxy Book S (2020) Laptop With Intel Lakefield Chip, 8GB of RAM Launched",
+            "price": 1499,
+            "discountPercentage": 4.15,
+            "rating": 4.25,
+            "stock": 50,
+            "brand": "Samsung",
+            "category": "laptops",
+            "thumbnail": "https://i.dummyjson.com/data/products/7/thumbnail.jpg",
+            "images": [
+                "https://i.dummyjson.com/data/products/7/1.jpg",
+                "https://i.dummyjson.com/data/products/7/2.jpg",
+                "https://i.dummyjson.com/data/products/7/3.jpg",
+                "https://i.dummyjson.com/data/products/7/thumbnail.jpg"
+            ]
+        },
+        {
+            "id": 8,
+            "title": "Microsoft Surface Laptop 4",
+            "description": "Style and speed. Stand out on HD video calls backed by Studio Mics. Capture ideas on the vibrant touchscreen.",
+            "price": 1499,
+            "discountPercentage": 10.23,
+            "rating": 4.43,
+            "stock": 68,
+            "brand": "Microsoft Surface",
+            "category": "laptops",
+            "thumbnail": "https://i.dummyjson.com/data/products/8/thumbnail.jpg",
+            "images": [
+                "https://i.dummyjson.com/data/products/8/1.jpg",
+                "https://i.dummyjson.com/data/products/8/2.jpg",
+                "https://i.dummyjson.com/data/products/8/3.jpg",
+                "https://i.dummyjson.com/data/products/8/4.jpg",
+                "https://i.dummyjson.com/data/products/8/thumbnail.jpg"
+            ]
+        },
+        {
+            "id": 10,
+            "title": "HP Pavilion 15-DK1056WM",
+            "description": "HP Pavilion 15-DK1056WM Gaming Laptop 10th Gen Core i5, 8GB, 256GB SSD, GTX 1650 4GB, Windows 10",
+            "price": 1099,
+            "discountPercentage": 6.18,
+            "rating": 4.43,
+            "stock": 89,
+            "brand": "HP Pavilion",
+            "category": "laptops",
+            "thumbnail": "https://i.dummyjson.com/data/products/10/thumbnail.jpeg",
+            "images": [
+                "https://i.dummyjson.com/data/products/10/1.jpg",
+                "https://i.dummyjson.com/data/products/10/2.jpg",
+                "https://i.dummyjson.com/data/products/10/3.jpg",
+                "https://i.dummyjson.com/data/products/10/thumbnail.jpeg"
+            ]
+        }
+    ],
+    "total": 3,
+    "skip": 0,
+    "limit": 3
+}
+
+05:51:08 [INFO] __main__ - Execution Output: {
+    "products": [
+        {
+            "id": 7,
+            "title": "Samsung Galaxy Book",
+            "description": "Samsung Galaxy Book S (2020) Laptop With Intel Lakefield Chip, 8GB of RAM Launched",
+            "price": 1499,
+            "discountPercentage": 4.15,
+            "rating": 4.25,
+            "stock": 50,
+            "brand": "Samsung",
+            "category": "laptops",
+            "thumbnail": "https://i.dummyjson.com/data/products/7/thumbnail.jpg",
+            "images": [
+                "https://i.dummyjson.com/data/products/7/1.jpg",
+                "https://i.dummyjson.com/data/products/7/2.jpg",
+                "https://i.dummyjson.com/data/products/7/3.jpg",
+                "https://i.dummyjson.com/data/products/7/thumbnail.jpg"
+            ]
+        },
+        {
+            "id": 8,
+            "title": "Microsoft Surface Laptop 4",
+            "description": "Style and speed. Stand out on HD video calls backed by Studio Mics. Capture ideas on the vibrant touchscreen.",
+            "price": 1499,
+            "discountPercentage": 10.23,
+            "rating": 4.43,
+            "stock": 68,
+            "brand": "Microsoft Surface",
+            "category": "laptops",
+            "thumbnail": "https://i.dummyjson.com/data/products/8/thumbnail.jpg",
+            "images": [
+                "https://i.dummyjson.com/data/products/8/1.jpg",
+                "https://i.dummyjson.com/data/products/8/2.jpg",
+                "https://i.dummyjson.com/data/products/8/3.jpg",
+                "https://i.dummyjson.com/data/products/8/4.jpg",
+                "https://i.dummyjson.com/data/products/8/thumbnail.jpg"
+            ]
+        },
+        {
+            "id": 10,
+            "title": "HP Pavilion 15-DK1056WM",
+            "description": "HP Pavilion 15-DK1056WM Gaming Laptop 10th Gen Core i5, 8GB, 256GB SSD, GTX 1650 4GB, Windows 10",
+            "price": 1099,
+            "discountPercentage": 6.18,
+            "rating": 4.43,
+            "stock": 89,
+            "brand": "HP Pavilion",
+            "category": "laptops",
+            "thumbnail": "https://i.dummyjson.com/data/products/10/thumbnail.jpeg",
+            "images": [
+                "https://i.dummyjson.com/data/products/10/1.jpg",
+                "https://i.dummyjson.com/data/products/10/2.jpg",
+                "https://i.dummyjson.com/data/products/10/3.jpg",
+                "https://i.dummyjson.com/data/products/10/thumbnail.jpeg"
+            ]
+        }
+    ],
+    "total": 3,
+    "skip": 0,
+    "limit": 3
+}
+
+05:51:35 [INFO] __main__ - Running code: 
+
+#include <iostream>
+#include <curl/curl.h>
+#include <json/json.h>
+
+int main() {
+	CURL *curl;
+	CURLcode res;
+	std::string readBuffer;
+
+	curl = curl_easy_init();
+	if (curl) {
+		curl_easy_setopt(curl, CURLOPT_URL, "https://dummyjson.com/products/search?q=Laptop");
+		curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 0L);
+		curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, WriteCallback);
+		curl_easy_setopt(curl, CURLOPT_WRITEDATA, &readBuffer);
+		res = curl_easy_perform(curl);
+		curl_easy_cleanup(curl);
+
+		if (res != CURLE_OK) {
+			fprintf(stderr in language: Cpp
+05:51:35 [INFO] __main__ - Running code: 
+
+#include <iostream>
+#include <curl/curl.h>
+#include <json/json.h>
+
+int main() {
+	CURL *curl;
+	CURLcode res;
+	std::string readBuffer;
+
+	curl = curl_easy_init();
+	if (curl) {
+		curl_easy_setopt(curl, CURLOPT_URL, "https://dummyjson.com/products/search?q=Laptop");
+		curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 0L);
+		curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, WriteCallback);
+		curl_easy_setopt(curl, CURLOPT_WRITEDATA, &readBuffer);
+		res = curl_easy_perform(curl);
+		curl_easy_cleanup(curl);
+
+		if (res != CURLE_OK) {
+			fprintf(stderr in language: Cpp
+05:51:35 [INFO] __main__ - Input file: /var/folders/q0/rj0k1xgn28x14thfz4gnbm5c0000gn/T/tmplhh2quah.cpp
+05:51:35 [INFO] __main__ - Output execution: /var/folders/q0/rj0k1xgn28x14thfz4gnbm5c0000gn/T/tmplhh2quah.cpp:5:10: fatal error: 'json/json.h' file not found
+#include <json/json.h>
+         ^~~~~~~~~~~~~
+1 error generated.
+
+05:51:35 [WARNING] langchain.llms.openai - WARNING! model is not default parameter.
+                    model was transfered to model_kwargs.
+                    Please confirm that model is what you intended.
+05:51:35 [WARNING] langchain.llms.openai - WARNING! api_key is not default parameter.
+                    api_key was transfered to model_kwargs.
+                    Please confirm that api_key is what you intended.
+05:53:14 [WARNING] langchain.llms.openai - WARNING! model is not default parameter.
+                    model was transfered to model_kwargs.
+                    Please confirm that model is what you intended.
+05:53:14 [WARNING] langchain.llms.openai - WARNING! api_key is not default parameter.
+                    api_key was transfered to model_kwargs.
+                    Please confirm that api_key is what you intended.
