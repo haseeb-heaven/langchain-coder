@@ -59,7 +59,7 @@ button_generate = st.button("Generate Code")
 code_file = st.text_input("Enter file name:")
 button_save = st.button("Save Code")
 
-code_state = st.radio("Compiler Mode", ("Online", "Offline"))
+compiler_mode = st.radio("Compiler Mode", ("Online", "Offline"))
 button_run = st.button("Run Code")
 
 # Prompt Templates
@@ -84,16 +84,19 @@ memory = ConversationBufferMemory(
 open_ai_llm = OpenAI(temperature=0.7, max_tokens=1000)
 
 # Create a chain that generates the code
-code_chain = LLMChain(llm=open_ai_llm, prompt=code_template,output_key='code', memory=memory, verbose=True)
+code_chain = LLMChain(llm=open_ai_llm, prompt=code_template,
+                      output_key='code', memory=memory, verbose=True)
 
 # Create a chain that fixes the code
-code_fix_chain = LLMChain(llm=open_ai_llm, prompt=code_fix_template,output_key='code_fix', memory=memory, verbose=True)
+code_fix_chain = LLMChain(llm=open_ai_llm, prompt=code_fix_template,
+                          output_key='code_fix', memory=memory, verbose=True)
 
 # Create a sequential chain that combines the two chains above
-sequential_chain = SequentialChain(chains=[code_chain, code_fix_chain], input_variables=['code_topic'], output_variables=['code', 'code_fix'])
+sequential_chain = SequentialChain(chains=[code_chain, code_fix_chain], input_variables=[
+                                   'code_topic'], output_variables=['code', 'code_fix'])
 
 
-# create method called generate_dynamic_html and pass in the language and code_prompt
+# Generate Dynamic HTML for JDoodle Compiler iFrame Embedding.
 def generate_dynamic_html(language, code_prompt):
     logger = logging.getLogger(__name__)
     logger.info("Generating dynamic HTML for language: %s", language)
@@ -114,6 +117,8 @@ def generate_dynamic_html(language, code_prompt):
     </html>
     """.format(language=LANGUAGE_CODES[language], script_code=code_prompt)
     return html_template
+
+# Setup logging method.
 
 
 def setup_logging(log_file):
@@ -158,20 +163,26 @@ class PythonREPL:
         return output
 
 # Define the Run query function
+
+
 def run_query(query, model_kwargs, max_iterations):
     # Create a LangChainOpenAI object
     llm = LangChainOpenAI(**model_kwargs)
     # Create the python REPL tool
-    python_repl = lc_agents.Tool("Python REPL", PythonREPL().run,"A Python shell. Use this to execute python commands.")
+    python_repl = lc_agents.Tool("Python REPL", PythonREPL(
+    ).run, "A Python shell. Use this to execute python commands.")
     # Create a list of tools
     tools = [python_repl]
     # Initialize the agent
-    agent = lc_agents.initialize_agent(tools, llm, agent=lc_agents.AgentType.ZERO_SHOT_REACT_DESCRIPTION,model_kwargs=model_kwargs, verbose=True, max_iterations=max_iterations)
+    agent = lc_agents.initialize_agent(tools, llm, agent=lc_agents.AgentType.ZERO_SHOT_REACT_DESCRIPTION,
+                                       model_kwargs=model_kwargs, verbose=True, max_iterations=max_iterations)
     # Run the agent
     response = agent.run(query)
     return response
 
 # Define the Run code function
+
+
 def run_code(code, language):
     logger = logging.getLogger(__name__)
     logger.info(f"Running code: {code} in language: {language}")
@@ -213,7 +224,7 @@ def run_code(code, language):
             f.write(code)
             f.flush()
 
-            print(f"Input file: {f.name}")
+            logger.info(f"Input file: {f.name}")
             output = subprocess.run(
                 ["node", f.name], capture_output=True, text=True)
             logger.info(f"Runner Output execution: {output.stdout + output.stderr}")
@@ -223,6 +234,8 @@ def run_code(code, language):
         return "Unsupported language."
 
 # Generate the code
+
+
 def generate_code():
     logger = logging.getLogger(__name__)
     try:
@@ -238,6 +251,8 @@ def generate_code():
         logger.error(f"Error in code generation: {traceback.format_exc()}")
 
 # Save the code to a file
+
+
 def save_code():
     logger = logging.getLogger(__name__)
     try:
@@ -248,24 +263,29 @@ def save_code():
                 f.write(st.session_state.generated_code)
             st.success(f"Code saved to file {file_name}")
             logger.info(f"Code saved to file {file_name}")
-        st.code(st.session_state.generated_code,language=st.session_state.code_language.lower())
-        
+        st.code(st.session_state.generated_code,
+                language=st.session_state.code_language.lower())
+
     except Exception as e:
         st.write(traceback.format_exc())
         logger.error(f"Error in code saving: {traceback.format_exc()}")
-        
+
 # Execute the code
-def execute_code(compiler_mode:str):
+
+
+def execute_code(compiler_mode: str):
     logger = logging.getLogger(__name__)
     logger.info(f"Executing code: {st.session_state.generated_code} in language: {st.session_state.code_language} with Compiler Mode: {compiler_mode}")
-    
+
     try:
         if compiler_mode == "online":
-            html_template = generate_dynamic_html(st.session_state.code_language, st.session_state.generated_code)
+            html_template = generate_dynamic_html(
+                st.session_state.code_language, st.session_state.generated_code)
             html(html_template, width=720, height=800, scrolling=True)
-        
+
         else:
-            output = run_code(st.session_state.generated_code,st.session_state.code_language)
+            output = run_code(st.session_state.generated_code,
+                              st.session_state.code_language)
             logger.info(f"Output execution: {output}")
 
             if "error" in output.lower() or "exception" in output.lower() or "SyntaxError" in output.lower() or "NameError" in output.lower():
@@ -282,37 +302,38 @@ def execute_code(compiler_mode:str):
                 output = run_code(fixed_code, st.session_state.code_language)
                 logger.warning(f"Fixed code output: {output}")
 
-            st.code(st.session_state.generated_code,language=st.session_state.code_language.lower())
+            st.code(st.session_state.generated_code,
+                    language=st.session_state.code_language.lower())
             st.write("Execution Output:")
             st.write(output)
             logger.info(f"Execution Output: {output}")
 
     except Exception as e:
         st.write("Error in code execution:")
-        # print stack trace
+        # Output the stack trace
         st.write(traceback.format_exc())
         logger.error(f"Error in code execution: {traceback.format_exc()}")
 
+
 # Main method
 if __name__ == "__main__":
-    
+
     # Session state variables
     if "generated_code" not in st.session_state:
         st.session_state.generated_code = ""
 
     if "code_language" not in st.session_state:
         st.session_state.code_language = ""
-        
+
     # Generate the code
     if button_generate and code_prompt:
         generate_code()
-        
+
     # Save the code to a file
     if button_save and st.session_state.generated_code:
         save_code()
-        
+
     # Execute the code
     if button_run and code_prompt:
-        code_state_option = "online" if code_state == "Online" else "offline"
+        code_state_option = "online" if compiler_mode == "Online" else "offline"
         execute_code(code_state_option)
-
