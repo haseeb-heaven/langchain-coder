@@ -1,7 +1,7 @@
 ![cover_logo](https://github.com/haseeb-heaven/LangChain-CoderAI/blob/master/resources/app_logo.png?raw=true "")
 # LangChain Coder
 
-This is **LangChain Coder**, a Streamlit app that utilizes LangChain and OpenAI's GPT-3 to generate code. It supports four different programming languages: Python, C, C++, and Javascript. </br>
+This is **LangChain Coder**, a Streamlit app that utilizes LangChain and OpenAI's GPT-3 to generate code. It supports 12 different programming languages: _Python, C, C++,C#,Go, Javascript and more_. </br>
 With this app, you can **Generate code** and **Run it locally**, providing an alternative to the OpenAI **Code Interpreter Plugin**.
 And this can also **Save Code** localy to a file for later use.
 
@@ -59,6 +59,9 @@ For Windows, use the following command instead:
 
 - **Multiple Programming Languages**: LangChain Coder supports four different programming languages: _Python, C, C++, and Javascript_.
 
+- **Offline and Online Compiler** : LangChain Coder supports both offline and online compiler for all the languages.
+for Online compiler it uses [**_JDoodle Web Widget_**](https://www.jdoodle.com/compiler-ide-plugin) which provides a web widget that can be embedded in a web page or used in an _iframe_. It allows users to compile and run code online in more than **70 programming languages**.
+
 ## Usage
 
 To use LangChain Coder, follow these steps:
@@ -70,7 +73,10 @@ To use LangChain Coder, follow these steps:
 5. If you want to save the code to a file, enter a filename and click on the **Save Code** button.
 
 ## Demo Usage.
-![demo](https://github.com/haseeb-heaven/LangChain-CoderAI/blob/master/resources/LangChainCoderDemo.webm?raw=true "")
+<a href="https://drive.google.com/file/d/1nXdmZYL2kZtQLm0k4TIGaUgU8CW_YHZ7/view?usp=sharing" target="_blank">
+  <img src="https://github.com/haseeb-heaven/LangChain-CoderAI/blob/master/resources/generated_code_ui.png" alt="Demo" width="480" height="320" border="10" />
+</a>
+
 
 ## Author
 This app was created by HeavenHM.

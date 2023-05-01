@@ -15,6 +15,7 @@ import sys
 import os
 from io import StringIO
 import streamlit as st
+from streamlit.components.v1 import html
 from langchain.llms import OpenAI
 from langchain.prompts import PromptTemplate
 from langchain.chains import LLMChain, SequentialChain, SimpleSequentialChain
@@ -31,16 +32,35 @@ from dotenv import load_dotenv
 load_dotenv()
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
+global generated_code
+
+LANGUAGE_CODES = {
+    'C': 'c',
+    'C++': 'cpp',
+    'Java': 'java',
+    'Ruby': 'ruby',
+    'Scala': 'scala',
+    'C#': 'csharp',
+    'Objective C': 'objc',
+    'Swift': 'swift',
+    'JavaScript': 'nodejs',
+    'Kotlin': 'kotlin',
+    'Python': 'python3',
+    'GO Lang': 'go',
+}
+
 # App title and description
 st.title("LangChain Coder - AI 🦜🔗")
 code_prompt = st.text_input("Enter a prompt to generate the code")
-code_language = st.selectbox("Select the language", ["C", "Cpp", "Python", "Javascript"])
+code_language = st.selectbox("Select a language", list(LANGUAGE_CODES.keys()))
 
 # Generate and Run Buttons
 button_generate = st.button("Generate Code")
-button_run = st.button("Run Code")
 code_file = st.text_input("Enter file name:")
 button_save = st.button("Save Code")
+
+code_state = st.radio("Compiler Mode", ("Online", "Offline"))
+button_run = st.button("Run Code")
 
 # Prompt Templates
 code_template = PromptTemplate(
@@ -72,7 +92,28 @@ code_fix_chain = LLMChain(llm=open_ai_llm, prompt=code_fix_template,output_key='
 # Create a sequential chain that combines the two chains above
 sequential_chain = SequentialChain(chains=[code_chain, code_fix_chain], input_variables=['code_topic'], output_variables=['code', 'code_fix'])
 
-global generated_code
+
+# create method called generate_dynamic_html and pass in the language and code_prompt
+def generate_dynamic_html(language, code_prompt):
+    logger = logging.getLogger(__name__)
+    logger.info("Generating dynamic HTML for language: %s", language)
+    html_template = """
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Python App with JavaScript</title>
+    </head>
+    <body>
+        <div data-pym-src='https://www.jdoodle.com/plugin' data-language="{language}"
+            data-version-index="0" data-libs="">
+            {script_code}
+        </div>
+        <script src="https://www.jdoodle.com/assets/jdoodle-pym.min.js" type="text/javascript"></script>
+    </body>
+    </html>
+    """.format(language=LANGUAGE_CODES[language], script_code=code_prompt)
+    return html_template
 
 
 def setup_logging(log_file):
@@ -143,10 +184,10 @@ def run_code(code, language):
             logger.info(f"Input file: {f.name}")
             output = subprocess.run(
                 ["python", f.name], capture_output=True, text=True)
-            logger.info(f"Output execution: {output.stdout + output.stderr}")
+            logger.info(f"Runner Output execution: {output.stdout + output.stderr}")
             return output.stdout + output.stderr
 
-    elif language == "C" or language == "Cpp":
+    elif language == "C" or language == "C++":
         ext = ".c" if language == "C" else ".cpp"
         with tempfile.NamedTemporaryFile(mode="w", suffix=ext, delete=True) as src_file:
             src_file.write(code)
@@ -164,11 +205,10 @@ def run_code(code, language):
                 logger.info(f"Output file: {exec_file.name}")
                 run_output = subprocess.run(
                     [exec_file.name], capture_output=True, text=True)
-                logger.info(
-                    f"Output execution: {run_output.stdout + run_output.stderr}")
+                logger.info(f"Runner Output execution: {run_output.stdout + run_output.stderr}")
                 return run_output.stdout + run_output.stderr
 
-    elif language == "Javascript":
+    elif language == "JavaScript":
         with tempfile.NamedTemporaryFile(mode="w", suffix=".js", delete=True) as f:
             f.write(code)
             f.flush()
@@ -176,7 +216,7 @@ def run_code(code, language):
             print(f"Input file: {f.name}")
             output = subprocess.run(
                 ["node", f.name], capture_output=True, text=True)
-            print(f"Output execution: {output.stdout + output.stderr}")
+            logger.info(f"Runner Output execution: {output.stdout + output.stderr}")
             return output.stdout + output.stderr
 
     else:
@@ -215,31 +255,37 @@ def save_code():
         logger.error(f"Error in code saving: {traceback.format_exc()}")
         
 # Execute the code
-def execute_code():
+def execute_code(compiler_mode:str):
     logger = logging.getLogger(__name__)
+    logger.info(f"Executing code: {st.session_state.generated_code} in language: {st.session_state.code_language} with Compiler Mode: {compiler_mode}")
+    
     try:
-        logger.info(f"Running code: {st.session_state.generated_code} in language: {st.session_state.code_language}")
-        output = run_code(st.session_state.generated_code,st.session_state.code_language)
-        logger.info(f"Output execution: {output}")
+        if compiler_mode == "online":
+            html_template = generate_dynamic_html(st.session_state.code_language, st.session_state.generated_code)
+            html(html_template, width=720, height=800, scrolling=True)
+        
+        else:
+            output = run_code(st.session_state.generated_code,st.session_state.code_language)
+            logger.info(f"Output execution: {output}")
 
-        if "error" in output.lower() or "exception" in output.lower() or "SyntaxError" in output.lower() or "NameError" in output.lower():
+            if "error" in output.lower() or "exception" in output.lower() or "SyntaxError" in output.lower() or "NameError" in output.lower():
 
-            logger.error(f"Error in code execution: {output}")
-            response = sequential_chain(
-                {'code_topic': st.session_state.generated_code})
-            fixed_code = response['code_fix']
-            st.code(fixed_code, language=st.session_state.code_language.lower())
+                logger.error(f"Error in code execution: {output}")
+                response = sequential_chain(
+                    {'code_topic': st.session_state.generated_code})
+                fixed_code = response['code_fix']
+                st.code(fixed_code, language=st.session_state.code_language.lower())
 
-            with st.expander('Message History'):
-                st.info(memory.buffer)
-            logger.warning(f"Trying to run fixed code: {fixed_code}")
-            output = run_code(fixed_code, st.session_state.code_language)
-            logger.warning(f"Fixed code output: {output}")
+                with st.expander('Message History'):
+                    st.info(memory.buffer)
+                logger.warning(f"Trying to run fixed code: {fixed_code}")
+                output = run_code(fixed_code, st.session_state.code_language)
+                logger.warning(f"Fixed code output: {output}")
 
-        st.code(st.session_state.generated_code,language=st.session_state.code_language.lower())
-        st.write("Execution Output:")
-        st.write(output)
-        logger.info(f"Execution Output: {output}")
+            st.code(st.session_state.generated_code,language=st.session_state.code_language.lower())
+            st.write("Execution Output:")
+            st.write(output)
+            logger.info(f"Execution Output: {output}")
 
     except Exception as e:
         st.write("Error in code execution:")
@@ -267,5 +313,6 @@ if __name__ == "__main__":
         
     # Execute the code
     if button_run and code_prompt:
-        execute_code()
+        code_state_option = "online" if code_state == "Online" else "offline"
+        execute_code(code_state_option)
 
