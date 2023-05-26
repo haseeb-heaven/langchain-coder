@@ -1,9 +1,10 @@
 ![cover_logo](https://github.com/haseeb-heaven/LangChain-CoderAI/blob/master/resources/app_logo.png?raw=true "")
-# LangChain Coder
 
 This is **LangChain Coder**, a Streamlit app that utilizes LangChain and OpenAI's GPT-3 to generate code. It supports 12 different programming languages: _Python, C, C++,C#,Go, Javascript and more_. </br>
 With this app, you can **Generate code** and **Run it locally**, providing an alternative to the OpenAI **Code Interpreter Plugin**.
 And this can also **Save Code** localy to a file for later use.
+- **Support this Project** <a href="https://www.buymeacoffee.com/haseebheaven"><img src="https://img.buymeacoffee.com/button-api/?text=Buy me a coffee&emoji=&slug=haseebheaven&button_colour=40DCA5&font_colour=ffffff&font_family=Cookie&outline_colour=000000&coffee_colour=FFDD00" /></a>
+# LangChain Coder
 
 ## WebUI - Application showcase.
 This is the main screen of the application. It has a text input for the prompt, a dropdown menu for selecting the programming language, and three buttons: **Generate Code**, **Run Code**, and **Save Code**.</br>
