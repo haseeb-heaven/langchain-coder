@@ -18,21 +18,21 @@ import streamlit as st
 from streamlit.components.v1 import html
 from langchain.llms import OpenAI
 from langchain.prompts import PromptTemplate
-from langchain.chains import LLMChain, SequentialChain, SimpleSequentialChain
+from langchain.chains import LLMChain, SequentialChain
 from langchain.memory import ConversationBufferMemory
 import langchain.agents as lc_agents
 from langchain.llms import OpenAI
 import logging
-from datetime import datetime
 from langchain.llms import OpenAI as LangChainOpenAI
 import openai
 from dotenv import load_dotenv
 
 # Load the environment variables
-load_dotenv()
-openai.api_key = os.getenv("OPENAI_API_KEY")
+#load_dotenv()
+#openai.api_key = os.getenv("OPENAI_API_KEY")
 
 global generated_code
+global code_chain,sequential_chain
 
 LANGUAGE_CODES = {
     'C': 'c',
@@ -81,19 +81,21 @@ memory = ConversationBufferMemory(
 
 # LLM Chains definition
 # Create an OpenAI LLM model
-open_ai_llm = OpenAI(temperature=0.7, max_tokens=1000)
+def setup_llm_chain():
+    global code_chain,sequential_chain
+    open_ai_llm = OpenAI(temperature=0.7, max_tokens=1000)
 
-# Create a chain that generates the code
-code_chain = LLMChain(llm=open_ai_llm, prompt=code_template,
-                      output_key='code', memory=memory, verbose=True)
+    # Create a chain that generates the code
+    code_chain = LLMChain(llm=open_ai_llm, prompt=code_template,
+                        output_key='code', memory=memory, verbose=True)
 
-# Create a chain that fixes the code
-code_fix_chain = LLMChain(llm=open_ai_llm, prompt=code_fix_template,
-                          output_key='code_fix', memory=memory, verbose=True)
+    # Create a chain that fixes the code
+    code_fix_chain = LLMChain(llm=open_ai_llm, prompt=code_fix_template,
+                            output_key='code_fix', memory=memory, verbose=True)
 
-# Create a sequential chain that combines the two chains above
-sequential_chain = SequentialChain(chains=[code_chain, code_fix_chain], input_variables=[
-                                   'code_topic'], output_variables=['code', 'code_fix'])
+    # Create a sequential chain that combines the two chains above
+    sequential_chain = SequentialChain(chains=[code_chain, code_fix_chain], input_variables=[
+                                    'code_topic'], output_variables=['code', 'code_fix'])
 
 
 # Generate Dynamic HTML for JDoodle Compiler iFrame Embedding.
@@ -291,8 +293,7 @@ def execute_code(compiler_mode: str):
             if "error" in output.lower() or "exception" in output.lower() or "SyntaxError" in output.lower() or "NameError" in output.lower():
 
                 logger.error(f"Error in code execution: {output}")
-                response = sequential_chain(
-                    {'code_topic': st.session_state.generated_code})
+                response = sequential_chain({'code_topic': st.session_state.generated_code})
                 fixed_code = response['code_fix']
                 st.code(fixed_code, language=st.session_state.code_language.lower())
 
@@ -317,6 +318,15 @@ def execute_code(compiler_mode: str):
 
 # Main method
 if __name__ == "__main__":
+
+    # Create Set API Key in settings.
+    if st.expander("Settings"):
+        api_key = st.text_input("OpenAI API Key", type="password")
+        if api_key:
+            openai.api_key = api_key
+            os.environ["OPENAI_API_KEY"] = api_key
+            st.success("API Key set successfully.")
+            setup_llm_chain()
 
     # Session state variables
     if "generated_code" not in st.session_state:
