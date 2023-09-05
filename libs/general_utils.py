@@ -7,17 +7,17 @@ import traceback
 import dotenv
 import streamlit as st
 from libs.lang_codes import LangCodes
-from streamlit.components.v1 import html
 
 class GeneralUtils:
     
     def execute_code(self,compiler_mode: str):
-        logger.info(f"Executing code: {st.session_state.generated_code} in language: {st.session_state.code_language} with Compiler Mode: {compiler_mode}")
+        logger.info(f"Executing code: {st.session_state.generated_code[:100]} in language: {st.session_state.code_language} with Compiler Mode: {compiler_mode}")
 
         try:
-            if compiler_mode == "online":
+            if compiler_mode.lower() == "online":
                 html_template = self.generate_dynamic_html(st.session_state.code_language, st.session_state.generated_code)
-                html(html_template, width=720, height=800, scrolling=True)
+                st.components.v1.html(html_template, width=720, height=800, scrolling=True)
+                logger.info(f"HTML Template: {html_template}")
 
             else:
                 output = self.run_code(st.session_state.generated_code,st.session_state.code_language)
@@ -36,7 +36,7 @@ class GeneralUtils:
                     output = GeneralUtils.run_code(fixed_code, st.session_state.code_language)
                     logger.warning(f"Fixed code output: {output}")
 
-                st.code(st.session_state.generated_code,language=st.session_state.code_language.lower())
+                #st.code(st.session_state.generated_code,language=st.session_state.code_language.lower())
                 st.write("Execution Output:")
                 st.write(output)
                 logger.info(f"Execution Output: {output}")
@@ -65,7 +65,7 @@ class GeneralUtils:
             <script src="https://www.jdoodle.com/assets/jdoodle-pym.min.js" type="text/javascript"></script>
         </body>
         </html>
-        """.format(language=LangCodes[language], script_code=code_prompt)
+        """.format(language=LangCodes()[language], script_code=code_prompt)
         return html_template
     
     def run_code(self,code, language):
@@ -125,7 +125,7 @@ class GeneralUtils:
                     file.write(st.session_state.generated_code)
                 st.success(f"Code saved to file {file_name}")
                 logger.info(f"Code saved to file {file_name}")
-            st.code(st.session_state.generated_code,language=st.session_state.code_language.lower())
+            #st.code(st.session_state.generated_code,language=st.session_state.code_language.lower())
 
         except Exception as e:
             st.write(traceback.format_exc())

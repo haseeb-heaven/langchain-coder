@@ -23,13 +23,16 @@ class CodeyLib:
                 location=self.location,
             )
             logger.info("Model loaded successfully.")
+            st.toast("Model loaded successfully.")
         except Exception as exception:
             logger.error(f"Error loading model: {str(exception)}")
 
     def generate_code(self, question, code_language):
         try:
             template = """
-            Task: Design a program {question} in {code_language} with following requirements:
+            Task: Design a program {question} in {code_language} with following requirements and
+            make sure the program doesnt ask for any input from the user and the output is printed on the screen.
+            
 
             Requirements:
             - Ensure the method is modular in its approach.
@@ -46,12 +49,17 @@ class CodeyLib:
             
             # Pass the required inputs as a dictionary to the chain
             response = llm_chain.run({'question': question, 'code_language': code_language})
-            logger.info(f"Code generated successfully: {response}")
-            # Extract text inside code block
-            generated_code = re.search('```(.*)```', response, re.DOTALL).group(1)
-            # Skip the language name in the first line.
-            response = generated_code.split("\n", 1)[1]
-            logger.info(f"Code generated successfully: {response}")
+            if response or len(response) > 0:
+                logger.info(f"Code generated successfully: {response}")
+                # Extract text inside code block
+                generated_code = re.search('```(.*)```', response, re.DOTALL).group(1)
+                if generated_code:
+                    # Skip the language name in the first line.
+                    response = generated_code.split("\n", 1)[1]
+                    logger.info(f"Code generated successfully: {response}")
+                else:
+                    logger.error(f"Error generating code: {response}")
+                    st.error(f"Error generating code: {response}")
             return response
         except Exception as exception:
             logger.error(f"Error generating code: {str(exception)}")

@@ -25,11 +25,18 @@ class LangChainCoder:
     code_chain = None
     code_language = 'Python'
     
-    def __init__(self,code_language):
+    def __init__(self,code_language,api_key):
         # Load the environment variables
         load_dotenv()
-        openai.api_key = os.getenv("OPENAI_API_KEY")
+        openai.api_key = os.getenv("OPENAI_API_KEY") or api_key
         memory = ConversationBufferMemory(input_key='code_topic', memory_key='chat_history')
+        
+        # give info of selected source for API key
+        if os.getenv("OPENAI_API_KEY"):
+            st.toast("Using API key from .env file")
+        else:
+            st.toast("Using API key from input")
+        
         self.code_language = code_language
         # Prompt Templates
         code_template = PromptTemplate(input_variables=['code_topic'],template='Write me code in ' +f'{code_language} language' + ' for {code_topic}')
