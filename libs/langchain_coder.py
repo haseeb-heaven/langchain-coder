@@ -63,19 +63,24 @@ class LangChainCoder:
 
     def generate_code(self,code_prompt,code_language):
         try:
-            st.session_state.generated_code = self.code_chain .run(code_prompt)
-            st.session_state.code_language = code_language
-            st.code(st.session_state.generated_code,language=st.session_state.code_language.lower())
+            if code_prompt and len(code_prompt) > 0 and code_language and len(code_language) > 0:
+                logging.info(f"Generating code for prompt: {code_prompt} in language: {code_language}")
+                st.session_state.generated_code = self.code_chain .run(code_prompt)
+                st.session_state.code_language = code_language
+                st.code(st.session_state.generated_code,language=st.session_state.code_language.lower())
 
-            # Memory for the conversation
-            memory = ConversationBufferMemory(input_key='code_topic', memory_key='chat_history')
+                # Memory for the conversation
+                memory = ConversationBufferMemory(input_key='code_topic', memory_key='chat_history')
 
-            # save the memory in the session state
-            if "memory" in st.session_state:
-                st.session_state.memory = memory
-            
-            with st.expander('Message History'):
-                st.info(memory.buffer)
+                # save the memory in the session state
+                if "memory" in st.session_state:
+                    st.session_state.memory = memory
+                
+                with st.expander('Message History'):
+                    st.info(memory.buffer)
+            else:
+                st.error("Error in code generation: Please enter a valid prompt and language.")
+                logging.error("Error in code generation: Please enter a valid prompt and language.")
         except Exception as e:
             st.write(traceback.format_exc())
             logging.error(f"Error in code generation: {traceback.format_exc()}")

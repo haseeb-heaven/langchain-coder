@@ -4,9 +4,13 @@ import tempfile
 from libs.logger import logger
 import subprocess
 import traceback
-import dotenv
 import streamlit as st
 from libs.lang_codes import LangCodes
+
+# Import the service_account module
+from google.oauth2 import service_account
+from google.auth import impersonated_credentials, exceptions
+from google.auth.transport import requests
 
 class GeneralUtils:
     
@@ -36,9 +40,8 @@ class GeneralUtils:
                     output = GeneralUtils.run_code(fixed_code, st.session_state.code_language)
                     logger.warning(f"Fixed code output: {output}")
 
-                #st.code(st.session_state.generated_code,language=st.session_state.code_language.lower())
                 st.write("Execution Output:")
-                st.write(output)
+                st.code(output)
                 logger.info(f"Execution Output: {output}")
 
         except Exception as e:
@@ -117,39 +120,71 @@ class GeneralUtils:
         else:
             return "Unsupported language."
 
-    def save_code(self,file_name):
+    def save_code(self, file_name):
         try:
-            logger.info(f"Saving code to file: {file_name}")
-            if file_name:
-                with open(file_name, "w") as file:
-                    file.write(st.session_state.generated_code)
-                st.success(f"Code saved to file {file_name}")
-                logger.info(f"Code saved to file {file_name}")
-            #st.code(st.session_state.generated_code,language=st.session_state.code_language.lower())
-
+            # Check for empty file name
+            if not file_name or len(file_name) == 0:
+                st.error("Please enter a valid file name.")
+                logger.error("Error in code saving: Please enter a valid file name.")
+                return
+            
+            file_extension = file_name.split(".")[-1]
+            logger.info(f"Saving code to file: {file_name} with extension: {file_extension}")
+            
+            # Create directory if it doesn't exist
+            if not os.path.exists(file_extension):
+                os.makedirs(file_extension)
+                logger.info(f"Directory {file_extension} created successfully")
+            
+            # Check for empty code
+            if not st.session_state.generated_code or len(st.session_state.generated_code.strip()) == 0:
+                st.error("Generated code is empty. Cannot save an empty file.")
+                logger.error("Error in code saving: Generated code is empty.")
+                return
+            
+            with open(f"{file_extension}/{file_name}", "w") as file:
+                file.write(st.session_state.generated_code)
+            
+            st.success(f"Code saved to file {file_name}")
+            logger.info(f"Code saved to file {file_name}")
+            
         except Exception as e:
             st.write(traceback.format_exc())
             logger.error(f"Error in code saving: {traceback.format_exc()}")
 
 
+
     # # Initialize Vertex AI
-    def load_enviroment_variables(self,credentials_file_path, project, region):
+    def load_enviroment_variables(self, credentials_file_path, project, region):
         """
         Consider running `gcloud config set project` or setting the GOOGLE_CLOUD_PROJECT environment variable
         """
+        """Load environment variables"""
         if credentials_file_path:
             logger.info(f"Loading credentials from {credentials_file_path}")
-            os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = credentials_file_path
+            try:
+                credentials = service_account.Credentials.from_service_account_file(credentials_file_path)
+                session = requests.AuthorizedSession(credentials)
+                os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = session.credentials.refresh(requests.Request()).token
+            except exceptions.GoogleAuthError as e:
+                logger.error(f"Failed to load the service account key: {e}")
+                st.error(f"Failed to load the service account key: {e}")
+                return False
+        else:
+            os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = os.getenv("GOOGLE_APPLICATION_CREDENTIALS")
+            logger.info("Loading credentials from .env file")
+            
+        
         if project:
             logger.info(f"Setting project to {project}")
             os.environ["GOOGLE_CLOUD_PROJECT"] = project
+        else:
+            os.environ["GOOGLE_CLOUD_PROJECT"] = os.getenv("GOOGLE_CLOUD_PROJECT")
+            logger.info("Loading project from .env file")
+        
         if region:
             logger.info(f"Setting region to {region}")
             os.environ["GOOGLE_CLOUD_REGION"] = region
-        
-        if not credentials_file_path and not project and not region:
-            logger.info("Loading credentials from .env file")
-            dotenv.load_dotenv()
-            os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = os.getenv("GOOGLE_APPLICATION_CREDENTIALS")
-            os.environ["GOOGLE_CLOUD_PROJECT"] = os.getenv("GOOGLE_CLOUD_PROJECT")
+        else:
             os.environ["GOOGLE_CLOUD_REGION"] = os.getenv("GOOGLE_CLOUD_REGION")
+            logger.info("Loading region from .env file")

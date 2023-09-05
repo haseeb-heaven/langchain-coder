@@ -2,3 +2,4 @@ streamlit
 langchain
 openai
 dotenv
+streamlit_ace

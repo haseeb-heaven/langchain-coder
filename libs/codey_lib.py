@@ -1,31 +1,47 @@
+import os
 import re
+import traceback
 from langchain import LLMChain, PromptTemplate
 from langchain.llms import VertexAI
 from libs.logger import logger
 import streamlit as st
 
+
 class CodeyLib:
-    def __init__(self, project, location, model_name, max_output_tokens, temperature):
+    def __init__(self, project, location, model_name, max_output_tokens, temperature, credentials_file_path):
         self.project = project
         self.location = location
         self.model_name = model_name
         self.max_output_tokens = max_output_tokens
         self.temperature = temperature
+        self.credentials_file_path = credentials_file_path
         self.llm = None
 
     def load_model(self):
         try:
+            logger.info(f"Loading model... with project: {self.project} and location: {self.location}")
+            
+            # Set the GOOGLE_APPLICATION_CREDENTIALS environment variable
+            from google.oauth2 import service_account
+            credentials = service_account.Credentials.from_service_account_file(self.credentials_file_path)
+
+            
             self.llm = VertexAI(
                 model_name=self.model_name,
                 max_output_tokens=self.max_output_tokens,
                 temperature=self.temperature,
                 verbose=True,
                 location=self.location,
+                credentials=credentials,
             )
             logger.info("Model loaded successfully.")
             st.toast("Model loaded successfully.")
         except Exception as exception:
             logger.error(f"Error loading model: {str(exception)}")
+            logger.error(traceback.format_exc())  # Add traceback details
+            st.toast(f"Error loading model", icon="❌")
+
+
 
     def generate_code(self, question, code_language):
         try:
