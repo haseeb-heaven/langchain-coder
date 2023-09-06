@@ -117,42 +117,38 @@ def main():
         with st.expander("General Settings", expanded=False):
             st.session_state.display_cost = st.checkbox("Display Cost/API", value=False)
             st.session_state.show_logs = st.checkbox("Show Logs", value=False)
-            
-            if st.session_state.show_logs:
-                # read the logs file langchain-coder.log and dipaly the logs as markdown with beautify
-                with open("langchain-coder.log", "r") as f:
-                    logs = f.read()
-                    st.markdown(f"```{logs}```")
                 
         # Setting options for Open AI
         if st.session_state.ai_option == "Open AI":
             with st.expander("Open AI Settings"):
                 try:
                     # Settings for Open AI model.
-                    st.session_state["openai"]["model_name"] = st.selectbox("Model name", ["gpt-4", "gpt-4-0613", "gpt-4-32k", "gpt-4-32k-0613","gpt-3.5-turbo", "gpt-3.5-turbo", "gpt-3.5-turbo-16k", "gpt-3.5-turbo-0613", "gpt-3.5-turbo-16k-0613", "gpt-3.5-turbo-0301", "text-davinci-003"])
-                    st.session_state["openai"]["temperature"] = st.slider("Temprature", min_value=0.0, max_value=2.0, value=0.1, step=0.1)
-                    st.session_state["openai"]["max_tokens"] = st.slider("Maximum Tokens", min_value=1, max_value=4096, value=2048, step=1)
+                    model_options_openai = ["gpt-4", "gpt-4-0613", "gpt-4-32k", "gpt-4-32k-0613", "gpt-3.5-turbo", "gpt-3.5-turbo", "gpt-3.5-turbo-16k", "gpt-3.5-turbo-0613", "gpt-3.5-turbo-16k-0613", "gpt-3.5-turbo-0301", "text-davinci-003"]
+                    st.session_state["openai"]["model_name"] = st.selectbox("Model name", model_options_openai, index=model_options_openai.index(st.session_state["openai"]["model_name"]))
+                    st.session_state["openai"]["temperature"] = st.slider("Temperature", min_value=0.0, max_value=2.0, value=st.session_state["openai"]["temperature"], step=0.1)
+                    st.session_state["openai"]["max_tokens"] = st.slider("Maximum Tokens", min_value=1, max_value=4096, value=st.session_state["openai"]["max_tokens"], step=1)
                     api_key = st.text_input("API Key", value="", key="api_key", type="password")
-                    st.session_state.openai_langchain = OpenAILangChain(st.session_state.code_language,st.session_state["openai"]["temperature"],st.session_state["openai"]["max_tokens"],st.session_state["openai"]["model_name"],api_key)
+                    st.session_state.openai_langchain = OpenAILangChain(st.session_state.code_language, st.session_state["openai"]["temperature"], st.session_state["openai"]["max_tokens"], st.session_state["openai"]["model_name"], api_key)
                 except Exception as exception:
                     st.toast(f"Error loading Open AI: {str(exception)}", icon="❌")
                     logger.error(f"Error loading Open AI: {str(exception)}")
-                    
+
         # Setting options for Vertex AI
         elif st.session_state.ai_option == "Vertex AI":
             with st.expander("Vertex AI Settings"):
                 try:
                     # Settings for Vertex AI model.
-                    try:
-                        st.session_state.project = st.text_input("Project:")
-                        st.session_state.region = st.text_input("Region:")
-                        st.session_state.uploaded_file = st.file_uploader("Service account file", type=["json"])
-                        st.session_state["vertexai"]["temperature"] = st.slider("Temprature", min_value=0.0, max_value=2.0, value=0.1, step=0.1,on_change=handle_onchange_vertexai_temperature(st.session_state["vertexai"]["temperature"]))
-                        st.session_state["vertexai"]["max_tokens"] = st.slider("Maximum Tokens", min_value=1, max_value=4096, value=2048, step=1,on_change=handle_onchange_vertexai_tokens(st.session_state["vertexai"]["max_tokens"]))
-                        st.session_state["vertexai"]["model_name"]= st.selectbox("Model", ["code-bison", "code-gecko"],on_change=handle_onchange_vertexai_model(st.session_state["vertexai"]["model_name"]))
-                        logger.info(f"Vertex AI Project: {st.session_state.project} and Region: {st.session_state.region}")
-                    except Exception as exception:
-                        logger.error(f"Error loading Vertex AI: {str(exception)}")
+                    st.session_state.project = st.text_input("Project:", value=st.session_state.project)
+                    st.session_state.region = st.text_input("Region:", value=st.session_state.region)
+                    st.session_state.uploaded_file = st.file_uploader("Service account file", type=["json"])
+                    st.session_state["vertexai"]["temperature"] = st.slider("Temperature", min_value=0.0, max_value=2.0, value=st.session_state["vertexai"]["temperature"], step=0.1)
+                    st.session_state["vertexai"]["max_tokens"] = st.slider("Maximum Tokens", min_value=1, max_value=4096, value=st.session_state["vertexai"]["max_tokens"], step=1)
+                    model_options_vertex = ["code-bison", "code-gecko"]
+                    st.session_state["vertexai"]["model_name"] = st.selectbox("Model", model_options_vertex, index=model_options_vertex.index(st.session_state["vertexai"]["model_name"]))
+                    logger.info(f"Vertex AI Project: {st.session_state.project} and Region: {st.session_state.region}")
+                except Exception as exception:
+                    logger.error(f"Error loading Vertex AI: {str(exception)}")
+
                         
                     if st.session_state.uploaded_file:
                         logger.info(f"Vertex AI File credentials file '{st.session_state.uploaded_file.name}' initialized state {st.session_state.vertex_ai_loaded}")         
@@ -197,7 +193,9 @@ def main():
     
     # UI Elements - Main Page
     vertex_model_selected = st.session_state["vertexai"]["model_name"]
-    st.toast(f"Vertex Model selected: {vertex_model_selected}", icon="✅")
+    if st.session_state.ai_option == "Vertex AI":
+        st.toast(f"Vertex Model selected: {vertex_model_selected}", icon="✅")
+        
     if vertex_model_selected == "code-bison":
         placeholder = "Enter your prompt for code generation."
     elif vertex_model_selected == "code-gecko":
@@ -206,7 +204,7 @@ def main():
         placeholder = "Enter your prompt for code generation."
         st.error(f"Invalid Vertex AI model selected: {vertex_model_selected}")
         
-    st.session_state.code_prompt = st.text_area(" ", height=200, placeholder=placeholder)
+    st.session_state.code_prompt = st.text_area("Enter Prompt", height=200, placeholder=placeholder,label_visibility='hidden')
 
     with st.form('code_input_form'):
         # Create columns for alignment
@@ -308,7 +306,14 @@ def main():
                 if selected_model == "code-bison" or selected_model == "code-gecko":
                     cost, cost_per_whole_string, total_cost = general_utils.codey_generation_cost(st.session_state.generated_code)
                     st.table([["Cost/1K Token", f"{cost} USD"], ["Cost/Whole String", f"{cost_per_whole_string} USD"], ["Total Cost", f"{total_cost} USD"]])
-                            
+        # Display the logs
+        if st.session_state.show_logs:
+            # read the logs file langchain-coder.log and dipaly the logs as markdown with beautify
+            with open("langchain-coder.log", "r") as file:
+                logs = file.read()
+                st.markdown(f"```{logs}```")
+        
+        
     # Expander for coding guidelines
     with st.sidebar.expander("Coding Guidelines"):
         # create checkbox to select all guidelines and change the state of all guidelines
@@ -413,5 +418,4 @@ def upgrade_pip_packages():
         print(f"Error upgrading pip packages: {e}")
 
 if __name__ == "__main__":
-    upgrade_pip_packages()
     main()
