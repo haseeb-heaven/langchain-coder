@@ -12,6 +12,7 @@ Date : 06/09/2023
 """
 
 # Install dependencies
+import base64
 import os
 import random
 import streamlit as st
@@ -51,6 +52,10 @@ def initialize_session_state():
         st.session_state.code_prompt = ""
     if "display_cost" not in st.session_state:
         st.session_state.display_cost = False
+    if "download_link" not in st.session_state:
+        st.session_state.download_link = None
+    if "download_logs" not in st.session_state:
+        st.session_state.download_logs = False
     
     # Initialize session state for Vertex AI
     if "vertexai" not in st.session_state:
@@ -117,16 +122,16 @@ def main():
         # Create checkbox for Displaying cost of generated code
         with st.expander("General Settings", expanded=False):
             st.session_state.display_cost = st.checkbox("Display Cost/API", value=False)
-            st.session_state.show_logs = st.checkbox("Show Logs", value=False)
+            st.session_state.download_logs = st.checkbox("Download Logs", value=False)
             # Display the logs
-            if st.session_state.show_logs:
-                # read the logs file langchain-coder.log and dipaly the logs as markdown with beautify
-                file_format = st.session_state.file_format = st.sidebar.selectbox("Select file format", ["Markdown", "Text"], index=0)
-                with open("langchain-coder.log", "r") as file:
-                    logs = file.read()
+            if st.session_state.download_logs:
+                logs_filename = "langchain-coder.log"
+                # read the logs
+                with open(logs_filename, "r") as file:
+                    logs_data = file.read()
                     # download the logs
-                    file_name = f"data_{random.randint(10000, 99999)}.{file_format.lower()}"
-                    st.sidebar.download_button(label="Export Data", data=logs.encode(), file_name=file_name, mime=file_format.lower())
+                    file_format = "text/plain"
+                    st.session_state.download_link = general_utils.generate_download_link(logs_data, logs_filename, file_format,True)
                 
         # Setting options for Open AI
         if st.session_state.ai_option == "Open AI":
@@ -139,67 +144,69 @@ def main():
                     st.session_state["openai"]["max_tokens"] = st.slider("Maximum Tokens", min_value=1, max_value=4096, value=st.session_state["openai"]["max_tokens"], step=1)
                     api_key = st.text_input("API Key", value="", key="api_key", type="password")
                     st.session_state.openai_langchain = OpenAILangChain(st.session_state.code_language, st.session_state["openai"]["temperature"], st.session_state["openai"]["max_tokens"], st.session_state["openai"]["model_name"], api_key)
+                    st.toast("Open AI initialized successfully.", icon="✅")
                 except Exception as exception:
                     st.toast(f"Error loading Open AI: {str(exception)}", icon="❌")
                     logger.error(f"Error loading Open AI: {str(exception)}")
 
         # Setting options for Vertex AI
         elif st.session_state.ai_option == "Vertex AI":
-            with st.expander("Vertex AI Settings"):
-                try:
-                    # Settings for Vertex AI model.
-                    st.session_state.project = st.text_input("Project:", value=st.session_state.project)
-                    st.session_state.region = st.text_input("Region:", value=st.session_state.region)
-                    st.session_state.uploaded_file = st.file_uploader("Service account file", type=["json"])
-                    st.session_state["vertexai"]["temperature"] = st.slider("Temperature", min_value=0.0, max_value=2.0, value=st.session_state["vertexai"]["temperature"], step=0.1)
-                    st.session_state["vertexai"]["max_tokens"] = st.slider("Maximum Tokens", min_value=1, max_value=4096, value=st.session_state["vertexai"]["max_tokens"], step=1)
-                    model_options_vertex = ["code-bison", "code-gecko"]
-                    st.session_state["vertexai"]["model_name"] = st.selectbox("Model", model_options_vertex, index=model_options_vertex.index(st.session_state["vertexai"]["model_name"]))
-                    logger.info(f"Vertex AI Project: {st.session_state.project} and Region: {st.session_state.region}")
-                except Exception as exception:
-                    logger.error(f"Error loading Vertex AI: {str(exception)}")
+            try:
+                with st.expander("Vertex AI Settings"):
+                    try:
+                        # Settings for Vertex AI model.
+                        st.session_state.project = st.text_input("Project:", value=st.session_state.project)
+                        st.session_state.region = st.text_input("Region:", value=st.session_state.region)
+                        st.session_state.uploaded_file = st.file_uploader("Service account file", type=["json"])
+                        st.session_state["vertexai"]["temperature"] = st.slider("Temperature", min_value=0.0, max_value=2.0, value=st.session_state["vertexai"]["temperature"], step=0.1)
+                        st.session_state["vertexai"]["max_tokens"] = st.slider("Maximum Tokens", min_value=1, max_value=4096, value=st.session_state["vertexai"]["max_tokens"], step=1)
+                        model_options_vertex = ["code-bison", "code-gecko"]
+                        st.session_state["vertexai"]["model_name"] = st.selectbox("Model", model_options_vertex, index=model_options_vertex.index(st.session_state["vertexai"]["model_name"]))
+                        logger.info(f"Vertex AI Project: {st.session_state.project} and Region: {st.session_state.region}")
+                    except Exception as exception:
+                        logger.error(f"Error loading Vertex AI: {str(exception)}")
 
+                            
+                        if st.session_state.uploaded_file:
+                            logger.info(f"Vertex AI File credentials file '{st.session_state.uploaded_file.name}' initialized state {st.session_state.vertex_ai_loaded}")         
+                            file_path = save_uploaded_file(st.session_state.uploaded_file)  # Save the uploaded file
+                            if file_path:
+                                credentials_file_path = file_path
+                                #st.toast(f"Credentials file uploaded {credentials_file_path}", icon="✅")
+                            else:
+                                st.toast("Failed to save the uploaded file.", icon="❌")
                         
-                    if st.session_state.uploaded_file:
-                        logger.info(f"Vertex AI File credentials file '{st.session_state.uploaded_file.name}' initialized state {st.session_state.vertex_ai_loaded}")         
-                        file_path = save_uploaded_file(st.session_state.uploaded_file)  # Save the uploaded file
-                        if file_path:
-                            credentials_file_path = file_path
-                            #st.toast(f"Credentials file uploaded {credentials_file_path}", icon="✅")
+                        if st.session_state.project and st.session_state.region and st.session_state.uploaded_file:
+                            try:
+                                # Initialize vertex ai model
+                                if not st.session_state.vertex_ai_loaded:
+                                    st.session_state.vertexai_langchain= VertexAILangChain(project=st.session_state.project, location=st.session_state.region, model_name=st.session_state["vertexai"]["model_name"], max_tokens=st.session_state["vertexai"]["max_tokens"], temperature=st.session_state["vertexai"]["temperature"], credentials_file_path=credentials_file_path)
+                                    st.session_state.vertex_ai_loaded = st.session_state.vertexai_langchain.load_model(st.session_state["vertexai"]["model_name"],st.session_state["vertexai"]["max_tokens"],st.session_state["vertexai"]["temperature"])
+                                    st.toast("Vertex AI initialized successfully.", icon="✅")
+                            except Exception as exception:
+                                st.toast(f"Error loading Vertex AI: {str(exception)}", icon="❌")
+                                logger.error(f"Error loading Vertex AI: {str(exception)}")
                         else:
-                            st.toast("Failed to save the uploaded file.", icon="❌")
-                    
-                    if st.session_state.project and st.session_state.region and st.session_state.uploaded_file:
-                        try:
-                            # Initialize vertex ai model
-                            if not st.session_state.vertex_ai_loaded:
-                                st.session_state.vertexai_langchain= VertexAILangChain(project=st.session_state.project, location=st.session_state.region, model_name=st.session_state["vertexai"]["model_name"], max_tokens=st.session_state["vertexai"]["max_tokens"], temperature=st.session_state["vertexai"]["temperature"], credentials_file_path=credentials_file_path)
-                                st.session_state.vertex_ai_loaded = st.session_state.vertexai_langchain.load_model(st.session_state["vertexai"]["model_name"],st.session_state["vertexai"]["max_tokens"],st.session_state["vertexai"]["temperature"])
-                                st.toast("Vertex AI initialized successfully.", icon="✅")
-                        except Exception as exception:
-                            st.toast(f"Error loading Vertex AI: {str(exception)}", icon="❌")
-                            logger.error(f"Error loading Vertex AI: {str(exception)}")
-                    else:
-                        # Define a dictionary mapping variable names
-                        items = {
-                            'st.session_state.project': 'Project name',
-                            'st.session_state.region': 'App region',
-                            'st.session_state.uploaded_file': 'Credentials file'
-                        }
+                            # Define a dictionary mapping variable names
+                            items = {
+                                'st.session_state.project': 'Project name',
+                                'st.session_state.region': 'App region',
+                                'st.session_state.uploaded_file': 'Credentials file'
+                            }
 
-                        # Use a list comprehension to filter out the unset items
-                        unset_items = [name for var, name in items.items() if not eval(var)]
+                            # Use a list comprehension to filter out the unset items
+                            unset_items = [name for var, name in items.items() if not eval(var)]
 
-                        # Construct the error message
-                        error_message = "Please select all settings for Vertex AI".join([f"{item} is not selected." for item in unset_items])
-                                                
-                        # Show error message
-                        st.toast(error_message, icon="❌")
-                        logger.error(error_message)
+                            # Construct the error message
+                            error_message = "Please select all settings for Vertex AI".join([f"{item} is not selected." for item in unset_items])
+                                                    
+                            # Show error message
+                            st.toast(error_message, icon="❌")
+                            logger.error(error_message)
                     
-                except Exception as exception:
-                    st.toast(f"Error loading Vertex AI: {str(exception)}", icon="❌")
-                    logger.error(f"Error loading Vertex AI: {str(exception)}")
+            except Exception as exception:
+                st.toast(f"Error loading Vertex AI: {str(exception)}", icon="❌")
+                logger.error(f"Error loading Vertex AI: {str(exception)}")
     
     # UI Elements - Main Page
     vertex_model_selected = st.session_state["vertexai"]["model_name"]
@@ -218,20 +225,19 @@ def main():
 
     with st.form('code_input_form'):
         # Create columns for alignment
-        file_name_col, save_code_col, generate_code_col, run_code_col = st.columns(4)
+        file_name_col, save_code_col,generate_code_col,run_code_col = st.columns(4)
 
         # `code_file` Input Box (for entering the file name) in the first column
         with file_name_col:
-            code_file = st.text_input("", value="", placeholder="File name", label_visibility='collapsed')
+            code_file = st.text_input("File name", value="", placeholder="File name", label_visibility='collapsed')
 
         # Save Code button in the second column
         with save_code_col:
-            save_submitted = st.form_submit_button("Export File")
-            if save_submitted:
-                code_file_format = code_file.split(".")[-1]
-                st.sidebar.download_button(label="Export Code", data=st.session_state.generated_code.encode(), file_name=code_file, mime=code_file_format.lower())
-                #general_utils.download_code(st.session_state.generated_code,code_file)
-
+            download_code_submitted = st.form_submit_button("Download Code")
+            if download_code_submitted:
+                file_format = "text/plain"
+                st.session_state.download_link = general_utils.generate_download_link(st.session_state.generated_code, code_file,file_format,True)
+                
         # Generate Code button in the third column
         with generate_code_col:
             button_label = "Generate Code" if st.session_state["vertexai"]["model_name"] == "code-bison" else "Complete Code"
@@ -263,7 +269,7 @@ def main():
             run_submitted = st.form_submit_button("Execute Code")
             if run_submitted:
                 st.session_state.output = general_utils.execute_code(st.session_state.compiler_mode)
-
+            
     # Save and Run Code
     if st.session_state.generated_code:
         
@@ -319,7 +325,6 @@ def main():
                     cost, cost_per_whole_string, total_cost = general_utils.codey_generation_cost(st.session_state.generated_code)
                     st.table([["Cost/1K Token", f"{cost} USD"], ["Cost/Whole String", f"{cost_per_whole_string} USD"], ["Total Cost", f"{total_cost} USD"]])
 
-        
         
     # Expander for coding guidelines
     with st.sidebar.expander("Coding Guidelines"):

@@ -217,7 +217,7 @@ class GeneralUtils:
             st.toast(traceback.format_exc())
             logger.error(f"Error in code saving: {traceback.format_exc()}")
 
-    def download_code(self,data,filename):
+    def generate_download_link(self, data=None, filename="download.txt",file_extension="text/plain",auto_click=False):
         try:
             # Check for empty file name
             if not filename or len(filename) == 0:
@@ -225,14 +225,32 @@ class GeneralUtils:
                 logger.error("Error in code downloading: Please enter a valid file name.")
                 return
             
-            file_extension = filename.split(".")[-1]
+            # Check for empy data
+            if not data or len(data.strip()) == 0:
+                st.toast("Data is empty. Cannot download an empty file.", icon="❌")
+                logger.error("Error in code downloading: Data is empty.")
+                return
+            
+            # Get the file extension if not provided
+            if not file_extension or len(file_extension) == 0:
+                file_extension = filename.split(".")[-1]
+            
             logger.info(f"Downloading code to file: {filename} with extension: {file_extension}")
-            b64 = base64.b64encode(data.encode()).decode()
-            return f'<a href="data:file/txt;base64,{b64}" download="{filename}">Download {filename}</a>'
+            b64 = base64.b64encode(data.encode()).decode()  # encode the data to base64
+            href = f"data:text/plain;charset=utf-8;base64,{b64}"  # creating the href for anchor tag
+            link = f'<a id="download_link" href="{href}" download="{filename}">Download Code</a>'  # creating the anchor tag
+            # JavaScript code to automatically click the link
+            auto_click_js = "<script>document.getElementById('download_link').click();</script>"
+            
+            if auto_click:
+                st.components.v1.html(st.session_state.download_link, height=0, scrolling=False)
+                
+            return link + auto_click_js  # return the anchor tag and JavaScript code
+            
         except Exception as e:
             st.toast(traceback.format_exc())
             logger.error(f"Error in code downloading: {traceback.format_exc()}")
-            
+
 
 
     # # Initialize Vertex AI
