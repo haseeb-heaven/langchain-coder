@@ -249,8 +249,11 @@ def main():
                     else:# Reinitialize the chain
                          st.session_state.openai_langchain = OpenAILangChain(st.session_state.code_language,st.session_state["openai"]["temperature"],st.session_state["openai"]["max_tokens"],st.session_state["openai"]["model_name"],api_key)
                          st.session_state.generated_code = st.session_state.openai_langchain.generate_code(st.session_state.code_prompt, code_language)
-                elif st.session_state.ai_option == "Vertex AI" and st.session_state.vertex_ai_loaded:
+                elif st.session_state.ai_option == "Vertex AI":
                     if st.session_state.vertexai_langchain:
+                        if not st.session_state.vertex_ai_loaded:
+                            st.toast("Vetex AI is not initialized.", icon="❌")
+                            return
                         if st.session_state["vertexai"]["model_name"] == "code-bison":
                             st.session_state.generated_code = st.session_state.vertexai_langchain.generate_code(st.session_state.code_prompt, code_language)
                         else:
@@ -260,7 +263,7 @@ def main():
                         st.session_state.vertex_ai_loaded = st.session_state.vertexai_langchain.load_model()
                         st.session_state.generated_code = st.session_state.vertexai_langchain.generate_code(st.session_state.code_prompt, code_language)
                 else:
-                    st.toast("Please select a valid AI option selected '{st.session_state.ai_option}' option", icon="❌")
+                    st.toast(f"Please select a valid AI option selected '{st.session_state.ai_option}' option", icon="❌")
                     st.session_state.generated_code = ""
                     logger.error(f"Please select a valid AI option selected '{st.session_state.ai_option}' option")
 
