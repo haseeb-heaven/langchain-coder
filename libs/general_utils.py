@@ -1,4 +1,5 @@
 # general_utils.py
+import base64
 import os
 import tempfile
 from libs.logger import logger
@@ -216,6 +217,22 @@ class GeneralUtils:
             st.toast(traceback.format_exc())
             logger.error(f"Error in code saving: {traceback.format_exc()}")
 
+    def download_code(self,data,filename):
+        try:
+            # Check for empty file name
+            if not filename or len(filename) == 0:
+                st.toast("Please enter a valid file name.", icon="❌")
+                logger.error("Error in code downloading: Please enter a valid file name.")
+                return
+            
+            file_extension = filename.split(".")[-1]
+            logger.info(f"Downloading code to file: {filename} with extension: {file_extension}")
+            b64 = base64.b64encode(data.encode()).decode()
+            return f'<a href="data:file/txt;base64,{b64}" download="{filename}">Download {filename}</a>'
+        except Exception as e:
+            st.toast(traceback.format_exc())
+            logger.error(f"Error in code downloading: {traceback.format_exc()}")
+            
 
 
     # # Initialize Vertex AI
