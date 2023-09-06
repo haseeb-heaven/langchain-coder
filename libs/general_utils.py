@@ -74,85 +74,35 @@ class GeneralUtils:
         """.format(language=LangCodes()[language], script_code=code_prompt)
         return html_template
     
-    # Method to check if compilers are installed on the system or not
-    def check_compilers(self):
-        # check for python,nodejs,c,c++,c#,go,ruby,java,kotlin,scala,swift compilers
-        python_compiler = subprocess.run(["python", "--version"], capture_output=True, text=True)
-        if python_compiler.returncode != 0:
-            logger.error("Python compiler not found.")
-            st.toast("Python compiler not found.", icon="❌")
-            return False
+
+    def check_compilers(self, language):
+        language = language.lower().strip()
         
-        # check for nodejs compiler
-        nodejs_compiler = subprocess.run(["node", "--version"], capture_output=True, text=True)
-        if nodejs_compiler.returncode != 0:
-            logger.error("NodeJS compiler not found.")
-            st.toast("NodeJS compiler not found.", icon="❌")
+        compilers = {
+            "python": ["python", "--version"],
+            "nodejs": ["node", "--version"],
+            "c": ["gcc", "--version"],
+            "c++": ["g++", "--version"],
+            "csharp": ["csc", "--version"],
+            "go": ["go", "version"],
+            "ruby": ["ruby", "--version"],
+            "java": ["java", "--version"],
+            "kotlin": ["kotlinc", "--version"],
+            "scala": ["scala", "--version"],
+            "swift": ["swift", "--version"]
+        }
+
+        if language not in compilers:
+            logger.error("Invalid language selected.")
+            st.toast("Invalid language selected.", icon="❌")
             return False
-        
-        # check for c compiler
-        c_compiler = subprocess.run(["gcc", "--version"], capture_output=True, text=True)
-        if c_compiler.returncode != 0:
-            logger.error("C compiler not found.")
-            st.toast("C compiler not found.", icon="❌")
+
+        compiler = subprocess.run(compilers[language], capture_output=True, text=True)
+        if compiler.returncode != 0:
+            logger.error(f"{language.capitalize()} compiler not found.")
+            st.toast(f"{language.capitalize()} compiler not found.", icon="❌")
             return False
-        
-        # check for c++ compiler
-        cpp_compiler = subprocess.run(["g++", "--version"], capture_output=True, text=True)
-        if cpp_compiler.returncode != 0:
-            logger.error("C++ compiler not found.")
-            st.toast("C++ compiler not found.", icon="❌")
-            return False
-        
-        # check for c# compiler
-        csharp_compiler = subprocess.run(["csc", "--version"], capture_output=True, text=True)
-        if csharp_compiler.returncode != 0:
-            logger.error("C# compiler not found.")
-            st.toast("C# compiler not found.", icon="❌")
-            return False
-        
-        # check for go compiler
-        go_compiler = subprocess.run(["go", "version"], capture_output=True, text=True)
-        if go_compiler.returncode != 0:
-            logger.error("Go compiler not found.")
-            st.toast("Go compiler not found.", icon="❌")
-            return False
-        
-        # check for ruby compiler
-        ruby_compiler = subprocess.run(["ruby", "--version"], capture_output=True, text=True)
-        if ruby_compiler.returncode != 0:
-            logger.error("Ruby compiler not found.")
-            st.toast("Ruby compiler not found.", icon="❌")
-            return False
-        
-        # check for java compiler
-        java_compiler = subprocess.run(["java", "--version"], capture_output=True, text=True)
-        if java_compiler.returncode != 0:
-            logger.error("Java compiler not found.")
-            st.toast("Java compiler not found.", icon="❌")
-            return False
-        
-        # check for kotlin compiler
-        kotlin_compiler = subprocess.run(["kotlinc", "--version"], capture_output=True, text=True)
-        if kotlin_compiler.returncode != 0:
-            logger.error("Kotlin compiler not found.")
-            st.toast("Kotlin compiler not found.", icon="❌")
-            return False
-        
-        # check for scala compiler
-        scala_compiler = subprocess.run(["scala", "--version"], capture_output=True, text=True)
-        if scala_compiler.returncode != 0:
-            logger.error("Scala compiler not found.")
-            st.toast("Scala compiler not found.", icon="❌")
-            return False
-        
-        # check for swift compiler
-        swift_compiler = subprocess.run(["swift", "--version"], capture_output=True, text=True)
-        if swift_compiler.returncode != 0:
-            logger.error("Swift compiler not found.")
-            st.toast("Swift compiler not found.", icon="❌")
-            return False
-        
+
         return True
     
     def run_code(self,code, language):
@@ -163,7 +113,7 @@ class GeneralUtils:
             return "Code is empty. Cannot execute an empty code."
         
         # Check for compilers on the system
-        compilers_status = self.check_compilers()
+        compilers_status = self.check_compilers(language)
         if not compilers_status:
             return "Compilers not found. Please install compilers on your system."
         
