@@ -13,7 +13,6 @@ Date : 06/09/2023
 
 # Install dependencies
 import os
-import time
 import streamlit as st
 from libs.vertexai_langchain import VertexAILangChain
 from libs.general_utils import GeneralUtils
@@ -21,7 +20,6 @@ from libs.lang_codes import LangCodes
 from libs.openai_langchain import OpenAILangChain
 from libs.logger import logger
 from streamlit_ace import st_ace
-import threading
 
 general_utils = None
 
@@ -98,9 +96,6 @@ def main():
     # Support
     display_support()
     
-    # Start the file deletion thread
-    threading.Thread(target=delete_old_files, daemon=True).start()
-
     # Sidebar for settings
     with st.sidebar:
         # Session states for input options
@@ -121,7 +116,14 @@ def main():
         # Create checkbox for Displaying cost of generated code
         with st.expander("General Settings", expanded=False):
             st.session_state.display_cost = st.checkbox("Display Cost/API", value=False)
-        
+            st.session_state.show_logs = st.checkbox("Show Logs", value=False)
+            
+            if st.session_state.show_logs:
+                # read the logs file langchain-coder.log and dipaly the logs as markdown with beautify
+                with open("langchain-coder.log", "r") as f:
+                    logs = f.read()
+                    st.markdown(f"```{logs}```")
+                
         # Setting options for Open AI
         if st.session_state.ai_option == "Open AI":
             with st.expander("Open AI Settings"):
@@ -216,9 +218,9 @@ def main():
 
         # Save Code button in the second column
         with save_code_col:
-            save_submitted = st.form_submit_button("Save File")
+            save_submitted = st.form_submit_button("Export File")
             if save_submitted:
-                general_utils.save_code(code_file)
+                general_utils.download_code(st.session_state.generated_code,code_file)
 
         # Generate Code button in the third column
         with generate_code_col:
@@ -350,32 +352,20 @@ def display_code_editor(font_size, tab_size, theme, keybinding, show_gutter, sho
     elif st.session_state.generated_code and st.session_state.compiler_mode == "Online":
         st.components.v1.html(st.session_state.output,width=720, height=800, scrolling=True)
 
-
+@st.cache(ttl=300)  # Cache for 5 minutes
 def save_uploaded_file(uploadedfile):
     try:
         # Check if tempDir exists, if not, create it
         if not os.path.exists("tempDir"):
             os.makedirs("tempDir")
 
-        with open(os.path.join("tempDir", uploadedfile.name), "wb") as f:
+        file_path = os.path.join("tempDir", uploadedfile.name)
+        with open(file_path, "wb") as f:
             f.write(uploadedfile.getbuffer())
-        return os.path.join("tempDir", uploadedfile.name)
+        return file_path
     except Exception as e:
         st.toast(f"Error saving uploaded file: {e}", icon="❌")
         return None
-
-def delete_old_files():
-    while True:
-        now = time.time()
-        for filename in os.listdir("tempDir"):
-            file_path = os.path.join("tempDir", filename)
-            if os.path.getmtime(file_path) < now - 5 * 60:  # 5 minutes
-                try:
-                    os.remove(file_path)
-                except Exception as e:
-                    print(f"Error deleting {file_path}: {e}")
-        time.sleep(5 * 60)  # Check every 5 minutes
-
 
 def handle_onchange_vertexai_temperature(value):
     st.session_state["vertexai"]["temperature"] = value
