@@ -118,7 +118,69 @@ class GeneralUtils:
                     ["node", file.name], capture_output=True, text=True)
                 logger.info(f"Runner Output execution: {output.stdout + output.stderr}")
                 return output.stdout + output.stderr
+            
+        elif language == "Java":
+                with tempfile.NamedTemporaryFile(mode="w", suffix=".java", delete=True) as file:
+                    file.write(code)
+                    file.flush()
+                    classname = "Main"  # Assuming the class name is Main, adjust if needed
+                    compile_output = subprocess.run(["javac", file.name], capture_output=True, text=True)
+                    if compile_output.returncode != 0:
+                        return compile_output.stderr
+                    run_output = subprocess.run(["java", "-cp", tempfile.gettempdir(), classname], capture_output=True, text=True)
+                    return run_output.stdout + run_output.stderr
 
+        elif language == "Swift":
+                with tempfile.NamedTemporaryFile(mode="w", suffix=".swift", delete=True) as file:
+                    file.write(code)
+                    file.flush()
+                    output = subprocess.run(["swift", file.name], capture_output=True, text=True)
+                    return output.stdout + output.stderr
+
+        elif language == "C#":
+                with tempfile.NamedTemporaryFile(mode="w", suffix=".cs", delete=True) as file:
+                    file.write(code)
+                    file.flush()
+                    compile_output = subprocess.run(["csc", file.name], capture_output=True, text=True)
+                    if compile_output.returncode != 0:
+                        return compile_output.stderr
+                    exe_name = file.name.replace(".cs", ".exe")
+                    run_output = subprocess.run([exe_name], capture_output=True, text=True)
+                    return run_output.stdout + run_output.stderr
+
+        elif language == "Scala":
+                with tempfile.NamedTemporaryFile(mode="w", suffix=".scala", delete=True) as file:
+                    file.write(code)
+                    file.flush()
+                    output = subprocess.run(["scala", file.name], capture_output=True, text=True)
+                    return output.stdout + output.stderr
+
+        elif language == "Ruby":
+                with tempfile.NamedTemporaryFile(mode="w", suffix=".rb", delete=True) as file:
+                    file.write(code)
+                    file.flush()
+                    output = subprocess.run(["ruby", file.name], capture_output=True, text=True)
+                    return output.stdout + output.stderr
+
+        elif language == "Kotlin":
+                with tempfile.NamedTemporaryFile(mode="w", suffix=".kt", delete=True) as file:
+                    file.write(code)
+                    file.flush()
+                    compile_output = subprocess.run(["kotlinc", file.name, "-include-runtime", "-d", "output.jar"], capture_output=True, text=True)
+                    if compile_output.returncode != 0:
+                        return compile_output.stderr
+                    run_output = subprocess.run(["java", "-jar", "output.jar"], capture_output=True, text=True)
+                    return run_output.stdout + run_output.stderr
+
+        elif language == "Go":
+                with tempfile.NamedTemporaryFile(mode="w", suffix=".go", delete=True) as file:
+                    file.write(code)
+                    file.flush()
+                    compile_output = subprocess.run(["go", "build", "-o", "output.exe", file.name], capture_output=True, text=True)
+                    if compile_output.returncode != 0:
+                        return compile_output.stderr
+                    run_output = subprocess.run(["./output.exe"], capture_output=True, text=True)
+                    return run_output.stdout + run_output.stderr
         else:
             return "Unsupported language."
 
