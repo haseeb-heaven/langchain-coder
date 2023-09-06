@@ -74,7 +74,7 @@ class GeneralUtils:
         return html_template
     
     def run_code(self,code, language):
-        logger.info(f"Running code: {code} in language: {language}")
+        logger.info(f"Running code: {code[:100]} in language: {language}")
 
         if language == "Python":
             with tempfile.NamedTemporaryFile(mode="w", suffix=".py", delete=True) as file:
@@ -252,3 +252,43 @@ class GeneralUtils:
         else:
             os.environ["GOOGLE_CLOUD_REGION"] = os.getenv("GOOGLE_CLOUD_REGION")
             logger.info("Loading region from .env file")
+            
+    # Create method which takes string and calulate its number of words,letter count and for each 1000 characters in that string it will multiply with $0.0005 and return the cost, cost per whole string and total cost..
+    def calculate_code_generation_cost(self,string,price=0.0005):
+        # Calculate number of words
+        number_of_words = len(string.split())
+        
+        # Calculate number of letters
+        number_of_letters = len(string)
+        
+        # Calculate cost
+        cost = price * (number_of_letters / 1000)
+        
+        # Calculate cost per whole string
+        cost_per_whole_string = price * (len(string) / 1000)
+        
+        # Calculate total cost
+        total_cost = cost * number_of_words
+        
+        # Return the cost, cost per whole string and total cost
+        return cost, cost_per_whole_string, total_cost
+
+    def codey_generation_cost(self,string):
+        codey_price = 0.0005
+        return self.calculate_code_generation_cost(string,codey_price)
+
+    def gpt_3_generation_cost(self,string):
+        chatgpt_price = 0.0002
+        return self.calculate_code_generation_cost(string,chatgpt_price)
+
+    def gpt_3_5_turbo_generation_costself(self,string):
+        chatgpt_price = 0.0080
+        return self.calculate_code_generation_cost(string,chatgpt_price)
+
+    def gpt_4_generation_cost(self,string):
+        chatgpt_price = 0.06
+        return self.calculate_code_generation_cost(string,chatgpt_price)
+    
+    def gpt_text_davinci_generation_cost(self,string):
+        chatgpt_price = 0.0060
+        return self.calculate_code_generation_cost(string,chatgpt_price)

@@ -4,30 +4,30 @@ from langchain import LLMChain, PromptTemplate
 from langchain.llms import VertexAI
 from libs.logger import logger
 import streamlit as st
-
+from google.oauth2 import service_account
+from langchain.prompts import ChatPromptTemplate
+  
 class VertexAILangChain:
-    def __init__(self, project, location, model_name, max_output_tokens, temperature, credentials_file_path):
+    def __init__(self, project="", location="us-central1", model_name="code-bison", max_tokens=256, temperature:float=0.3, credentials_file_path=None):
         self.project = project
         self.location = location
         self.model_name = model_name
-        self.max_output_tokens = max_output_tokens
+        self.max_tokens = max_tokens
         self.temperature = temperature
         self.credentials_file_path = credentials_file_path
         self.vertexai_llm = None
 
-    def load_model(self):
+    def load_model(self, model_name, max_tokens, temperature):
         try:
             logger.info(f"Loading model... with project: {self.project} and location: {self.location}")
-            
             # Set the GOOGLE_APPLICATION_CREDENTIALS environment variable
-            from google.oauth2 import service_account
             credentials = service_account.Credentials.from_service_account_file(self.credentials_file_path)
 
-            logger.info(f"Trying to set Vertex model with parameters: {self.model_name}, {self.max_output_tokens}, {self.temperature}, {self.location}")
+            logger.info(f"Trying to set Vertex model with parameters: {model_name or self.model_name}, {max_tokens or self.max_tokens}, {temperature or self.temperature}, {self.location}")
             self.vertexai_llm = VertexAI(
-                model_name=self.model_name,
-                max_output_tokens=self.max_output_tokens,
-                temperature=self.temperature,
+                model_name=model_name or self.model_name,
+                max_output_tokens=max_tokens or self.max_tokens,
+                temperature=temperature or self.temperature,
                 verbose=True,
                 location=self.location,
                 credentials=credentials,
@@ -89,8 +89,17 @@ class VertexAILangChain:
             response = llm_chain.run({"code_prompt": code_prompt, "code_language": code_language})
             if response or len(response) > 0:
                 logger.info(f"Code generated successfully: {response}")
+                
                 # Extract text inside code block
-                generated_code = re.search('```(.*)```', response, re.DOTALL).group(1)
+                if response.startswith("```") or response.endswith("```"):
+                    try:
+                        generated_code = re.search('```(.*)```', response, re.DOTALL).group(1)
+                    except AttributeError:
+                        generated_code = response
+                else:
+                    st.toast(f"Error extracting code", icon="❌")
+                    return response
+                    
                 if generated_code:
                     # Skip the language name in the first line.
                     response = generated_code.split("\n", 1)[1]
@@ -103,6 +112,59 @@ class VertexAILangChain:
             stack_trace = traceback.format_exc()
             logger.error(f"Error generating code: {str(exception)} stack trace: {stack_trace}")
             st.toast(f"Error generating code: {str(exception)} stack trace: {stack_trace}", icon="❌")
+
+    def generate_code_completion(self, code_prompt, code_language):
+        try:
+            if not code_prompt or len(code_prompt) == 0:
+                logger.error("Code prompt is empty or null.")
+                st.error("Code generateration cannot be performed as the code prompt is empty or null.")
+                return None
+            
+            logger.info(f"Generating code completion with parameters: {code_prompt}, {code_language}")
+            template = f"Complete the following {{code_language}} code: {{code_prompt}}"
+            prompt_obj = PromptTemplate(template=template, input_variables=["code_language", "code_prompt"])
+            
+            max_tokens = st.session_state["vertexai"]["max_tokens"]
+            temprature = st.session_state["vertexai"]["temperature"]
+            
+            # Check the maximum number of tokens of Gecko model i.e 65
+            if max_tokens > 65:
+                max_tokens = 65
+                logger.info(f"Maximum number of tokens for Model Gecko can't exceed 65. Setting max_tokens to 65.")
+                st.toast(f"Maximum number of tokens for Model Gecko can't exceed 65. Setting max_tokens to 65.", icon="⚠️")
+                
+            self.model_name = "code-gecko" # Define the code completion model name.
+            self.llm = VertexAI(model_name=self.model_name,max_output_tokens=max_tokens, temperature=temprature)
+            logger.info(f"Initialized VertexAI with model: {self.model_name}")
+            llm_chain = LLMChain(prompt=prompt_obj, llm=self.llm)
+            response = llm_chain.run({"code_prompt": code_prompt, "code_language": code_language})
+            
+            if response:
+                logger.info(f"Code completion generated successfully: {response}")
+                return response
+            else:
+                logger.warning("No response received from LLMChain.")
+                return None
+        except Exception as e:
+            logger.error(f"Error generating code completion: {str(e)}")
+            raise
+
+    def set_temperature(self, temperature):
+        self.temperature = temperature
+        self.vertexai_llm.temperature = temperature
+        # call load_model to reload the model with the new temperature and rest values should be same
+        self.load_model(self.model_name, self.max_tokens, self.temperature)
+        
+    def set_max_tokens(self, max_tokens):
+        self.max_tokens = max_tokens
+        self.vertexai_llm.max_output_tokens = max_tokens
+        # call load_model to reload the model with the new max_output_tokens and rest values should be same
+        self.load_model(self.model_name, self.max_tokens, self.temperature)
+        
+    def set_model_name(self, model_name):
+        self.model_name = model_name
+        # call load_model to reload the model with the new model_name and rest values should be same
+        self.load_model(self.model_name, self.max_tokens, self.temperature)
 
 
 

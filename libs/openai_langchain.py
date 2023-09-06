@@ -14,7 +14,7 @@ class OpenAILangChain:
     code_chain = None
     code_language = 'Python'
     
-    def __init__(self,code_language,temprature:float=0.7,max_tokens=1000,model="text-davinci-003",api_key=None):
+    def __init__(self,code_language="python",temprature:float=0.3,max_tokens=1000,model="text-davinci-003",api_key=None):
         code_prompt = st.session_state.code_prompt
         code_language = st.session_state.code_language
         logger.info(f"Initializing LangChainCoder... with parameters: {code_language}, {temprature}, {max_tokens}, {model} {code_prompt}")
