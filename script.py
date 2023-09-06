@@ -118,6 +118,15 @@ def main():
         with st.expander("General Settings", expanded=False):
             st.session_state.display_cost = st.checkbox("Display Cost/API", value=False)
             st.session_state.show_logs = st.checkbox("Show Logs", value=False)
+            # Display the logs
+            if st.session_state.show_logs:
+                # read the logs file langchain-coder.log and dipaly the logs as markdown with beautify
+                file_format = st.session_state.file_format = st.sidebar.selectbox("Select file format", ["Markdown", "Text"], index=0)
+                with open("langchain-coder.log", "r") as file:
+                    logs = file.read()
+                    # download the logs
+                    file_name = f"data_{random.randint(10000, 99999)}.{file_format.lower()}"
+                    st.sidebar.download_button(label="Export Data", data=logs.encode(), file_name=file_name, mime=file_format.lower())
                 
         # Setting options for Open AI
         if st.session_state.ai_option == "Open AI":
@@ -219,7 +228,9 @@ def main():
         with save_code_col:
             save_submitted = st.form_submit_button("Export File")
             if save_submitted:
-                general_utils.download_code(st.session_state.generated_code,code_file)
+                code_file_format = code_file.split(".")[-1]
+                st.sidebar.download_button(label="Export Code", data=st.session_state.generated_code.encode(), file_name=code_file, mime=code_file_format.lower())
+                #general_utils.download_code(st.session_state.generated_code,code_file)
 
         # Generate Code button in the third column
         with generate_code_col:
@@ -307,15 +318,7 @@ def main():
                 if selected_model == "code-bison" or selected_model == "code-gecko":
                     cost, cost_per_whole_string, total_cost = general_utils.codey_generation_cost(st.session_state.generated_code)
                     st.table([["Cost/1K Token", f"{cost} USD"], ["Cost/Whole String", f"{cost_per_whole_string} USD"], ["Total Cost", f"{total_cost} USD"]])
-        # Display the logs
-        if st.session_state.show_logs:
-            # read the logs file langchain-coder.log and dipaly the logs as markdown with beautify
-            file_format = st.session_state.file_format = st.selectbox("Select file format", ["Markdown", "Text"], index=0)
-            with open("langchain-coder.log", "r") as file:
-                logs = file.read()
-                # download the logs
-                file_name = f"data_{random.randint(10000, 99999)}.{file_format.lower()}"
-                st.sidebar.download_button(label="Export Data", data=logs.encode(), file_name=file_name, mime=file_format.lower())
+
         
         
     # Expander for coding guidelines
