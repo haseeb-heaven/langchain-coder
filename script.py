@@ -266,8 +266,8 @@ def main():
 
         # Run Code button in the fourth column
         with run_code_col:
-            run_submitted = st.form_submit_button("Execute Code")
-            if run_submitted:
+            execute_submitted = st.form_submit_button("Execute Code")
+            if execute_submitted:
                 st.session_state.output = general_utils.execute_code(st.session_state.compiler_mode)
             
     # Save and Run Code
@@ -304,7 +304,8 @@ def main():
         # Display the code output
         if st.session_state.output:
             st.markdown("### Output")
-            st.code(st.session_state.output, language=st.session_state.code_language.lower())
+            if (st.session_state.compiler_mode == "Offline"):
+                st.code(st.session_state.output, language=st.session_state.code_language.lower())
         
         # Display the price of the generated code.
         if st.session_state.generated_code and st.session_state.display_cost:
