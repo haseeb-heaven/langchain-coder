@@ -13,6 +13,7 @@ Date : 06/09/2023
 
 # Install dependencies
 import os
+import time
 import streamlit as st
 from libs.vertexai_langchain import VertexAILangChain
 from libs.general_utils import GeneralUtils
@@ -20,6 +21,7 @@ from libs.lang_codes import LangCodes
 from libs.openai_langchain import OpenAILangChain
 from libs.logger import logger
 from streamlit_ace import st_ace
+import threading
 
 general_utils = None
 
@@ -96,6 +98,9 @@ def main():
     # Support
     display_support()
     
+    # Start the file deletion thread
+    threading.Thread(target=delete_old_files, daemon=True).start()
+
     # Sidebar for settings
     with st.sidebar:
         # Session states for input options
@@ -137,8 +142,8 @@ def main():
                 try:
                     # Settings for Vertex AI model.
                     try:
-                        st.session_state.project = st.text_input("Project:", value="heavenllm")
-                        st.session_state.region = st.text_input("Region:", value="us-central1")
+                        st.session_state.project = st.text_input("Project:")
+                        st.session_state.region = st.text_input("Region:")
                         st.session_state.uploaded_file = st.file_uploader("Service account file", type=["json"])
                         st.session_state["vertexai"]["temperature"] = st.slider("Temprature", min_value=0.0, max_value=2.0, value=0.1, step=0.1,on_change=handle_onchange_vertexai_temperature(st.session_state["vertexai"]["temperature"]))
                         st.session_state["vertexai"]["max_tokens"] = st.slider("Maximum Tokens", min_value=1, max_value=4096, value=2048, step=1,on_change=handle_onchange_vertexai_tokens(st.session_state["vertexai"]["max_tokens"]))
@@ -345,6 +350,7 @@ def display_code_editor(font_size, tab_size, theme, keybinding, show_gutter, sho
     elif st.session_state.generated_code and st.session_state.compiler_mode == "Online":
         st.components.v1.html(st.session_state.output,width=720, height=800, scrolling=True)
 
+
 def save_uploaded_file(uploadedfile):
     try:
         # Check if tempDir exists, if not, create it
@@ -357,6 +363,19 @@ def save_uploaded_file(uploadedfile):
     except Exception as e:
         st.toast(f"Error saving uploaded file: {e}", icon="❌")
         return None
+
+def delete_old_files():
+    while True:
+        now = time.time()
+        for filename in os.listdir("tempDir"):
+            file_path = os.path.join("tempDir", filename)
+            if os.path.getmtime(file_path) < now - 5 * 60:  # 5 minutes
+                try:
+                    os.remove(file_path)
+                except Exception as e:
+                    print(f"Error deleting {file_path}: {e}")
+        time.sleep(5 * 60)  # Check every 5 minutes
+
 
 def handle_onchange_vertexai_temperature(value):
     st.session_state["vertexai"]["temperature"] = value
