@@ -1,5 +1,5 @@
 streamlit
 langchain
 openai
-dotenv
+dotenv-python
 streamlit_ace
