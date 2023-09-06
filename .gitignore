@@ -1,1 +1,4 @@
-/LangChainDemo.log
+*.pyc
+*.pyo
+*.log
+*.json
