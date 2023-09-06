@@ -1,5 +1,7 @@
 streamlit
+streamlit_ace
+google-auth
+google-auth-oauthlib
 langchain
 openai
-dotenv-python
-streamlit_ace
+python-dotenv
