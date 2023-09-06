@@ -9,7 +9,7 @@ from libs.lang_codes import LangCodes
 
 # Import the service_account module
 from google.oauth2 import service_account
-from google.auth import impersonated_credentials, exceptions
+from google.auth import exceptions
 from google.auth.transport import requests
 
 class GeneralUtils:
@@ -18,10 +18,14 @@ class GeneralUtils:
         logger.info(f"Executing code: {st.session_state.generated_code[:100]} in language: {st.session_state.code_language} with Compiler Mode: {compiler_mode}")
 
         try:
+            if len(st.session_state.generated_code) == 0 or st.session_state.generated_code == "":
+                st.toast("Generated code is empty. Cannot execute an empty code.", icon="❌")
+                return
+            
             if compiler_mode.lower() == "online":
-                html_template = self.generate_dynamic_html(st.session_state.code_language, st.session_state.generated_code)
-                st.components.v1.html(html_template, width=720, height=800, scrolling=True)
-                logger.info(f"HTML Template: {html_template}")
+                html_content = self.generate_dynamic_html(st.session_state.code_language, st.session_state.generated_code)
+                logger.info(f"HTML Template: {html_content[:100]}")
+                return html_content
 
             else:
                 output = self.run_code(st.session_state.generated_code,st.session_state.code_language)
@@ -40,14 +44,13 @@ class GeneralUtils:
                     output = GeneralUtils.run_code(fixed_code, st.session_state.code_language)
                     logger.warning(f"Fixed code output: {output}")
 
-                st.write("Execution Output:")
-                st.code(output)
+                st.toast("Execution Output:\n" + output, icon="🔥")
                 logger.info(f"Execution Output: {output}")
 
         except Exception as e:
-            st.write("Error in code execution:")
+            st.toast("Error in code execution:",icon="❌")
             # Output the stack trace
-            st.write(traceback.format_exc())
+            st.toast(traceback.format_exc(), icon="❌")
             logger.error(f"Error in code execution: {traceback.format_exc()}")
     
         # Generate Dynamic HTML for JDoodle Compiler iFrame Embedding.
@@ -58,12 +61,11 @@ class GeneralUtils:
         <html lang="en">
         <head>
             <meta charset="UTF-8">
-            <title>Python App with JavaScript</title>
+            <title>Online JDoodle Compiler</title>
         </head>
         <body>
             <div data-pym-src='https://www.jdoodle.com/plugin' data-language="{language}"
-                data-version-index="0" data-libs="">
-                {script_code}
+                data-version-index="0" data-libs="" >{script_code}
             </div>
             <script src="https://www.jdoodle.com/assets/jdoodle-pym.min.js" type="text/javascript"></script>
         </body>
@@ -75,13 +77,13 @@ class GeneralUtils:
         logger.info(f"Running code: {code} in language: {language}")
 
         if language == "Python":
-            with tempfile.NamedTemporaryFile(mode="w", suffix=".py", delete=True) as f:
-                f.write(code)
-                f.flush()
+            with tempfile.NamedTemporaryFile(mode="w", suffix=".py", delete=True) as file:
+                file.write(code)
+                file.flush()
 
-                logger.info(f"Input file: {f.name}")
+                logger.info(f"Input file: {file.name}")
                 output = subprocess.run(
-                    ["python", f.name], capture_output=True, text=True)
+                    ["python", file.name], capture_output=True, text=True)
                 logger.info(f"Runner Output execution: {output.stdout + output.stderr}")
                 return output.stdout + output.stderr
 
@@ -107,13 +109,13 @@ class GeneralUtils:
                     return run_output.stdout + run_output.stderr
 
         elif language == "JavaScript":
-            with tempfile.NamedTemporaryFile(mode="w", suffix=".js", delete=True) as f:
-                f.write(code)
-                f.flush()
+            with tempfile.NamedTemporaryFile(mode="w", suffix=".js", delete=True) as file:
+                file.write(code)
+                file.flush()
 
-                logger.info(f"Input file: {f.name}")
+                logger.info(f"Input file: {file.name}")
                 output = subprocess.run(
-                    ["node", f.name], capture_output=True, text=True)
+                    ["node", file.name], capture_output=True, text=True)
                 logger.info(f"Runner Output execution: {output.stdout + output.stderr}")
                 return output.stdout + output.stderr
 
@@ -124,7 +126,7 @@ class GeneralUtils:
         try:
             # Check for empty file name
             if not file_name or len(file_name) == 0:
-                st.error("Please enter a valid file name.")
+                st.toast("Please enter a valid file name.", icon="❌")
                 logger.error("Error in code saving: Please enter a valid file name.")
                 return
             
@@ -138,18 +140,18 @@ class GeneralUtils:
             
             # Check for empty code
             if not st.session_state.generated_code or len(st.session_state.generated_code.strip()) == 0:
-                st.error("Generated code is empty. Cannot save an empty file.")
+                st.toast("Generated code is empty. Cannot save an empty file.", icon="❌")
                 logger.error("Error in code saving: Generated code is empty.")
                 return
             
             with open(f"{file_extension}/{file_name}", "w") as file:
                 file.write(st.session_state.generated_code)
             
-            st.success(f"Code saved to file {file_name}")
+            st.toast(f"Code saved to file {file_name}", icon="✅")
             logger.info(f"Code saved to file {file_name}")
             
         except Exception as e:
-            st.write(traceback.format_exc())
+            st.toast(traceback.format_exc())
             logger.error(f"Error in code saving: {traceback.format_exc()}")
 
 
@@ -168,7 +170,7 @@ class GeneralUtils:
                 os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = session.credentials.refresh(requests.Request()).token
             except exceptions.GoogleAuthError as e:
                 logger.error(f"Failed to load the service account key: {e}")
-                st.error(f"Failed to load the service account key: {e}")
+                st.toast(f"Failed to load the service account key: {e}", icon="❌")
                 return False
         else:
             os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = os.getenv("GOOGLE_APPLICATION_CREDENTIALS")
