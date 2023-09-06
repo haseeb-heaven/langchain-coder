@@ -13,6 +13,7 @@ Date : 06/09/2023
 
 # Install dependencies
 import os
+import random
 import streamlit as st
 from libs.vertexai_langchain import VertexAILangChain
 from libs.general_utils import GeneralUtils
@@ -309,9 +310,12 @@ def main():
         # Display the logs
         if st.session_state.show_logs:
             # read the logs file langchain-coder.log and dipaly the logs as markdown with beautify
+            file_format = st.session_state.file_format = st.selectbox("Select file format", ["Markdown", "Text"], index=0)
             with open("langchain-coder.log", "r") as file:
                 logs = file.read()
-                st.markdown(f"```{logs}```")
+                # download the logs
+                file_name = f"data_{random.randint(10000, 99999)}.{file_format.lower()}"
+                st.sidebar.download_button(label="Export Data", data=logs.encode(), file_name=file_name, mime=file_format.lower())
         
         
     # Expander for coding guidelines

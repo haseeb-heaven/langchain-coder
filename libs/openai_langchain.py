@@ -8,7 +8,6 @@ from langchain.memory import ConversationBufferMemory
 from langchain.llms import OpenAI
 from libs.logger import logger
 import openai
-from dotenv import load_dotenv
 
 class OpenAILangChain:
     code_chain = None
@@ -19,9 +18,7 @@ class OpenAILangChain:
         code_language = st.session_state.code_language
         logger.info(f"Initializing LangChainCoder... with parameters: {code_language}, {temprature}, {max_tokens}, {model} {code_prompt}")
 
-        
-        # Load the environment variables
-        load_dotenv()
+        # Set the OPENAI_API_KEY environment variable
         openai.api_key = api_key or os.getenv("OPENAI_API_KEY")
         memory = ConversationBufferMemory(input_key='code_prompt', memory_key='chat_history')
         
