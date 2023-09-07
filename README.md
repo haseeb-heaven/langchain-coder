@@ -1,83 +1,120 @@
-![cover_logo](https://github.com/haseeb-heaven/LangChain-CoderAI/blob/master/resources/app_logo.png?raw=true "")
+# LangChain Coder AI README
 
-This is **LangChain Coder**, a Streamlit app that utilizes LangChain and OpenAI's GPT-3 to generate code. It supports 12 different programming languages: _Python, C, C++,C#,Go, Javascript and more_. </br>
-With this app, you can **Generate code** and **Run it locally**, providing an alternative to the OpenAI **Code Interpreter Plugin**.
-And this can also **Save Code** localy to a file for later use.
-- **Support this Project** <a href="https://www.buymeacoffee.com/haseebheaven"><img src="https://img.buymeacoffee.com/button-api/?text=Buy me a coffee&emoji=&slug=haseebheaven&button_colour=40DCA5&font_colour=ffffff&font_family=Cookie&outline_colour=000000&coffee_colour=FFDD00" /></a>
-# LangChain Coder
+## 📌 Table of Contents
+1. [Introduction](#introduction)
+2. [AI Sections](#ai-sections)
+3. [Features](#features)
+4. [WebUI - Application Showcase](#webui---application-showcase)
+5. [Vertex AI Integration](#vertex-ai-integration)
+6. [📸 Image Showcase](#📸-image-showcase)
+7. [Packages Used](#packages-used)
+8. [📚 Links and References](#📚-links-and-references)
+9. [Versioning](#versioning)
+10. [✍️ Author](#✍️-author)
 
-## WebUI - Application showcase.
-This is the main screen of the application. It has a text input for the prompt, a dropdown menu for selecting the programming language, and three buttons: **Generate Code**, **Run Code**, and **Save Code**.</br>
-![main_screen_ui](https://github.com/haseeb-heaven/LangChain-CoderAI/blob/master/resources/main_screen_ui.png?raw=true "")
+## Introduction
 
-This is the screen after code generation. It displays the generated code.</br>
+LangChain Coder AI is a state-of-the-art code generation tool powered by OpenAI and Vertex AI. It provides a seamless experience for developers to generate code snippets in various languages based on the provided prompts. The tool is integrated with advanced AI models like GPT-3.5, GPT-3.5 Turbo, GPT-4, Code Gecko, and Code Bison, ensuring high-quality code outputs.
+
+## Features
+
+- **AI-Powered Code Generation and Completion**: Utilizes OpenAI and Vertex AI models for efficient and accurate code suggestions.
+- **Save and Execute Code**: Provides options to save the generated code and execute it instantly.
+- **Coding Guidelines**: Ensures the generated code adheres to standards like modularity, exception handling, error handling, logging, comments, efficiency, robustness, memory management, speed optimization, and naming conventions.
+- **Advanced Code Editor**: Customize your coding experience with features like adjustable font size, tab size, themes, keybindings, line numbers, print margins, wrapping, auto-updates, read-only mode, and language selection.
+- **Customizable Vertex AI Settings**: Adjust settings like temperature, max tokens, model name, project, region, and credentials file for Vertex AI.
+- **Offline and Online Compilation Modes**: Choose between offline and online compiler modes for code execution.
+
+## AI-Sections.
+### 🤖 OpenAI 
+- **Customizable Settings**: Adjust Tokens, Temperature, and set your API Key directly in the settings.
+- **Model Selection**: Choose from a variety of models including GPT 3.5, GPT 3.5 Turbo, and the latest GPT 4.
+
+### 🌐 Vertex AI 
+- **Customizable Settings**: Fine-tune Tokens, Temperature, and set your API Key in the settings.
+- **Model Selection**: Opt for models like **Code Gecko** for completions and **Code Bison** for code generation. These models are designed to support code completion and generation, enhancing your coding experience.
+
+
+## WebUI - Application Showcase
+
+🌆 This is the main screen of the application. Dive in with a text prompt, choose your language, and let the magic happen with buttons that feel just right.</br>
+![langchain-main-screen-ui](https://github.com/haseeb-heaven/LangChain-CoderAI/blob/master/resources/langchain-main-screen-ui.png?raw=true "")
+
+🎨 Behold the canvas after the masterpiece is painted. Code generation was never this beautiful.</br>
 ![generated_code_ui](https://github.com/haseeb-heaven/LangChain-CoderAI/blob/master/resources/generated_code_ui.png?raw=true "")
 
-## Requirements
+## Vertex AI Integration
 
-This app requires the following libraries:
+LangChain Coder AI integrates with [Google Vertex AI](https://cloud.google.com/python/docs/reference/aiplatform/latest) to leverage its powerful machine learning models for code generation. Vertex AI offers a range of tools and services for ML and AI, and LangChain Coder AI taps into these resources to provide top-notch code suggestions. For more details on how LangChain integrates with Vertex AI, refer to the [official documentation](https://python.langchain.com/docs/integrations/llms/google_vertex_ai_palm).
 
-- streamlit
-- langchain
-- openai
-- dotenv
+Additionally, the Vertex AI SDK for Python allows for automation of data ingestion, model training, and predictions on Vertex AI. It provides a programmatic way to access most of the functionalities available in the Google Cloud console. For more information, check out the [Vertex AI SDK for Python](https://cloud.google.com/vertex-ai/docs/python-sdk/use-vertex-ai-python-sdk).
 
-This app requres compiler for following languages:
-- C: GCC (GNU Compiler Collection). You can download it from the official GCC website: https://gcc.gnu.org/install/
-- C++: GCC (GNU Compiler Collection). You can download it from the official GCC website: https://gcc.gnu.org/install/
-- Python: The Python interpreter is already installed on most systems. If it's not installed on your system, you can download it from the official Python website: https://www.python.org/downloads/
-- Javascript: Node.js. You can download it from the official Node.js website: https://nodejs.org/en/download/
+## 📸 Image Showcase
 
-## Getting Started
-
-To use this tool, follow these steps:
-
-1. Clone this repository to your local machine.
-2. Navigate to the project directory.
-3. Install the required packages using the following command: 
-
-```pip install -r requirements.txt```
-
-4. To generate code you need [OpenAI API key](https://platform.openai.com/account/api-keys) </br>
-You can set the API key as an environment variable using the following command:
-
-```export OPENAI_API_KEY=<your API key>```
-
-For Windows, use the following command instead:
-
-```set OPENAI_API_KEY=<your API key>```
-5. To run the program, execute the following command:
-
-```streamlit run LangChain-Coder.py```
-
-## Features:
-
-- **Code Generation**: LangChain Coder generates code by utilizing LangChain and OpenAI's GPT-3. It prompts the user for a description of the code they want to generate and the programming language they want to use. The app then generates the code based on the prompt and returns it to the user.
-
-- **Code Execution**: LangChain Coder can execute the code locally. Once the code has been generated, the user can click on the **Run Code** button to execute it. The app will display the output of the code execution.
-
-- **Code Saving**: LangChain Coder also provides the option to save the generated code to a file. To save the code, enter a filename in the text input and click on the **Save Code** button.
-
-- **Multiple Programming Languages**: LangChain Coder supports four different programming languages: _Python, C, C++, and Javascript_.
-
-- **Offline and Online Compiler** : LangChain Coder supports both offline and online compiler for all the languages.
-for Online compiler it uses [**_JDoodle Web Widget_**](https://www.jdoodle.com/compiler-ide-plugin) which provides a web widget that can be embedded in a web page or used in an _iframe_. It allows users to compile and run code online in more than **70 programming languages**.
-
-## Usage
-
-To use LangChain Coder, follow these steps:
-
-1. Enter a prompt to **Generate** the code.
-2. Select the _programming language_ you want to use.
-3. Click on the **Generate Code** button to generate the code.
-4. If you want to run the code, click on the **Run Code** button.
-5. If you want to save the code to a file, enter a filename and click on the **Save Code** button.
-
-## Demo Usage.
-<a href="https://drive.google.com/file/d/1nXdmZYL2kZtQLm0k4TIGaUgU8CW_YHZ7/view?usp=sharing" target="_blank">
-  <img src="https://github.com/haseeb-heaven/LangChain-CoderAI/blob/master/resources/generated_code_ui.png" alt="Demo" width="480" height="320" border="10" />
-</a>
+- **LangChainCoderDemo.mp4**: A demo video showcasing the capabilities of LangChain Coder AI.
+![langchain-images](https://github.com/haseeb-heaven/LangChain-Coder/blob/master/resources/LangChainCoderDemo.mp4?raw=true "")</br>
+- **generated_code_ui.png**: Displays the generated code in a user-friendly UI.
+![langchain-images](https://github.com/haseeb-heaven/LangChain-Coder/blob/master/resources/generated_code_ui.png?raw=true "")</br>
+- **langchain-api-rates.png**: Shows the API rates for LangChain Coder AI.
+![langchain-images](https://github.com/haseeb-heaven/LangChain-Coder/blob/master/resources/langchain-api-rates.png?raw=true "")</br>
+- **langchain-code-editor-dark-theme.png**: A dark-themed code editor for a comfortable coding experience.
+![langchain-images](https://github.com/haseeb-heaven/LangChain-Coder/blob/master/resources/langchain-code-editor-dark-theme.png?raw=true "")</br>
+- **langchain-code-guidelines.png**: Highlights the coding guidelines supported by LangChain Coder AI.
+![langchain-images](https://github.com/haseeb-heaven/LangChain-Coder/blob/master/resources/langchain-code-guidelines.png?raw=true "")</br>
+- **langchain-main-screen-ui.png**: The main screen of the application.
+![langchain-images](https://github.com/haseeb-heaven/LangChain-Coder/blob/master/resources/langchain-main-screen-ui.png?raw=true "")</br>
+- **langchain-offline-compiler.png**: The offline compiler mode for executing code.
+![langchain-images](https://github.com/haseeb-heaven/LangChain-Coder/blob/master/resources/langchain-offline-compiler.png?raw=true "")</br>
+- **langchain-online-compiler.png**: The online compiler mode with support for multiple languages.
+![langchain-images](https://github.com/haseeb-heaven/LangChain-Coder/blob/master/resources/langchain-online-compiler.png?raw=true "")</br>
+- **langchain-swift-code-demo.png**: A demo showcasing Swift code generation.
+![langchain-images](https://github.com/haseeb-heaven/LangChain-Coder/blob/master/resources/langchain-swift-code-demo.png?raw=true "")</br>
+- **langchain-vertex-ai-code-gecko.png**: Integration details of the Code Gecko model from Vertex AI.
+![langchain-images](https://github.com/haseeb-heaven/LangChain-Coder/blob/master/resources/langchain-vertex-ai-code-gecko.png?raw=true "")</br>
 
 
-## Author
-This app was created by HeavenHM.
+## Packages Used
+
+- **streamlit**: A fast and simple way to create data apps.
+- **streamlit_ace**: A Streamlit component for the Ace editor.
+- **google-auth**: A Google Authentication Library.
+- **google-auth-oauthlib**: A Google Authentication Library for OAuth.
+- **google-cloud-aiplatform**: A client library for interacting with the Vertex AI API.
+- **langchain**: A Python client library for interacting with the LangChain API.
+- **openai**: A Python client library for interacting with the OpenAI API.
+- **python-dotenv**: Reads the key-value pair from .env file and adds them to environment variable.
+- **vertexai**: A Python client library for interacting with the Vertex AI API.
+
+
+## 📚 Links-and-References
+- [Google Vertex AI Documentation](https://cloud.google.com/python/docs/reference/aiplatform/latest)
+- [LangChain Integration with Vertex AI](https://python.langchain.com/docs/integrations/llms/google_vertex_ai_palm)
+- [Vertex AI SDK for Python](https://cloud.google.com/vertex-ai/docs/python-sdk/use-vertex-ai-python-sdk)
+
+
+## Versioning
+
+**Version 1.3** includes these features:
+
+- *AI-powered code generation and completion*
+- *Uses OpenAI and Vertex AI models*
+- *Save, execute code, and select coding guidelines*
+- *Advanced code editor features*
+- *Customizable Vertex AI settings*
+- *Offline and online compilation modes*
+- *Coding guidelines*: 
+  - *Modularity*
+  - *Exception handling*
+  - *Error handling*
+  - *Logging*
+  - *Comments*
+  - *Efficiency*
+  - *Robustness*
+  - *Memory management*
+  - *Speed optimization*
+  - *Naming conventions*
+
+**New in version 1.3:** AI-powered code generation and completion using OpenAI and Vertex AI models.
+
+## ✍️ Author
+Crafted with ❤️ by HeavenHM.
