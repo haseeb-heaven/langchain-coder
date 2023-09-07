@@ -1,4 +1,5 @@
 # general_utils.py
+import base64
 import os
 import tempfile
 from libs.logger import logger
@@ -6,6 +7,9 @@ import subprocess
 import traceback
 import streamlit as st
 from libs.lang_codes import LangCodes
+import shutil
+import threading
+import time
 
 # Import the service_account module
 from google.oauth2 import service_account
@@ -44,8 +48,9 @@ class GeneralUtils:
                     output = GeneralUtils.run_code(fixed_code, st.session_state.code_language)
                     logger.warning(f"Fixed code output: {output}")
 
-                st.toast("Execution Output:\n" + output, icon="🔥")
+                st.toast("Output:\n" + output, icon="🔥")
                 logger.info(f"Execution Output: {output}")
+                return output
 
         except Exception as e:
             st.toast("Error in code execution:",icon="❌")
@@ -53,7 +58,7 @@ class GeneralUtils:
             st.toast(traceback.format_exc(), icon="❌")
             logger.error(f"Error in code execution: {traceback.format_exc()}")
     
-        # Generate Dynamic HTML for JDoodle Compiler iFrame Embedding.
+    # Generate Dynamic HTML for JDoodle Compiler iFrame Embedding.
     def generate_dynamic_html(self,language, code_prompt):
         logger.info("Generating dynamic HTML for language: %s", language)
         html_template = """
@@ -73,9 +78,49 @@ class GeneralUtils:
         """.format(language=LangCodes()[language], script_code=code_prompt)
         return html_template
     
+
+    def check_compilers(self, language):
+        language = language.lower().strip()
+        
+        compilers = {
+            "python": ["python", "--version"],
+            "nodejs": ["node", "--version"],
+            "c": ["gcc", "--version"],
+            "c++": ["g++", "--version"],
+            "csharp": ["csc", "--version"],
+            "go": ["go", "version"],
+            "ruby": ["ruby", "--version"],
+            "java": ["java", "--version"],
+            "kotlin": ["kotlinc", "--version"],
+            "scala": ["scala", "--version"],
+            "swift": ["swift", "--version"]
+        }
+
+        if language not in compilers:
+            logger.error("Invalid language selected.")
+            st.toast("Invalid language selected.", icon="❌")
+            return False
+
+        compiler = subprocess.run(compilers[language], capture_output=True, text=True)
+        if compiler.returncode != 0:
+            logger.error(f"{language.capitalize()} compiler not found.")
+            st.toast(f"{language.capitalize()} compiler not found.", icon="❌")
+            return False
+
+        return True
+    
     def run_code(self,code, language):
         logger.info(f"Running code: {code[:100]} in language: {language}")
 
+        # Check for code and language validity
+        if not code or len(code.strip()) == 0:
+            return "Code is empty. Cannot execute an empty code."
+        
+        # Check for compilers on the system
+        compilers_status = self.check_compilers(language)
+        if not compilers_status:
+            return "Compilers not found. Please install compilers on your system."
+        
         if language == "Python":
             with tempfile.NamedTemporaryFile(mode="w", suffix=".py", delete=True) as file:
                 file.write(code)
@@ -216,6 +261,40 @@ class GeneralUtils:
             st.toast(traceback.format_exc())
             logger.error(f"Error in code saving: {traceback.format_exc()}")
 
+    def generate_download_link(self, data=None, filename="download.txt",file_extension="text/plain",auto_click=False):
+        try:
+            # Check for empty file name
+            if not filename or len(filename) == 0:
+                st.toast("Please enter a valid file name.", icon="❌")
+                logger.error("Error in code downloading: Please enter a valid file name.")
+                return
+            
+            # Check for empy data
+            if not data or len(data.strip()) == 0:
+                st.toast("Data is empty. Cannot download an empty file.", icon="❌")
+                logger.error("Error in code downloading: Data is empty.")
+                return
+            
+            # Get the file extension if not provided
+            if not file_extension or len(file_extension) == 0:
+                file_extension = filename.split(".")[-1]
+            
+            logger.info(f"Downloading code to file: {filename} with extension: {file_extension}")
+            b64 = base64.b64encode(data.encode()).decode()  # encode the data to base64
+            href = f"data:text/plain;charset=utf-8;base64,{b64}"  # creating the href for anchor tag
+            link = f'<a id="download_link" href="{href}" download="{filename}">Download Code</a>'  # creating the anchor tag
+            # JavaScript code to automatically click the link
+            auto_click_js = "<script>document.getElementById('download_link').click();</script>"
+            
+            if auto_click:
+                st.components.v1.html(st.session_state.download_link, height=0, scrolling=False)
+                
+            return link + auto_click_js  # return the anchor tag and JavaScript code
+            
+        except Exception as e:
+            st.toast(traceback.format_exc())
+            logger.error(f"Error in code downloading: {traceback.format_exc()}")
+
 
 
     # # Initialize Vertex AI
@@ -252,7 +331,44 @@ class GeneralUtils:
         else:
             os.environ["GOOGLE_CLOUD_REGION"] = os.getenv("GOOGLE_CLOUD_REGION")
             logger.info("Loading region from .env file")
+    
+        # Dictionary to store temporary directories and their deletion timestamps
+    dir_deletion_schedule = {}
+
+    def delete_dir_after_interval(self,dir_path, interval, logger):
+        time.sleep(interval)
+        if os.path.exists(dir_path):
+            try:
+                logger.info(f"Deleting directory: {dir_path}")
+                shutil.rmtree(dir_path)
+            except Exception as e:
+                logger.error(f"Error deleting directory: {e}")
+        else:
+            logger.info(f"Directory does not exist: {dir_path}")
+
+    def save_uploaded_file_temp(self,uploadedfile):
+        try:
+            # Create a temporary directory "tempDir"
+            temp_dir = "tempDir"
+            os.makedirs(temp_dir, exist_ok=True)
             
+            logger.info(f"Saving uploaded file to {temp_dir}")
+            file_path = os.path.join(temp_dir, uploadedfile.name)
+            with open(file_path, "wb") as f:
+                f.write(uploadedfile.getbuffer())
+                
+            # Schedule directory deletion after 60 seconds
+            self.dir_deletion_schedule[temp_dir] = threading.Thread(
+                target=self.delete_dir_after_interval, args=(temp_dir, 60, logger)
+            )
+            self.dir_deletion_schedule[temp_dir].start()
+
+            return file_path
+        except Exception as e:
+            logger.error(f"Error saving uploaded file: {e}")
+            return None
+    
+    
     # Create method which takes string and calulate its number of words,letter count and for each 1000 characters in that string it will multiply with $0.0005 and return the cost, cost per whole string and total cost..
     def calculate_code_generation_cost(self,string,price=0.0005):
         # Calculate number of words
