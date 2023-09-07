@@ -12,9 +12,7 @@ Date : 06/09/2023
 """
 
 # Install dependencies
-import base64
 import os
-import random
 import streamlit as st
 from libs.vertexai_langchain import VertexAILangChain
 from libs.general_utils import GeneralUtils
@@ -375,7 +373,7 @@ def display_code_editor(font_size, tab_size, theme, keybinding, show_gutter, sho
     elif st.session_state.generated_code and st.session_state.compiler_mode == "Online":
         st.components.v1.html(st.session_state.output,width=720, height=800, scrolling=True)
 
-@st.cache_data(ttl=300)  # Cache for 5 minutes
+@st.cache_data(ttl=1)  # Cache for 5 minutes
 def save_uploaded_file(uploadedfile):
     try:
         # Check if tempDir exists, if not, create it

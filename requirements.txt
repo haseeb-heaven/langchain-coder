@@ -2,6 +2,7 @@ streamlit
 streamlit_ace
 google-auth
 google-auth-oauthlib
+google-cloud-aiplatform
 langchain
 openai
 python-dotenv
