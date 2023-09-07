@@ -41,7 +41,7 @@ LangChain Coder AI is a state-of-the-art code generation tool powered by OpenAI 
 ![langchain-main-screen-ui](https://github.com/haseeb-heaven/LangChain-CoderAI/blob/master/resources/langchain-main-screen-ui.png?raw=true "")
 
 🎨 Behold the canvas after the masterpiece is painted. Code generation was never this beautiful.</br>
-![generated_code_ui](https://github.com/haseeb-heaven/LangChain-CoderAI/blob/master/resources/generated_code_ui.png?raw=true "")
+![generated_code_ui](https://github.com/haseeb-heaven/LangChain-CoderAI/blob/master/resources/langchain-code-ui.png?raw=true "")
 
 ## Vertex AI Integration
 
@@ -50,27 +50,52 @@ LangChain Coder AI integrates with [Google Vertex AI](https://cloud.google.com/p
 Additionally, the Vertex AI SDK for Python allows for automation of data ingestion, model training, and predictions on Vertex AI. It provides a programmatic way to access most of the functionalities available in the Google Cloud console. For more information, check out the [Vertex AI SDK for Python](https://cloud.google.com/vertex-ai/docs/python-sdk/use-vertex-ai-python-sdk).
 
 ## 📸 Image Showcase
+**__Main Screen UI__**  
+*The main screen of the application.*  
+![langchain-main-screen-ui](https://github.com/haseeb-heaven/LangChain-Coder/blob/master/resources/langchain-main-screen-ui.png?raw=true "")  
+</br>
 
-- **LangChainCoderDemo.mp4**: A demo video showcasing the capabilities of LangChain Coder AI.
-![langchain-images](https://github.com/haseeb-heaven/LangChain-Coder/blob/master/resources/LangChainCoderDemo.mp4?raw=true "")</br>
-- **generated_code_ui.png**: Displays the generated code in a user-friendly UI.
-![langchain-images](https://github.com/haseeb-heaven/LangChain-Coder/blob/master/resources/generated_code_ui.png?raw=true "")</br>
-- **langchain-api-rates.png**: Shows the API rates for LangChain Coder AI.
-![langchain-images](https://github.com/haseeb-heaven/LangChain-Coder/blob/master/resources/langchain-api-rates.png?raw=true "")</br>
-- **langchain-code-editor-dark-theme.png**: A dark-themed code editor for a comfortable coding experience.
-![langchain-images](https://github.com/haseeb-heaven/LangChain-Coder/blob/master/resources/langchain-code-editor-dark-theme.png?raw=true "")</br>
-- **langchain-code-guidelines.png**: Highlights the coding guidelines supported by LangChain Coder AI.
-![langchain-images](https://github.com/haseeb-heaven/LangChain-Coder/blob/master/resources/langchain-code-guidelines.png?raw=true "")</br>
-- **langchain-main-screen-ui.png**: The main screen of the application.
-![langchain-images](https://github.com/haseeb-heaven/LangChain-Coder/blob/master/resources/langchain-main-screen-ui.png?raw=true "")</br>
-- **langchain-offline-compiler.png**: The offline compiler mode for executing code.
-![langchain-images](https://github.com/haseeb-heaven/LangChain-Coder/blob/master/resources/langchain-offline-compiler.png?raw=true "")</br>
-- **langchain-online-compiler.png**: The online compiler mode with support for multiple languages.
-![langchain-images](https://github.com/haseeb-heaven/LangChain-Coder/blob/master/resources/langchain-online-compiler.png?raw=true "")</br>
-- **langchain-swift-code-demo.png**: A demo showcasing Swift code generation.
-![langchain-images](https://github.com/haseeb-heaven/LangChain-Coder/blob/master/resources/langchain-swift-code-demo.png?raw=true "")</br>
-- **langchain-vertex-ai-code-gecko.png**: Integration details of the Code Gecko model from Vertex AI.
-![langchain-images](https://github.com/haseeb-heaven/LangChain-Coder/blob/master/resources/langchain-vertex-ai-code-gecko.png?raw=true "")</br>
+**__Generated Code UI__**  
+*Displays the generated code in a user-friendly UI.*  
+![generated_code_ui](https://github.com/haseeb-heaven/LangChain-Coder/blob/master/resources/langchain-code-ui.png?raw=true "")  
+</br>
+
+**__API Rates__**  
+*Shows the API rates for LangChain Coder AI.*  
+![langchain-api-rates](https://github.com/haseeb-heaven/LangChain-Coder/blob/master/resources/langchain-api-rates.png?raw=true "")  
+</br>
+
+**__Dark Theme Code Editor__**  
+*A dark-themed code editor for a comfortable coding experience.*  
+![langchain-code-editor-dark-theme](https://github.com/haseeb-heaven/LangChain-Coder/blob/master/resources/langchain-code-editor-dark-theme.png?raw=true "")  
+</br>
+
+**__Coding Guidelines__**  
+*Highlights the coding guidelines supported by LangChain Coder AI.*  
+![langchain-code-guidelines](https://github.com/haseeb-heaven/LangChain-Coder/blob/master/resources/langchain-code-guidelines.png?raw=true "")  
+</br>
+
+**__Offline Compiler__**  
+*Showcases the offline compiler mode for executing code.*  
+![langchain-offline-compiler](https://github.com/haseeb-heaven/LangChain-Coder/blob/master/resources/langchain-offline-compiler.png?raw=true "")  
+</br>
+
+**__Online Compiler__**  
+*The online compiler mode with support for multiple languages.*  
+![langchain-online-compiler](https://github.com/haseeb-heaven/LangChain-Coder/blob/master/resources/langchain-online-compiler.png?raw=true "")  
+</br>
+
+**__Swift Code Demo__**  
+*A demonstration showcasing Swift code generation.*  
+![langchain-swift-code-demo](https://github.com/haseeb-heaven/LangChain-Coder/blob/master/resources/langchain-swift-code-demo.png?raw=true "")  
+</br>
+
+**__Vertex AI Code Gecko__**  
+*Illustrates the code completion feature of Vertex AI Code Gecko.* 
+![langchain-vertex-ai-code-gecko](https://github.com/haseeb-heaven/LangChain-Coder/blob/master/resources/langchain-vertex-ai-code-gecko.png?raw=true "")  
+</br>
+
+
 
 
 ## Packages Used
