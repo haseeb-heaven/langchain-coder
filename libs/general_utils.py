@@ -19,6 +19,12 @@ from google.auth.transport import requests
 class GeneralUtils:
     
     def execute_code(self,compiler_mode: str):
+        
+        if not st.session_state.generated_code or len(st.session_state.generated_code.strip()) == 0 or not st.session_state.code_language or len(st.session_state.code_language.strip()) == 0:
+            st.toast("Generated code is empty. Cannot execute an empty code.", icon="❌")
+            logger.error("Error in code execution: Generated code is empty.")
+            return
+        
         logger.info(f"Executing code: {st.session_state.generated_code[:100]} in language: {st.session_state.code_language} with Compiler Mode: {compiler_mode}")
 
         try:

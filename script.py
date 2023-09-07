@@ -247,8 +247,12 @@ def main():
                     if st.session_state.openai_langchain:
                         st.session_state.generated_code = st.session_state.openai_langchain.generate_code(st.session_state.code_prompt, code_language)
                     else:# Reinitialize the chain
-                         st.session_state.openai_langchain = OpenAILangChain(st.session_state.code_language,st.session_state["openai"]["temperature"],st.session_state["openai"]["max_tokens"],st.session_state["openai"]["model_name"],api_key)
-                         st.session_state.generated_code = st.session_state.openai_langchain.generate_code(st.session_state.code_prompt, code_language)
+                        if not api_key:
+                            st.toast("Open AI API key is not initialized.", icon="❌")
+                            logger.error("Open AI API key is not initialized.")
+                        else:
+                            st.session_state.openai_langchain = OpenAILangChain(st.session_state.code_language,st.session_state["openai"]["temperature"],st.session_state["openai"]["max_tokens"],st.session_state["openai"]["model_name"],api_key)
+                            st.session_state.generated_code = st.session_state.openai_langchain.generate_code(st.session_state.code_prompt, code_language)
                 elif st.session_state.ai_option == "Vertex AI":
                     if st.session_state.vertexai_langchain:
                         if not st.session_state.vertex_ai_loaded:
@@ -308,8 +312,12 @@ def main():
         # Display the code output
         if st.session_state.output:
             st.markdown("### Output")
-            if (st.session_state.compiler_mode == "Offline"):
-                st.code(st.session_state.output, language=st.session_state.code_language.lower())
+            st.toast(f"Compiler mode selected '{st.session_state.compiler_mode}'", icon="✅")
+            if (st.session_state.compiler_mode.lower() == "offline"):
+                if "https://www.jdoodle.com/plugin" in st.session_state.output:
+                    pass
+                else:
+                    st.code(st.session_state.output, language=st.session_state.code_language.lower())
         
         # Display the price of the generated code.
         if st.session_state.generated_code and st.session_state.display_cost:

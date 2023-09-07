@@ -48,7 +48,7 @@ class VertexAILangChain:
             # Check for empty or null code prompt and code language
             if not code_prompt or len(code_prompt) == 0:
                 logger.error("Code prompt is empty or null.")
-                st.error("Code generateration cannot be performed as the code prompt is empty or null.")
+                st.toast("Code prompt is empty or null.", icon="❌")
                 return None
             
             if st.session_state["coding_guidelines"]["modular_code"]:

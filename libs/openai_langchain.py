@@ -83,6 +83,13 @@ class OpenAILangChain:
 
     def generate_code(self,code_prompt,code_language):
         try:
+            
+            # check for valid prompt and language
+            if not code_prompt or len(code_prompt) == 0:
+                st.toast("Error in code generation: Please enter a valid prompt.", icon="❌")
+                logger.error("Error in code generation: Please enter a valid prompt.")
+                return
+            
             logger.info(f"Generating code for prompt: {code_prompt} in language: {code_language}")
             if code_prompt and len(code_prompt) > 0 and code_language and len(code_language) > 0:
                 logger.info(f"Generating code for prompt: {code_prompt} in language: {code_language}")
@@ -106,5 +113,5 @@ class OpenAILangChain:
                 st.toast("Error in code generation: Please enter a valid prompt and language.", icon="❌")
                 logger.error("Error in code generation: Please enter a valid prompt and language.")
         except Exception as e:
-            st.toast(f"Error in code generation: {traceback.format_exc()}", icon="❌")
+            st.toast(f"Error in code generation: {e}", icon="❌")
             logger.error(f"Error in code generation: {traceback.format_exc()}")
