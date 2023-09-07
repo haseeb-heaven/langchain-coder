@@ -7,6 +7,9 @@ import subprocess
 import traceback
 import streamlit as st
 from libs.lang_codes import LangCodes
+import shutil
+import threading
+import time
 
 # Import the service_account module
 from google.oauth2 import service_account
@@ -328,7 +331,44 @@ class GeneralUtils:
         else:
             os.environ["GOOGLE_CLOUD_REGION"] = os.getenv("GOOGLE_CLOUD_REGION")
             logger.info("Loading region from .env file")
+    
+        # Dictionary to store temporary directories and their deletion timestamps
+    dir_deletion_schedule = {}
+
+    def delete_dir_after_interval(self,dir_path, interval, logger):
+        time.sleep(interval)
+        if os.path.exists(dir_path):
+            try:
+                logger.info(f"Deleting directory: {dir_path}")
+                shutil.rmtree(dir_path)
+            except Exception as e:
+                logger.error(f"Error deleting directory: {e}")
+        else:
+            logger.info(f"Directory does not exist: {dir_path}")
+
+    def save_uploaded_file_temp(self,uploadedfile):
+        try:
+            # Create a temporary directory "tempDir"
+            temp_dir = "tempDir"
+            os.makedirs(temp_dir, exist_ok=True)
             
+            logger.info(f"Saving uploaded file to {temp_dir}")
+            file_path = os.path.join(temp_dir, uploadedfile.name)
+            with open(file_path, "wb") as f:
+                f.write(uploadedfile.getbuffer())
+                
+            # Schedule directory deletion after 60 seconds
+            self.dir_deletion_schedule[temp_dir] = threading.Thread(
+                target=self.delete_dir_after_interval, args=(temp_dir, 60, logger)
+            )
+            self.dir_deletion_schedule[temp_dir].start()
+
+            return file_path
+        except Exception as e:
+            logger.error(f"Error saving uploaded file: {e}")
+            return None
+    
+    
     # Create method which takes string and calulate its number of words,letter count and for each 1000 characters in that string it will multiply with $0.0005 and return the cost, cost per whole string and total cost..
     def calculate_code_generation_cost(self,string,price=0.0005):
         # Calculate number of words

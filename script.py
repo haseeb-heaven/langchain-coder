@@ -171,7 +171,8 @@ def main():
                         
                     if st.session_state.uploaded_file:
                         logger.info(f"Vertex AI File credentials file '{st.session_state.uploaded_file.name}' initialized state {st.session_state.vertex_ai_loaded}")         
-                        file_path = save_uploaded_file(st.session_state.uploaded_file)  # Save the uploaded file
+                        # Save the temorary uploaded file and delete it after 60 seconds due to security reasons. (Credentials file is deleted after 60 seconds)
+                        file_path = general_utils.save_uploaded_file_temp(st.session_state.uploaded_file)  # Save the uploaded file
                         if file_path:
                             credentials_file_path = file_path
                             #st.toast(f"Credentials file uploaded {credentials_file_path}", icon="✅")
@@ -373,20 +374,6 @@ def display_code_editor(font_size, tab_size, theme, keybinding, show_gutter, sho
     elif st.session_state.generated_code and st.session_state.compiler_mode == "Online":
         st.components.v1.html(st.session_state.output,width=720, height=800, scrolling=True)
 
-@st.cache_data(ttl=1)  # Cache for 5 minutes
-def save_uploaded_file(uploadedfile):
-    try:
-        # Check if tempDir exists, if not, create it
-        if not os.path.exists("tempDir"):
-            os.makedirs("tempDir")
-
-        file_path = os.path.join("tempDir", uploadedfile.name)
-        with open(file_path, "wb") as f:
-            f.write(uploadedfile.getbuffer())
-        return file_path
-    except Exception as e:
-        st.toast(f"Error saving uploaded file: {e}", icon="❌")
-        return None
 
 def handle_onchange_vertexai_temperature(value):
     st.session_state["vertexai"]["temperature"] = value
