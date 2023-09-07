@@ -44,7 +44,7 @@ LangChain Coder AI is a state-of-the-art code generation tool powered by OpenAI 
 ![generated_code_ui](https://github.com/haseeb-heaven/LangChain-CoderAI/blob/master/resources/langchain-code-ui.png?raw=true "")
 
 ## OpenAI Integration
-LangChain Coder AI integrates with [OpenAI](https://openai.com/) to leverage its powerful machine learning models for code generation. OpenAI is an AI research and deployment company that aims to ensure that artificial general intelligence (AGI) benefits all of humanity. For more details on how LangChain integrates with OpenAI, refer to the [official documentation](https://python.langchain.com/docs/integrations/providers/openai).
+LangChain Coder AI integrates with [OpenAI](https://openai.com/) to leverage its powerful machine learning models for code generation. OpenAI is an AI research and deployment company For more details on how LangChain integrates with OpenAI, refer to the [official documentation](https://python.langchain.com/docs/integrations/providers/openai).
 
 You need Open AI API **Key** to use LangChain Coder AI. To get your key, follow these steps:
 ### Get OpenAI API key
@@ -63,7 +63,7 @@ Additionally, the Vertex AI SDK for Python allows for automation of data ingesti
 
 You need Google Vertex **Service Account Credentials** to use LangChain Coder AI. To get your credentials, follow these steps:
 
-### Credentials for Google Vertex AI Service account and download JSON file
+### Credentials for Google Vertex AI Service account
 
 1. Go to the [Google Cloud Platform Console](https://console.cloud.google.com/).
 2. Click the **Menu** button (three horizontal lines) in the top left corner of the page.
@@ -77,6 +77,20 @@ You need Google Vertex **Service Account Credentials** to use LangChain Coder AI
 10. Select **JSON** as the key type.
 11. Click the **Create** button.
 
+After downloading the file in `JSON` format you need to upload it in the application. To do so, follow these steps:
+Enter the project name and location of that project and you're all set to go.
+
+Here is sample Service JSON file.
+```json
+{
+  "type": "service_account",
+  "project_id": "my-project-id",
+  "private_key_id": "my-private-key-id",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nmy-private-key\n-----END PRIVATE KEY-----\n",
+  "client_email": "my-service-account@my-project-id.iam.gserviceaccount.com",
+  "client_id": "my-client-id"
+}
+```
 
 ## 📸 Image Showcase
 **__Main Screen UI__**  
