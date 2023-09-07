@@ -155,8 +155,8 @@ def main():
                 with st.expander("Vertex AI Settings"):
                     try:
                         # Settings for Vertex AI model.
-                        st.session_state.project = st.text_input("Project:", value=st.session_state.project)
-                        st.session_state.region = st.text_input("Region:", value=st.session_state.region)
+                        st.session_state.project = st.text_input("Project:")
+                        st.session_state.region = st.text_input("Region:")
                         st.session_state.uploaded_file = st.file_uploader("Service account file", type=["json"])
                         st.session_state["vertexai"]["temperature"] = st.slider("Temperature", min_value=0.0, max_value=2.0, value=st.session_state["vertexai"]["temperature"], step=0.1)
                         st.session_state["vertexai"]["max_tokens"] = st.slider("Maximum Tokens", min_value=1, max_value=4096, value=st.session_state["vertexai"]["max_tokens"], step=1)
@@ -210,9 +210,6 @@ def main():
     
     # UI Elements - Main Page
     vertex_model_selected = st.session_state["vertexai"]["model_name"]
-    if st.session_state.ai_option == "Vertex AI":
-        st.toast(f"Vertex Model selected: {vertex_model_selected}", icon="✅")
-        
     if vertex_model_selected == "code-bison":
         placeholder = "Enter your prompt for code generation."
     elif vertex_model_selected == "code-gecko":
@@ -259,7 +256,7 @@ def main():
                         else:
                             st.session_state.generated_code = st.session_state.vertexai_langchain.generate_code_completion(st.session_state.code_prompt, code_language)
                     else: # Reinitalize the chain
-                        st.session_state.vertexai_langchain= VertexAILangChain(project=st.session_state.project, location=st.session_state.region, model_name=st.session_state["vertexai"]["model_ai"], max_tokens=st.session_state["vertexai"]["max_tokens"], temperature=st.session_state["vertexai"]["temperature"], credentials_file_path=credentials_file_path)
+                        st.session_state.vertexai_langchain= VertexAILangChain(project=st.session_state.project, location=st.session_state.region, model_name=st.session_state["vertexai"]["model_name"], max_tokens=st.session_state["vertexai"]["max_tokens"], temperature=st.session_state["vertexai"]["temperature"], credentials_file_path=credentials_file_path)
                         st.session_state.vertex_ai_loaded = st.session_state.vertexai_langchain.load_model()
                         st.session_state.generated_code = st.session_state.vertexai_langchain.generate_code(st.session_state.code_prompt, code_language)
                 else:
