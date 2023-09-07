@@ -22,7 +22,7 @@ LangChain Coder AI is a state-of-the-art code generation tool powered by OpenAI 
 - **Save and Execute Code**: Provides options to save the generated code and execute it instantly.
 - **Coding Guidelines**: Ensures the generated code adheres to standards like modularity, exception handling, error handling, logging, comments, efficiency, robustness, memory management, speed optimization, and naming conventions.
 - **Advanced Code Editor**: Customize your coding experience with features like adjustable font size, tab size, themes, keybindings, line numbers, print margins, wrapping, auto-updates, read-only mode, and language selection.
-- **Customizable Vertex AI Settings**: Adjust settings like temperature, max tokens, model name, project, region, and credentials file for Vertex AI.
+- **Customizable Settings**: Adjust settings like temperature, max tokens, model name, project, region, and credentials file for Vertex AI.
 - **Offline and Online Compilation Modes**: Choose between offline and online compiler modes for code execution.
 
 ## AI-Sections.
@@ -31,7 +31,7 @@ LangChain Coder AI is a state-of-the-art code generation tool powered by OpenAI 
 - **Model Selection**: Choose from a variety of models including GPT 3.5, GPT 3.5 Turbo, and the latest GPT 4.
 
 ### 🌐 Vertex AI 
-- **Customizable Settings**: Fine-tune Tokens, Temperature, and set your API Key in the settings.
+- **Customizable Settings**: Fine-tune Tokens, Temperature, and set your Credentials Key in the settings.
 - **Model Selection**: Opt for models like **Code Gecko** for completions and **Code Bison** for code generation. These models are designed to support code completion and generation, enhancing your coding experience.
 
 
@@ -43,11 +43,40 @@ LangChain Coder AI is a state-of-the-art code generation tool powered by OpenAI 
 🎨 Behold the canvas after the masterpiece is painted. Code generation was never this beautiful.</br>
 ![generated_code_ui](https://github.com/haseeb-heaven/LangChain-CoderAI/blob/master/resources/langchain-code-ui.png?raw=true "")
 
+## OpenAI Integration
+LangChain Coder AI integrates with [OpenAI](https://openai.com/) to leverage its powerful machine learning models for code generation. OpenAI is an AI research and deployment company that aims to ensure that artificial general intelligence (AGI) benefits all of humanity. For more details on how LangChain integrates with OpenAI, refer to the [official documentation](https://python.langchain.com/docs/integrations/providers/openai).
+
+You need Open AI API **Key** to use LangChain Coder AI. To get your key, follow these steps:
+### Get OpenAI API key
+
+1. Go to the [OpenAI website](https://beta.openai.com/signup/).
+2. Fill out the form with your information and click “Create Account”.
+3. Once you are logged in, click on “API Keys” in the left-hand menu.
+4. Click on “Generate New Key” to create a new API key.
+5. Copy your API key – we will use it later in our Python code.
+
 ## Vertex AI Integration
 
 LangChain Coder AI integrates with [Google Vertex AI](https://cloud.google.com/python/docs/reference/aiplatform/latest) to leverage its powerful machine learning models for code generation. Vertex AI offers a range of tools and services for ML and AI, and LangChain Coder AI taps into these resources to provide top-notch code suggestions. For more details on how LangChain integrates with Vertex AI, refer to the [official documentation](https://python.langchain.com/docs/integrations/llms/google_vertex_ai_palm).
 
 Additionally, the Vertex AI SDK for Python allows for automation of data ingestion, model training, and predictions on Vertex AI. It provides a programmatic way to access most of the functionalities available in the Google Cloud console. For more information, check out the [Vertex AI SDK for Python](https://cloud.google.com/vertex-ai/docs/python-sdk/use-vertex-ai-python-sdk).
+
+You need Google Vertex **Service Account Credentials** to use LangChain Coder AI. To get your credentials, follow these steps:
+
+### Credentials for Google Vertex AI Service account and download JSON file
+
+1. Go to the [Google Cloud Platform Console](https://console.cloud.google.com/).
+2. Click the **Menu** button (three horizontal lines) in the top left corner of the page.
+3. Select **IAM & Admin** > **Service accounts**.
+4. Click the **Create Service Account** button.
+5. In the **Service account name** field, enter a name for your service account.
+6. Select the **Editor** role for the service account.
+7. Click the **Create** button.
+8. Click the **Keys** tab.
+9. Click the **Add Key** button.
+10. Select **JSON** as the key type.
+11. Click the **Create** button.
+
 
 ## 📸 Image Showcase
 **__Main Screen UI__**  
@@ -61,7 +90,7 @@ Additionally, the Vertex AI SDK for Python allows for automation of data ingesti
 </br>
 
 **__API Rates__**  
-*Shows the API rates for LangChain Coder AI.*  
+*Shows the API rates for OpenAi and Vertex AI.*  
 ![langchain-api-rates](https://github.com/haseeb-heaven/LangChain-Coder/blob/master/resources/langchain-api-rates.png?raw=true "")  
 </br>
 
