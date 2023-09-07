@@ -45,8 +45,9 @@ class GeneralUtils:
                     output = GeneralUtils.run_code(fixed_code, st.session_state.code_language)
                     logger.warning(f"Fixed code output: {output}")
 
-                st.toast("Execution Output:\n" + output, icon="🔥")
+                st.toast("Output:\n" + output, icon="🔥")
                 logger.info(f"Execution Output: {output}")
+                return output
 
         except Exception as e:
             st.toast("Error in code execution:",icon="❌")

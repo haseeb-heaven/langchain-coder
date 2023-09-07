@@ -45,6 +45,12 @@ class VertexAILangChain:
             guidelines_list = []
             logger.info(f"Generating code with parameters: {code_prompt}, {code_language}")
             
+            # Check for empty or null code prompt and code language
+            if not code_prompt or len(code_prompt) == 0:
+                logger.error("Code prompt is empty or null.")
+                st.error("Code generateration cannot be performed as the code prompt is empty or null.")
+                return None
+            
             if st.session_state["coding_guidelines"]["modular_code"]:
                 logger.info("Modular code is enabled.")
                 guidelines_list.append("- Ensure the method is modular in its approach.")
