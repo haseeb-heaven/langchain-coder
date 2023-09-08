@@ -1,0 +1,53 @@
+/* Target the main Streamlit app */
+.streamlit-app {
+    font-family: 'Arial', sans-serif;
+    font-size: 16px;
+}
+
+/* Target the main content area */
+.main {
+    background-color: #add8e6; /* Light Blue */
+    padding: 20px;
+}
+
+/* Target the Streamlit expander header */
+div.st-expander-header {
+    background-color: #add8e6; /* Light Blue */
+    color: #808080; /* Gray */
+    padding: 10px;
+    border-radius: 5px;
+}
+
+/* Target buttons */
+button.stButton.run-button,
+button.stButton.share-button {
+    background-color: #00008b; /* Dark Blue */
+    color: #808080; /* Gray */
+    padding: 10px 20px;
+    border: 2px solid #00008b; /* Dark Blue */
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button.stButton.run-button:hover,
+button.stButton.share-button:hover {
+    background-color: #00008b; /* Dark Blue */
+    color: #808080; /* Gray */
+}
+
+/* Target textareas and inputs */
+textarea.stTextArea,
+input.stTextInput,
+div.stAlert div {
+    background-color: #808080; /* Gray */
+    color: #808080; /* Gray */
+    padding: 2px;
+    font-size: 10px;
+}
+
+/* Target headings */
+h1 {
+    font-family: 'Pacifico', cursive;
+    font-size: 40px;
+    color: #333333;
+}

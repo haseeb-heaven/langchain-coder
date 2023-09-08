@@ -85,7 +85,15 @@ def initialize_session_state():
             "naming_conventions": False
         }
 
+
+def load_css(file_name):
+    with open(file_name) as f:
+        st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
+
 def main():
+    # Load the CSS files
+    load_css('static/css/styles.css')
+
     # initialize session state
     initialize_session_state()
     
