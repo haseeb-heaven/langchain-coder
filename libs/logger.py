@@ -9,6 +9,9 @@ def initialize_logger(filename):
     file_handler = RotatingFileHandler(filename, maxBytes=5*1024*1024)  # 5MB per file
     file_handler.setFormatter(logging.Formatter(log_format))
     
+    # add logger for console
+    console_handler = logging.StreamHandler()
+    console_handler.setFormatter(logging.Formatter(log_format))
     # Create the logger
     logger = logging.getLogger()
     logger.setLevel(logging.INFO)

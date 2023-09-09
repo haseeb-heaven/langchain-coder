@@ -18,6 +18,16 @@ div.st-expander-header {
     border-radius: 5px;
 }
 
+/* Target the Input/Output Options expander */
+div.st-expander-header.Input-Output-Options {
+    /* Add your custom styles here */
+    background-color: #add8e6; /* Light Blue */
+    color: #808080; /* Gray */
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
 /* Target buttons */
 button.stButton.run-button,
 button.stButton.share-button {

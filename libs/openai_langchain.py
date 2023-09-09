@@ -13,7 +13,8 @@ from dotenv import load_dotenv
 class OpenAILangChain:
     code_chain = None
     code_language = 'Python'
-    
+    open_ai_llm = None
+    memory = None
     def __init__(self,code_language="python",temprature:float=0.3,max_tokens=1000,model="text-davinci-003",api_key=None):
         code_prompt = st.session_state.code_prompt
         code_language = st.session_state.code_language
@@ -53,16 +54,21 @@ class OpenAILangChain:
         # Convert the list to a string
         guidelines = "\n".join(guidelines_list)
 
+        # Setting Prompt Template.
+        input_section = f"Given the input for code: {st.session_state.code_input}" if st.session_state.code_input else "make sure the program doesn't ask for any input from the user"
+
         template = f"""
         Task: Design a program {{code_prompt}} in {{code_language}} with the following guidelines and
-        make sure the program doesn't ask for any input from the user and the output is printed on the screen.
-        
-        Guidelines:"""
-        template += guidelines
+        make sure the output is printed on the screen.
+        And make sure the output contains only the code and nothing else.
+        {input_section}
+
+        Guidelines:
+        {guidelines}
+        """
         
         # Prompt Templates
         code_template = PromptTemplate(input_variables=["code_prompt", "code_language"], template=template)
-        code_fix_template = PromptTemplate(input_variables=['code_prompt'],template='Fix any error in the following code in ' +f'{code_language} language' + ' for {code_prompt}')
         # LLM Chains definition
         
         # Create an OpenAI LLM model
@@ -71,12 +77,16 @@ class OpenAILangChain:
         # Create a chain that generates the code
         self.code_chain = LLMChain(llm=open_ai_llm, prompt=code_template,output_key='code', memory=memory, verbose=True)
 
-        # Create a chain that fixes the code
-        code_fix_chain = LLMChain(llm=open_ai_llm, prompt=code_fix_template,output_key='code_fix', memory=memory, verbose=True)
-
-        # Create a sequential chain that combines the two chains above
-        sequential_chain = SequentialChain(chains=[self.code_chain, code_fix_chain], input_variables=['code_prompt','code_language'], output_variables=['code', 'code_fix'])
+        # Auto debug chain
+        auto_debug_template = PromptTemplate(input_variables=['code_prompt'],template='Debug and fix any error in the following code in ' +f'{code_language} language' + ' for {code_prompt}')
+        auto_debug_chain = LLMChain(llm=open_ai_llm, prompt=auto_debug_template,output_key='code_fix', memory=self.memory, verbose=True)
         
+        if not st.session_state.auto_debug_chain:
+            st.session_state.auto_debug_chain = auto_debug_chain
+        
+        # Create a sequential chain that combines the two chains above
+        sequential_chain = SequentialChain(chains=[self.code_chain, auto_debug_chain], input_variables=['code_prompt','code_language'], output_variables=['code', 'code_fix'])
+           
         # Save the chain in the session state
         if "sequential_chain" not in st.session_state:
             st.session_state.sequential_chain = sequential_chain
@@ -106,8 +116,8 @@ class OpenAILangChain:
                 if "memory" in st.session_state:
                     st.session_state.memory = memory
                 
-                with st.expander('Message History'):
-                    st.info(memory.buffer)
+                #with st.expander('Message History'):
+                    #st.info(memory.buffer)
                 return st.session_state.generated_code
             else:
                 st.toast("Error in code generation: Please enter a valid prompt and language.", icon="❌")

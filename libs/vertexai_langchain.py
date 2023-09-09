@@ -75,12 +75,18 @@ class VertexAILangChain:
             # Convert the list to a string
             guidelines = "\n".join(guidelines_list)
 
+            # Setting Prompt Template.
+            input_section = f"Given the input for code: {st.session_state.code_input}" if st.session_state.code_input else "make sure the program doesn't ask for any input from the user"
+
             template = f"""
             Task: Design a program {{code_prompt}} in {{code_language}} with the following guidelines and
-            make sure the program doesn't ask for any input from the user and the output is printed on the screen.
-            
-            Guidelines:"""
-            template += guidelines
+            make sure the output is printed on the screen.
+            And make sure the output contains only the code and nothing else.
+            {input_section}
+
+            Guidelines:
+            {guidelines}
+            """
             
             prompt = PromptTemplate(template=template,input_variables=["code_prompt", "code_language"])
             formatted_prompt = prompt.format(code_prompt=code_prompt, code_language=code_language)

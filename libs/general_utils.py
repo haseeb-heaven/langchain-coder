@@ -18,48 +18,56 @@ from google.auth.transport import requests
 
 class GeneralUtils:
     
-    def execute_code(self,compiler_mode: str):
+    def execute_code(self, compiler_mode: str):
+        code_language = st.session_state.code_language
+        generated_code = st.session_state.generated_code
         
-        if not st.session_state.generated_code or len(st.session_state.generated_code.strip()) == 0 or not st.session_state.code_language or len(st.session_state.code_language.strip()) == 0:
+        if not generated_code or len(generated_code.strip()) == 0 or not code_language or len(code_language.strip()) == 0:
             st.toast("Generated code is empty. Cannot execute an empty code.", icon="❌")
             logger.error("Error in code execution: Generated code is empty.")
             return
         
-        logger.info(f"Executing code: {st.session_state.generated_code[:100]} in language: {st.session_state.code_language} with Compiler Mode: {compiler_mode}")
+        logger.info(f"Executing code: {generated_code[:50]} in language: {code_language} with Compiler Mode: {compiler_mode}")
 
         try:
-            if len(st.session_state.generated_code) == 0 or st.session_state.generated_code == "":
+            if len(generated_code) == 0 or generated_code == "":
                 st.toast("Generated code is empty. Cannot execute an empty code.", icon="❌")
                 return
             
             if compiler_mode.lower() == "online":
-                html_content = self.generate_dynamic_html(st.session_state.code_language, st.session_state.generated_code)
+                html_content = self.generate_dynamic_html(code_language, generated_code)
                 logger.info(f"HTML Template: {html_content[:100]}")
                 return html_content
 
             else:
-                output = self.run_code(st.session_state.generated_code,st.session_state.code_language)
-                logger.info(f"Output execution: {output}")
-
+                output = self.run_code(generated_code, code_language)
+                
+                # Check for errors in code execution
                 if "error" in output.lower() or "exception" in output.lower() or "SyntaxError" in output.lower() or "NameError" in output.lower():
 
                     logger.error(f"Error in code execution: {output}")
-                    response = st.session_state.sequential_chain({'code_topic': st.session_state.generated_code})
+                    response = st.session_state.sequential_chain({'code_topic': generated_code})
                     fixed_code = response['code_fix']
-                    st.code(fixed_code, language=st.session_state.code_language.lower())
+                    st.code(fixed_code, language=code_language.lower())
 
                     with st.expander('Message History'):
                         st.info(st.session_state.memory.buffer)
                     logger.warning(f"Trying to run fixed code: {fixed_code}")
-                    output = GeneralUtils.run_code(fixed_code, st.session_state.code_language)
+                    output = self.run_code(code=fixed_code, language=code_language)
                     logger.warning(f"Fixed code output: {output}")
-
-                st.toast("Output:\n" + output, icon="🔥")
+                    logger.info(f"Execution Output: '{output}' and session output: '{st.session_state.code_output}'")
+                
+                # check for expected output
+                if (st.session_state.code_output is not None and st.session_state.code_output != "" and len(st.session_state.code_output) > 0):
+                    if (output == st.session_state.code_output):
+                        st.toast("Output:\n" + output, icon="🔥")
+                    else:
+                        st.toast("Error the expected output doesnt match the generated output:\n'" + st.session_state.code_output + "'\n", icon="❌")
                 logger.info(f"Execution Output: {output}")
                 return output
 
         except Exception as e:
-            st.toast("Error in code execution:",icon="❌")
+            st.toast("Error in code execution:", icon="❌")
             # Output the stack trace
             st.toast(traceback.format_exc(), icon="❌")
             logger.error(f"Error in code execution: {traceback.format_exc()}")
