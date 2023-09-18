@@ -22,4 +22,4 @@ def initialize_logger(filename):
     
     return logger
 
-logger = initialize_logger("langchain-coder.log")
+logger = initialize_logger("gpt-coder.log")
