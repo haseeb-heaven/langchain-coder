@@ -1,0 +1,11 @@
+# To get started with Dependabot version updates, you'll need to specify which
+# package ecosystems to update and where the package manifests are located.
+# Please see the documentation for all configuration options:
+# https://docs.github.com/github/administering-a-repository/configuration-options-for-dependency-updates
+
+version: 2
+updates:
+  - package-ecosystem: "pip" # The package manager you want to update
+    directory: "/" # The directory where the package manifests are located
+    schedule:
+      interval: "daily" # How often you want Dependabot to check for updates
