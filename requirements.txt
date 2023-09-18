@@ -7,3 +7,4 @@ langchain
 openai
 python-dotenv
 vertexai
+google-generativeai
