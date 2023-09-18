@@ -60,6 +60,8 @@ def initialize_session_state():
         st.session_state.code_input = None
     if "code_output" not in st.session_state:
         st.session_state.code_output = None
+    if "proxy_api" not in st.session_state:
+        st.session_state.proxy_api = None
     
     # Initialize session state for Vertex AI
     if "vertexai" not in st.session_state:
@@ -156,6 +158,7 @@ def main():
                     st.session_state["openai"]["temperature"] = st.slider("Temperature", min_value=0.0, max_value=2.0, value=st.session_state["openai"]["temperature"], step=0.1)
                     st.session_state["openai"]["max_tokens"] = st.slider("Maximum Tokens", min_value=1, max_value=4096, value=st.session_state["openai"]["max_tokens"], step=1)
                     api_key = st.text_input("API Key", value="", key="api_key", type="password")
+                    st.session_state.proxy_api = st.text_input("Proxy API", value="",placeholder="http://myproxy-api.replit.co/")
                     st.session_state.openai_langchain = OpenAILangChain(st.session_state.code_language, st.session_state["openai"]["temperature"], st.session_state["openai"]["max_tokens"], st.session_state["openai"]["model_name"], api_key)
                     st.toast("Open AI initialized successfully.", icon="✅")
                 except Exception as exception:
