@@ -54,6 +54,14 @@ def initialize_session_state():
         st.session_state.download_link = None
     if "download_logs" not in st.session_state:
         st.session_state.download_logs = False
+    if "auto_debug_chain" not in st.session_state:
+        st.session_state.auto_debug_chain = False
+    if "code_input" not in st.session_state:
+        st.session_state.code_input = None
+    if "code_output" not in st.session_state:
+        st.session_state.code_output = None
+    if "proxy_api" not in st.session_state:
+        st.session_state.proxy_api = None
     
     # Initialize session state for Vertex AI
     if "vertexai" not in st.session_state:
@@ -85,7 +93,15 @@ def initialize_session_state():
             "naming_conventions": False
         }
 
+# Load the CSS files
+def load_css(file_name):
+    with open(file_name) as f:
+        st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
+
 def main():
+    # Load the CSS files
+    load_css('static/css/styles.css')
+
     # initialize session state
     initialize_session_state()
     
@@ -132,6 +148,7 @@ def main():
                     st.session_state.download_link = general_utils.generate_download_link(logs_data, logs_filename, file_format,True)
                 
         # Setting options for Open AI
+        api_key = None
         if st.session_state.ai_option == "Open AI":
             with st.expander("Open AI Settings"):
                 try:
@@ -141,6 +158,7 @@ def main():
                     st.session_state["openai"]["temperature"] = st.slider("Temperature", min_value=0.0, max_value=2.0, value=st.session_state["openai"]["temperature"], step=0.1)
                     st.session_state["openai"]["max_tokens"] = st.slider("Maximum Tokens", min_value=1, max_value=4096, value=st.session_state["openai"]["max_tokens"], step=1)
                     api_key = st.text_input("API Key", value="", key="api_key", type="password")
+                    st.session_state.proxy_api = st.text_input("Proxy API", value="",placeholder="http://myproxy-api.replit.co/")
                     st.session_state.openai_langchain = OpenAILangChain(st.session_state.code_language, st.session_state["openai"]["temperature"], st.session_state["openai"]["max_tokens"], st.session_state["openai"]["model_name"], api_key)
                     st.toast("Open AI initialized successfully.", icon="✅")
                 except Exception as exception:
@@ -220,14 +238,33 @@ def main():
     else:
         placeholder = "Enter your prompt for code generation."
         st.error(f"Invalid Vertex AI model selected: {vertex_model_selected}")
-        
+    
+    # Input box for entering the prompt
     st.session_state.code_prompt = st.text_area("Enter Prompt", height=200, placeholder=placeholder,label_visibility='hidden')
 
-    with st.form('code_input_form'):
+    with st.expander("Input/Output Options"):
+        with st.container():
+            st.session_state.code_input = st.text_input("Input (Stdin)", placeholder="Input (Stdin)", label_visibility='collapsed',value=st.session_state.code_input)
+            st.session_state.code_output = st.text_input("Output (Stdout)", placeholder="Output (Stdout)", label_visibility='collapsed',value=st.session_state.code_output)
+    
+    # Set the input and output to None if the input and output is empty
+    if len(st.session_state.code_input) == 0:
+        st.session_state.code_input = None
+        logger.info("Stdin is empty.")
+    else:
+        logger.info(f"Stdin: {st.session_state.code_input}")
+    if len(st.session_state.code_output) == 0:
+        st.session_state.code_output = None
+        logger.info("Stdout is empty.")
+    else:
+        logger.info(f"Stdout: {st.session_state.code_output}")
+    
+                
+    with st.form('code_controls_form'):
         # Create columns for alignment
         file_name_col, save_code_col,generate_code_col,run_code_col = st.columns(4)
 
-        # `code_file` Input Box (for entering the file name) in the first column
+        # Input Box (for entering the file name) in the first column
         with file_name_col:
             code_file = st.text_input("File name", value="", placeholder="File name", label_visibility='collapsed')
 
@@ -247,8 +284,12 @@ def main():
                     if st.session_state.openai_langchain:
                         st.session_state.generated_code = st.session_state.openai_langchain.generate_code(st.session_state.code_prompt, code_language)
                     else:# Reinitialize the chain
-                         st.session_state.openai_langchain = OpenAILangChain(st.session_state.code_language,st.session_state["openai"]["temperature"],st.session_state["openai"]["max_tokens"],st.session_state["openai"]["model_name"],api_key)
-                         st.session_state.generated_code = st.session_state.openai_langchain.generate_code(st.session_state.code_prompt, code_language)
+                        if not api_key:
+                            st.toast("Open AI API key is not initialized.", icon="❌")
+                            logger.error("Open AI API key is not initialized.")
+                        else:
+                            st.session_state.openai_langchain = OpenAILangChain(st.session_state.code_language,st.session_state["openai"]["temperature"],st.session_state["openai"]["max_tokens"],st.session_state["openai"]["model_name"],api_key)
+                            st.session_state.generated_code = st.session_state.openai_langchain.generate_code(st.session_state.code_prompt, code_language)
                 elif st.session_state.ai_option == "Vertex AI":
                     if st.session_state.vertexai_langchain:
                         if not st.session_state.vertex_ai_loaded:
@@ -288,7 +329,7 @@ def main():
 
             # Theme setting
             themes = ["monokai", "github", "tomorrow", "kuroir", "twilight", "xcode", "textmate", "solarized_dark", "solarized_light", "terminal"]
-            theme = st.selectbox("Theme", options=themes, index=themes.index("xcode"))
+            theme = st.selectbox("Theme", options=themes, index=themes.index("solarized_dark"))
 
             # Keybinding setting
             keybindings = ["emacs", "sublime", "vim", "vscode"]
@@ -308,8 +349,12 @@ def main():
         # Display the code output
         if st.session_state.output:
             st.markdown("### Output")
-            if (st.session_state.compiler_mode == "Offline"):
-                st.code(st.session_state.output, language=st.session_state.code_language.lower())
+            #st.toast(f"Compiler mode selected '{st.session_state.compiler_mode}'", icon="✅")
+            if (st.session_state.compiler_mode.lower() == "offline"):
+                if "https://www.jdoodle.com/plugin" in st.session_state.output:
+                    pass
+                else:
+                    st.code(st.session_state.output, language=st.session_state.code_language.lower())
         
         # Display the price of the generated code.
         if st.session_state.generated_code and st.session_state.display_cost:
