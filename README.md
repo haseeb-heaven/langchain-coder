@@ -1,176 +1,103 @@
-# LangChain Coder AI README
+# GPT Coder README
 
 ## 📌 Table of Contents
 1. [Introduction](#introduction)
 2. [AI Sections](#ai-sections)
 3. [Features](#features)
 4. [WebUI - Application Showcase](#webui---application-showcase)
-5. [Vertex AI Integration](#vertex-ai-integration)
-6. [📸 Image Showcase](#📸-image-showcase)
-7. [Packages Used](#packages-used)
-8. [📚 Links and References](#📚-links-and-references)
-9. [Versioning](#versioning)
-10. [Contributing](#contributing)
-11. [License](#license)
-12. [Author](#author)
+5. [📸 Image Showcase](#📸-image-showcase)
+6. [Packages Used](#packages-used)
+7. [📚 Links and References](#📚-links-and-references)
+8. [Versioning](#versioning)
+9. [Contributing](#contributing)
+10. [License](#license)
+11. [Author](#author)
 
 ## Introduction
 
-LangChain Coder AI is a state-of-the-art code generation tool powered by OpenAI and Vertex AI. It provides a seamless experience for developers to generate code snippets in various languages based on the provided prompts. The tool is integrated with advanced AI models like GPT-3.5, GPT-3.5 Turbo, GPT-4, Code Gecko, and Code Bison, ensuring high-quality code outputs.
+GPT Coder is a state-of-the-art code generation tool powered by OpenAI. It provides a seamless experience for developers to generate code snippets in various languages based on the provided prompts. The tool is integrated with advanced AI models like GPT-3.5, GPT-3.5 Turbo, and GPT-4, ensuring high-quality code outputs.
 
 ## Features
 
-- **AI-Powered Code Generation and Completion**: Utilizes OpenAI and Vertex AI models for efficient and accurate code suggestions.
+- **AI-Powered Code Generation and Completion**: Utilizes OpenAI models for efficient and accurate code suggestions.
 - **Save and Execute Code**: Provides options to save the generated code and execute it instantly.
 - **Coding Guidelines**: Ensures the generated code adheres to standards like modularity, exception handling, error handling, logging, comments, efficiency, robustness, memory management, speed optimization, and naming conventions.
 - **Advanced Code Editor**: Customize your coding experience with features like adjustable font size, tab size, themes, keybindings, line numbers, print margins, wrapping, auto-updates, read-only mode, and language selection.
-- **Customizable Settings**: Adjust settings like temperature, max tokens, model name, project, region, and credentials file for Vertex AI.
 - **Offline and Online Compilation Modes**: Choose between offline and online compiler modes for code execution.
 
 ## AI-Sections.
 ### 🤖 OpenAI 
 - **Customizable Settings**: Adjust Tokens, Temperature, and set your API Key directly in the settings.
 - **Model Selection**: Choose from a variety of models including GPT 3.5, GPT 3.5 Turbo, and the latest GPT 4.
-
-### 🌐 Vertex AI 
-- **Customizable Settings**: Fine-tune Tokens, Temperature, and set your Credentials Key in the settings.
-- **Model Selection**: Opt for models like **Code Gecko** for completions and **Code Bison** for code generation. These models are designed to support code completion and generation, enhancing your coding experience.
-
+### 🌐 LangChain and liteLLM Proxy
+- **Code Generation**: Uses LangChain and liteLLM proxy to generate the code.
+- **GPT4-Free API**: Leverages the GPT4-Free API for code generation. Please note that this should only be used non-commercially.
 
 ## WebUI - Application Showcase
 
 🌆 This is the main screen of the application. Dive in with a text prompt, choose your language, and let the magic happen with buttons that feel just right.</br>
-![langchain-main-screen-ui](https://github.com/haseeb-heaven/LangChain-CoderAI/blob/master/resources/langchain-main-screen-ui.png?raw=true "")
+![gptcoder-main-screen-ui](https://github.com/haseeb-heaven/GPT-Coder/blob/master/resources/gptcoder-main-screen-ui.png?raw=true "")
 
 🎨 Behold the canvas after the masterpiece is painted. Code generation was never this beautiful.</br>
-![generated_code_ui](https://github.com/haseeb-heaven/LangChain-CoderAI/blob/master/resources/langchain-code-ui.png?raw=true "")
+![generated_code_ui](https://github.com/haseeb-heaven/GPT-Coder/blob/master/resources/gptcoder-code-ui.png?raw=true "")
 
 ## OpenAI Integration
-LangChain Coder AI integrates with [OpenAI](https://openai.com/) to leverage its powerful machine learning models for code generation. OpenAI is an AI research and deployment company For more details on how LangChain integrates with OpenAI, refer to the [official documentation](https://python.langchain.com/docs/integrations/providers/openai).
+GPT Coder integrates with [OpenAI](https://openai.com/) to leverage its powerful machine learning models for code generation. OpenAI is an AI research and deployment company For more details on how GPT Coder integrates with OpenAI, refer to the [official documentation](https://python.gptcoder.com/docs/integrations/providers/openai).
 
-You need Open AI API **Key** to use LangChain Coder AI. To get your key, follow these steps:
-### Get OpenAI API key
+~~You need Open AI API **Key** to use GPT Coder. To get your key, follow these steps:~~
 
-1. Go to the [OpenAI website](https://beta.openai.com/signup/).
-2. Fill out the form with your information and click “Create Account”.
-3. Once you are logged in, click on “API Keys” in the left-hand menu.
-4. Click on “Generate New Key” to create a new API key.
-5. Copy your API key – we will use it later in our Python code.
-
-## Vertex AI Integration
-
-LangChain Coder AI integrates with [Google Vertex AI](https://cloud.google.com/python/docs/reference/aiplatform/latest) to leverage its powerful machine learning models for code generation. Vertex AI offers a range of tools and services for ML and AI, and LangChain Coder AI taps into these resources to provide top-notch code suggestions. For more details on how LangChain integrates with Vertex AI, refer to the [official documentation](https://python.langchain.com/docs/integrations/llms/google_vertex_ai_palm).
-
-Additionally, the Vertex AI SDK for Python allows for automation of data ingestion, model training, and predictions on Vertex AI. It provides a programmatic way to access most of the functionalities available in the Google Cloud console. For more information, check out the [Vertex AI SDK for Python](https://cloud.google.com/vertex-ai/docs/python-sdk/use-vertex-ai-python-sdk).
-
-You need Google Vertex **Service Account Credentials** to use LangChain Coder AI. To get your credentials, follow these steps:
-
-### Credentials for Google Vertex AI Service account
-
-1. Go to the [Google Cloud Platform Console](https://console.cloud.google.com/).
-2. Click the **Menu** button (three horizontal lines) in the top left corner of the page.
-3. Select **IAM & Admin** > **Service accounts**.
-4. Click the **Create Service Account** button.
-5. In the **Service account name** field, enter a name for your service account.
-6. Select the **Editor** role for the service account.
-7. Click the **Create** button.
-8. Click the **Keys** tab.
-9. Click the **Add Key** button.
-10. Select **JSON** as the key type.
-11. Click the **Create** button.
-
-After downloading the file in `JSON` format you need to upload it in the application. To do so, follow these steps:
-Enter the project name and location of that project and you're all set to go.
-
-Here is sample Service JSON file.
-```json
-{
-  "type": "service_account",
-  "project_id": "my-project-id",
-  "private_key_id": "my-private-key-id",
-  "private_key": "-----BEGIN PRIVATE KEY-----\nmy-private-key\n-----END PRIVATE KEY-----\n",
-  "client_email": "my-service-account@my-project-id.iam.gserviceaccount.com",
-  "client_id": "my-client-id"
-}
-```
 
 ## 📸 Image Showcase
 **__Main Screen UI__**  
 *The main screen of the application.*  
-![langchain-main-screen-ui](https://github.com/haseeb-heaven/LangChain-Coder/blob/master/resources/langchain-main-screen-ui.png?raw=true "")  
+![gptcoder-main-screen-ui](https://github.com/haseeb-heaven/GPT-Coder/blob/master/resources/gptcoder-main-screen-ui.png?raw=true "")  
 </br>
 
 **__Generated Code UI__**  
 *Displays the generated code in a user-friendly UI.*  
-![generated_code_ui](https://github.com/haseeb-heaven/LangChain-Coder/blob/master/resources/langchain-code-ui.png?raw=true "")  
-</br>
-
-**__API Rates__**  
-*Shows the API rates for OpenAi and Vertex AI.*  
-![langchain-api-rates](https://github.com/haseeb-heaven/LangChain-Coder/blob/master/resources/langchain-api-rates.png?raw=true "")  
+![generated_code_ui](https://github.com/haseeb-heaven/GPT-Coder/blob/master/resources/gptcoder-code-ui.png?raw=true "")  
 </br>
 
 **__Dark Theme Code Editor__**  
 *A dark-themed code editor for a comfortable coding experience.*  
-![langchain-code-editor-dark-theme](https://github.com/haseeb-heaven/LangChain-Coder/blob/master/resources/langchain-code-editor-dark-theme.png?raw=true "")  
+![gptcoder-code-editor-dark-theme](https://github.com/haseeb-heaven/GPT-Coder/blob/master/resources/gptcoder-code-editor-dark-theme.png?raw=true "")  
 </br>
 
 **__Coding Guidelines__**  
-*Highlights the coding guidelines supported by LangChain Coder AI.*  
-![langchain-code-guidelines](https://github.com/haseeb-heaven/LangChain-Coder/blob/master/resources/langchain-code-guidelines.png?raw=true "")  
+*Highlights the coding guidelines supported by GPT Coder.*  
+![gptcoder-code-guidelines](https://github.com/haseeb-heaven/GPT-Coder/blob/master/resources/gptcoder-code-guidelines.png?raw=true "")  
 </br>
 
 **__Offline Compiler__**  
 *Showcases the offline compiler mode for executing code.*  
-![langchain-offline-compiler](https://github.com/haseeb-heaven/LangChain-Coder/blob/master/resources/langchain-offline-compiler.png?raw=true "")  
+![gptcoder-offline-compiler](https://github.com/haseeb-heaven/GPT-Coder/blob/master/resources/gptcoder-offline-compiler.png?raw=true "")  
 </br>
 
 **__Online Compiler__**  
 *The online compiler mode with support for multiple languages.*  
-![langchain-online-compiler](https://github.com/haseeb-heaven/LangChain-Coder/blob/master/resources/langchain-online-compiler.png?raw=true "")  
+![gptcoder-online-compiler](https://github.com/haseeb-heaven/GPT-Coder/blob/master/resources/gptcoder-online-compiler.png?raw=true "")  
 </br>
-
-**__Swift Code Demo__**  
-*A demonstration showcasing Swift code generation.*  
-![langchain-swift-code-demo](https://github.com/haseeb-heaven/LangChain-Coder/blob/master/resources/langchain-swift-code-demo.png?raw=true "")  
-</br>
-
-**__Vertex AI Code Gecko__**  
-*Illustrates the code completion feature of Vertex AI Code Gecko.* 
-![langchain-vertex-ai-code-gecko](https://github.com/haseeb-heaven/LangChain-Coder/blob/master/resources/langchain-vertex-ai-code-gecko.png?raw=true "")  
-</br>
-
-
-
 
 ## Packages Used
 
 - **streamlit**: A fast and simple way to create data apps.
 - **streamlit_ace**: A Streamlit component for the Ace editor.
-- **google-auth**: A Google Authentication Library.
-- **google-auth-oauthlib**: A Google Authentication Library for OAuth.
-- **google-cloud-aiplatform**: A client library for interacting with the Vertex AI API.
-- **langchain**: A Python client library for interacting with the LangChain API.
 - **openai**: A Python client library for interacting with the OpenAI API.
 - **python-dotenv**: Reads the key-value pair from .env file and adds them to environment variable.
-- **vertexai**: A Python client library for interacting with the Vertex AI API.
 
 
 ## 📚 Links-and-References
-- [Google Vertex AI Documentation](https://cloud.google.com/python/docs/reference/aiplatform/latest)
-- [LangChain Integration with Vertex AI](https://python.langchain.com/docs/integrations/llms/google_vertex_ai_palm)
-- [Vertex AI SDK for Python](https://cloud.google.com/vertex-ai/docs/python-sdk/use-vertex-ai-python-sdk)
+- [OpenAI Documentation](https://openai.com/docs/)
 
 
 ## Versioning
 
-**Version 1.3** includes these features:
+**Version 1.0** includes these features:
 
 - *AI-powered code generation and completion*
-- *Uses OpenAI and Vertex AI models*
+- *Uses OpenAI models*
 - *Save, execute code, and select coding guidelines*
 - *Advanced code editor features*
-- *Customizable Vertex AI settings*
 - *Offline and online compilation modes*
 - *Coding guidelines*: 
   - *Modularity*
@@ -184,7 +111,7 @@ Here is sample Service JSON file.
   - *Speed optimization*
   - *Naming conventions*
 
-**New in version 1.3:** AI-powered code generation and completion using OpenAI and Vertex AI models.
+**New in version 1.3:** AI-powered code generation and completion using OpenAI models.
 
 ## Contributing
 If you want to contribute to this project and make it better with new ideas, your pull request is very welcomed. If you find any issue just put it in the repository issue section, thank you.
