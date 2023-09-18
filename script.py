@@ -467,7 +467,7 @@ def upgrade_pip_packages():
         print(f"Error upgrading pip packages: {e}")
 
     # create method to install google-generativeai
-    def install_google_generativeai():
+def install_google_generativeai():
         try:
             subprocess.check_call(["pip", "install", "google-generativeai"])
         except Exception as e:
@@ -477,4 +477,5 @@ def upgrade_pip_packages():
 
 if __name__ == "__main__":
     upgrade_pip_packages()
+    install_google_generativeai()
     main()
