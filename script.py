@@ -13,6 +13,7 @@ Date : 06/09/2023
 
 # Install dependencies
 import os
+import subprocess
 import streamlit as st
 from libs.vertexai_langchain import VertexAILangChain
 from libs.general_utils import GeneralUtils
@@ -465,5 +466,15 @@ def upgrade_pip_packages():
     except Exception as e:
         print(f"Error upgrading pip packages: {e}")
 
+    # create method to install google-generativeai
+    def install_google_generativeai():
+        try:
+            subprocess.check_call(["pip", "install", "google-generativeai"])
+        except Exception as e:
+            print(f"Error installing google-generativeai: {e}")
+
+
+
 if __name__ == "__main__":
+    upgrade_pip_packages()
     main()
