@@ -27,6 +27,13 @@ LangChain Coder AI is a state-of-the-art code generation tool powered by OpenAI 
 - **Customizable Settings**: Adjust settings like temperature, max tokens, model name, project, region, and credentials file for Vertex AI.
 - **Offline and Online Compilation Modes**: Choose between offline and online compiler modes for code execution.
 
+## LangChain Coder in Action
+
+[![LangChain Coder in Action](https://img.youtube.com/vi/ezlYpv_gpck/0.jpg)](https://www.youtube.com/watch?v=ezlYpv_gpck)
+
+Watch LangChain Coder in action in this video!
+
+
 ## AI-Sections.
 ### 🤖 OpenAI 
 - **Customizable Settings**: Adjust Tokens, Temperature, and set your API Key directly in the settings.
