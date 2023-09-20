@@ -173,7 +173,7 @@ def main():
                 
     with st.form('code_controls_form'):
         # Create columns for alignment
-        file_name_col, save_code_col,generate_code_col,run_code_col = st.columns(4)
+        file_name_col, save_code_col, generate_code_col, fix_code_col, run_code_col = st.columns(5)
 
         # Input Box (for entering the file name) in the first column
         with file_name_col:
@@ -181,15 +181,14 @@ def main():
 
         # Save Code button in the second column
         with save_code_col:
-            download_code_submitted = st.form_submit_button("Download Code")
+            download_code_submitted = st.form_submit_button("Download")
             if download_code_submitted:
                 file_format = "text/plain"
                 st.session_state.download_link = general_utils.generate_download_link(st.session_state.generated_code, code_file,file_format,True)
                 
         # Generate Code button in the third column
         with generate_code_col:
-            button_label = "Generate Code"
-            generate_submitted = st.form_submit_button(button_label)
+            generate_submitted = st.form_submit_button("Generate")
             if generate_submitted:
                 if st.session_state.ai_option == "Open AI":
                     if st.session_state.openai_langchain:
@@ -206,9 +205,15 @@ def main():
                     st.session_state.generated_code = ""
                     logger.error(f"Please select a valid AI option selected '{st.session_state.ai_option}' option")
 
-        # Run Code button in the fourth column
+        # Fix Code button in the fourth column
+        with fix_code_col:
+            fix_submitted = st.form_submit_button("Fix/Repair")
+            if fix_submitted:
+                st.session_state.generated_code = st.session_state.openai_langchain.fix_generated_code(st.session_state.generated_code, st.session_state.code_language)
+
+        # Run Code button in the fifth column
         with run_code_col:
-            execute_submitted = st.form_submit_button("Execute Code")
+            execute_submitted = st.form_submit_button("Execute")
             if execute_submitted:
                 st.session_state.output = general_utils.execute_code(st.session_state.compiler_mode)
             

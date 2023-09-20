@@ -132,3 +132,57 @@ class OpenAILangChain:
         except Exception as e:
             st.toast(f"Error in code generation: {e}", icon="❌")
             logger.error(f"Error in code generation: {traceback.format_exc()}")
+            
+    def fix_generated_code(self, code, code_language):
+        try:
+            # Check for valid code and language
+            if not code or len(code) == 0:
+                st.toast("Error in code fixing: Please enter a valid code.", icon="❌")
+                logger.error("Error in code fixing: Please enter a valid code.")
+                return
+            
+            logger.info(f"Fixing code in language: {code_language}")
+            if code and len(code) > 0 and code_language and len(code_language) > 0:
+                logger.info(f"Fixing code in language: {code_language}")
+                
+                # Renamed self.code_chain to self.fix_code_chain as per the instructions
+                logger.info(f"Fix code chain is initialized.")
+                
+                # This template is used to generate the prompt for fixing the code
+                template = f"""
+                Task: Fix the following program {{code}} in {{code_language}}.
+                Make sure the output is printed on the screen.
+                And make sure the output contains the full fixed code.
+                Add comments in that line where you fixed and what you fixed.
+                """
+                
+                # Prompt Templates
+                code_template = PromptTemplate(input_variables=["code", "code_language"], template=template)
+                
+                # LLM Chains definition
+                # Create a chain that generates the code
+                self.fix_code_chain = LLMChain(llm=self.lite_llm, prompt=code_template,output_key='code', verbose=True)  # Change from open_ai_llm to lite_llm
+
+                # LLM chain, please fix the code here and add comments where you made changes
+                st.session_state.fixed_code = self.fix_code_chain.run({"code": code, "code_language": code_language})
+                logger.info(f"Fixed code: {st.session_state.fixed_code[:100]}...")
+                
+                fixed_code = st.session_state.fixed_code
+                if '```' in fixed_code:
+                    start = fixed_code.find('```') + len('```\n')
+                    end = fixed_code.find('```', start)
+                    # Skip the first line after ```
+                    start = fixed_code.find('\n', start) + 1
+                    # Extracting the fixed code
+                    extracted_fixed_code = fixed_code[start:end]
+                    return extracted_fixed_code
+                else:
+                    return fixed_code
+
+            else:
+                st.toast("Error in code fixing: Please enter a valid code and language.", icon="❌")
+                logger.error("Error in code fixing: Please enter a valid code and language.")
+        except Exception as e:
+            st.toast(f"Error in code fixing: {e}", icon="❌")
+            logger.error(f"Error in code fixing: {traceback.format_exc()}")
+
