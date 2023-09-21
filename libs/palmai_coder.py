@@ -13,18 +13,18 @@ logging.basicConfig(filename='palm-coder.log', filemode='w', format='%(name)s - 
 logger = logging.getLogger(__name__)
 
 class PalmAI:
-    def __init__(self, model="models/text-bison-001", temperature=0.3, max_output_tokens=2048, mode="balanced"):
+    def __init__(self,api_key, model="text-bison-001", temperature=0.3, max_output_tokens=2048, mode="balanced"):
         """
         Initialize the PalmAI class with the given parameters.
         """
-        self.model = model
+        self.model = "models/" + model
         self.temperature = temperature
         self.max_output_tokens = max_output_tokens
         self.mode = mode
         self.api_key = None
         self.top_k = 20
         self.top_p = 0.85
-        self._configure_api()
+        self._configure_api(api_key)
         
         # Dynamically construct guidelines based on session state
         self.guidelines_list = []
@@ -45,17 +45,23 @@ class PalmAI:
         # Convert the list to a string
         self.guidelines = "\n".join(self.guidelines_list)
 
-    def _configure_api(self):
+    def _configure_api(self,api_key=None):
         """
         Configure the palm API with the API key from the environment.
         """
         try:
-            load_dotenv()
-            self.api_key = os.getenv('PALMAI_API_KEY')
+            if api_key is None or len(api_key) == 0:
+                load_dotenv()
+                self.api_key = os.getenv('PALMAI_API_KEY')
+                st.toast("API key loaded from environment variables.", icon="✅")
+            else:
+                self.api_key = api_key
+                st.toast("API key provided from settings.", icon="✅")
             palm.configure(api_key=self.api_key)
             logger.info("Palm API configured successfully.")
         except Exception as e:
             logger.error(f"Error occurred while configuring Palm API: {e}")
+            st.toast(f"Error occurred while configuring Palm API: {e}", icon="❌")
 
     def extract_code(self, code):
         """
@@ -136,19 +142,30 @@ class PalmAI:
             )
             logger.info("Text generation completed successfully.")
             
-            # extract the code from the palm completion
-            code = palm_completion.result
-                        
+            code = None
             if palm_completion:
+                # extract the code from the palm completion
+                code = palm_completion.result
                 logger.info(f"Palm coder is initialized.")
                 logger.info(f"Generated code: {code[:100]}...")
-                        
-            return self.extract_code(code)
+            
+            if palm_completion:
+                # Extracted code from the palm completion
+                extracted_code = self.extract_code(code)
+                
+                # Check if the code or extracted code is not empty or null
+                if not code or not extracted_code:
+                    raise Exception("Error: Generated code or extracted code is empty or null.")
+                
+                return extracted_code
+            else:
+                raise Exception("Error in code generation: Please enter a valid code.")
+            
         except Exception as e:
             st.toast(f"Error in code generation: {e}", icon="❌")
             logger.error(f"Error in code generation: {traceback.format_exc()}")
 
-    def fix_generated_code(self, code):
+    def fix_generated_code(self, code,code_language):
         """
         Function to fix the generated code using the palm API.
         """
@@ -160,11 +177,11 @@ class PalmAI:
             
             logger.info(f"Fixing code")
             if code and len(code) > 0:
-                logger.info(f"Fixing code")
+                logger.info(f"Fixing code {code[:100]}... in language {code_language}")
                 
                 # This template is used to generate the prompt for fixing the code
                 template = f"""
-                Task: Fix the following program {{code}}.
+                Task: Fix the following program {{code}} in the language {code_language} with the following guidelines
                 Make sure the output is printed on the screen.
                 And make sure the output contains the full fixed code.
                 Add comments in that line where you fixed and what you fixed.
@@ -175,7 +192,7 @@ class PalmAI:
                 
                 # LLM Chains definition
                 # Create a chain that generates the code
-                completion = palm.generate_text(
+                palm_completion = palm.generate_text(
                     model=self.model,
                     prompt=code_template,
                     candidate_count=4,
@@ -186,10 +203,19 @@ class PalmAI:
                     stop_sequences=[],
                     safety_settings=[{"category":"HARM_CATEGORY_DEROGATORY","threshold":1},{"category":"HARM_CATEGORY_TOXICITY","threshold":1},{"category":"HARM_CATEGORY_VIOLENCE","threshold":2},{"category":"HARM_CATEGORY_SEXUAL","threshold":2},{"category":"HARM_CATEGORY_MEDICAL","threshold":2},{"category":"HARM_CATEGORY_DANGEROUS","threshold":2}],
                 )
-                logger.info("Code fixing completed successfully.")
-                
-                return self.extract_code(code)
 
+                if palm_completion:
+                    # Extracted code from the palm completion
+                    code = palm_completion.result
+                    extracted_code = self.extract_code(code)
+                    
+                    # Check if the code or extracted code is not empty or null
+                    if not code or not extracted_code:
+                        raise Exception("Error: Generated code or extracted code is empty or null.")
+                    else:
+                        return extracted_code
+                else:
+                    raise Exception("Error in code fixing: Please enter a valid code.")
             else:
                 st.toast("Error in code fixing: Please enter a valid code and language.", icon="❌")
                 logger.error("Error in code fixing: Please enter a valid code and language.")

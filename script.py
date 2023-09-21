@@ -1,14 +1,14 @@
 """
-# GPT Coder - AI 🦜🔗
-This is all in one tools for AI based code generation and code completion. It uses Open AI and Vertex AI models for code generation and code completion. It also provides an option to save the generated code and execute it. It also provides an option to select the coding guidelines for the generated code.
-it features code completion and code generation using Open AI and Vertex AI models. It also provides an option to save the generated code and execute it. It also provides an option to select the coding guidelines for the generated code.
+# Palm Coder - AI 🦜🔗
+This is all in one tools for AI based code generation and code completion. It uses Palm AI for code generation and code completion. It also provides an option to save the generated code and execute it. It also provides an option to select the coding guidelines for the generated code.
+it features code completion and code generation using Palm AI. It also provides an option to save the generated code and execute it. It also provides an option to select the coding guidelines for the generated code.
 It has code editor with advanced features like font size, tab size, theme, keybinding, line number, print margin, wrap, auto update, readonly, language.
-It has more customization options for Vertex AI model like temperature, max tokens, model name, project, region, credentials file.
+It has more customization options for Palm AI model like temperature, max tokens, model name.
 It has offline and online compiler mode for code execution.
 It has Coding Guidelines for generated code like modular code, exception handling, error handling, logs, comments, efficient code, robust code, memory efficiency, speed efficiency, naming conventions.
 
 Author: HeavenHM (http://www.github.com/haseeb-heaven)
-Date : 19/09/2023
+Date : 21/09/2023
 """
 
 import os
@@ -16,7 +16,7 @@ import subprocess
 import streamlit as st
 from libs.general_utils import GeneralUtils
 from libs.lang_codes import LangCodes
-from libs.openai_langchain import OpenAILangChain
+from libs.palmai_coder import PalmAI
 from libs.logger import logger
 from streamlit_ace import st_ace
 
@@ -30,13 +30,13 @@ def initialize_session_state():
     if "generated_code" not in st.session_state:
         st.session_state.generated_code = ""
     if "ai_option" not in st.session_state:
-        st.session_state.ai_option = "Open AI"
+        st.session_state.ai_option = "Palm AI"
     if "output" not in st.session_state:
         st.session_state.output = ""
     if "uploaded_file" not in st.session_state:
         st.session_state.uploaded_file = None
-    if "openai_langchain" not in st.session_state:
-        st.session_state.openai_langchain = None
+    if "palm_langchain" not in st.session_state:
+        st.session_state.palm_langchain = None
     if "code_prompt" not in st.session_state:
         st.session_state.code_prompt = ""
     if "display_cost" not in st.session_state:
@@ -54,10 +54,10 @@ def initialize_session_state():
     if "proxy_api" not in st.session_state:
         st.session_state.proxy_api = None
     
-    # Initialize session state for Open AI
-    if "openai" not in st.session_state:
-        st.session_state["openai"] = {
-            "model_name": "gpt-3.5-turbo",
+    # Initialize session state for Palm AI
+    if "palm" not in st.session_state:
+        st.session_state["palm"] = {
+            "model_name": "text-bison-001",
             "temperature": 0.1,
             "max_tokens": 2048
         }
@@ -93,8 +93,8 @@ def main():
     general_utils = GeneralUtils()
     
     # Streamlit UI 
-    st.title("GPT Coder - AI Coding Assistant 🦜🔗")
-    logger.info("GPT Coder - AI Coding Assistant 🦜🔗")
+    st.title("Palm Coder - AI Coding Assistant 🦜🔗")
+    logger.info("Palm Coder - AI Coding Assistant 🦜🔗")
     
     # Support
     display_support()
@@ -102,12 +102,12 @@ def main():
     # Sidebar for settings
     with st.sidebar:
         # Session states for input options
-        st.session_state.ai_option = st.session_state.get("ai_option", "Open AI")
+        st.session_state.ai_option = st.session_state.get("ai_option", "Palm AI")
         st.session_state.code_language = st.session_state.get("code_language", "Python")
         st.session_state.compiler_mode = st.session_state.get("compiler_mode", "Offline")
 
         # Dropdown for selecting AI options
-        st.selectbox("Select AI", ["Open AI"], key="ai_option")
+        st.selectbox("Select AI", ["Palm AI"], key="ai_option")
 
         # Dropdown for selecting code language
         st.selectbox("Select language", list(LangCodes().keys()), key="code_language")
@@ -122,7 +122,7 @@ def main():
             st.session_state.download_logs = st.checkbox("Download Logs", value=False)
             # Display the logs
             if st.session_state.download_logs:
-                logs_filename = "gpt-coder.log"
+                logs_filename = "palm-coder.log"
                 # read the logs
                 with open(logs_filename, "r") as file:
                     logs_data = file.read()
@@ -130,22 +130,26 @@ def main():
                     file_format = "text/plain"
                     st.session_state.download_link = general_utils.generate_download_link(logs_data, logs_filename, file_format,True)
                 
-        # Setting options for Open AI
-        api_key = None
-        if st.session_state.ai_option == "Open AI":
-            with st.expander("Open AI Settings"):
+        # Setting options for Palm AI
+        if st.session_state.ai_option == "Palm AI":
+            with st.expander("Palm AI Settings"):
                 try:
-                    # Settings for Open AI model.
-                    model_options_openai = ["gpt-4", "gpt-4-0613", "gpt-4-32k", "gpt-4-32k-0613", "gpt-3.5-turbo", "gpt-3.5-turbo", "gpt-3.5-turbo-16k", "gpt-3.5-turbo-0613", "gpt-3.5-turbo-16k-0613", "gpt-3.5-turbo-0301", "text-davinci-003"]
-                    st.session_state["openai"]["model_name"] = st.selectbox("Model name", model_options_openai, index=model_options_openai.index(st.session_state["openai"]["model_name"]))
-                    st.session_state["openai"]["temperature"] = st.slider("Temperature", min_value=0.0, max_value=1.0, value=st.session_state["openai"]["temperature"], step=0.1)
-                    st.session_state["openai"]["max_tokens"] = st.slider("Maximum Tokens", min_value=1, max_value=4096, value=st.session_state["openai"]["max_tokens"], step=1)
-                    st.session_state.proxy_api = st.text_input("Proxy API", value="",placeholder="http://myproxy-api.replit.co/")
-                    st.session_state.openai_langchain = OpenAILangChain(st.session_state.code_language, st.session_state["openai"]["temperature"], st.session_state["openai"]["max_tokens"], st.session_state["openai"]["model_name"])
-                    st.toast("Open AI initialized successfully.", icon="✅")
+                    # Settings for Palm AI model.
+                    model_options_palm = ["chat-bison-001", "text-bison-001", "embedding-gecko-001"]
+                    st.session_state["palm"]["model_name"] = st.selectbox("Model name", model_options_palm, index=model_options_palm.index(st.session_state["palm"]["model_name"]))
+                    st.session_state["palm"]["temperature"] = st.slider("Temperature", min_value=0.0, max_value=1.0, value=st.session_state["palm"]["temperature"], step=0.1)
+                    st.session_state["palm"]["max_tokens"] = st.slider("Maximum Tokens", min_value=1, max_value=8196, value=st.session_state["palm"]["max_tokens"], step=1)
+                    # Add password option for getting API key
+                    api_key = st.text_input("API Key", type="password")
+                    try:
+                        st.session_state.palm_langchain = PalmAI(api_key, model=st.session_state["palm"]["model_name"], temperature=st.session_state["palm"]["temperature"], max_output_tokens=st.session_state["palm"]["max_tokens"])
+                    except Exception as e:
+                        st.toast(f"Error initializing PalmAI: {str(e)}", icon="❌")
+                        logger.error(f"Error initializing PalmAI: {str(e)}")
+                    st.toast("Palm AI initialized successfully.", icon="✅")
                 except Exception as exception:
-                    st.toast(f"Error loading Open AI: {str(exception)}", icon="❌")
-                    logger.error(f"Error loading Open AI: {str(exception)}")
+                    st.toast(f"Error loading Palm AI: {str(exception)}", icon="❌")
+                    logger.error(f"Error loading Palm AI: {str(exception)}")
     
     # UI Elements - Main Page
     placeholder = "Enter your prompt for code generation."
@@ -190,16 +194,16 @@ def main():
         with generate_code_col:
             generate_submitted = st.form_submit_button("Generate")
             if generate_submitted:
-                if st.session_state.ai_option == "Open AI":
-                    if st.session_state.openai_langchain:
-                        st.session_state.generated_code = st.session_state.openai_langchain.generate_code(st.session_state.code_prompt, code_language)
+                if st.session_state.ai_option == "Palm AI":
+                    if st.session_state.palm_langchain:
+                        st.session_state.generated_code = st.session_state.palm_langchain.generate_code(st.session_state.code_prompt, code_language)
                     else:# Reinitialize the chain
                         if not api_key:
-                            st.toast("Open AI API key is not initialized.", icon="❌")
-                            logger.error("Open AI API key is not initialized.")
+                            st.toast("Palm AI API key is not initialized.", icon="❌")
+                            logger.error("Palm AI API key is not initialized.")
                         else:
-                            st.session_state.openai_langchain = OpenAILangChain(st.session_state.code_language,st.session_state["openai"]["temperature"],st.session_state["openai"]["max_tokens"],st.session_state["openai"]["model_name"],api_key)
-                            st.session_state.generated_code = st.session_state.openai_langchain.generate_code(st.session_state.code_prompt, code_language)
+                            st.session_state.palm_langchain = PalmAI(api_key, model=st.session_state["palm"]["model_name"], temperature=st.session_state["palm"]["temperature"], max_output_tokens=st.session_state["palm"]["max_tokens"])
+                            st.session_state.generated_code = st.session_state.palm_langchain.generate_code(st.session_state.code_prompt, code_language)
                 else:
                     st.toast(f"Please select a valid AI option selected '{st.session_state.ai_option}' option", icon="❌")
                     st.session_state.generated_code = ""
@@ -209,7 +213,7 @@ def main():
         with fix_code_col:
             fix_submitted = st.form_submit_button("Fix/Repair")
             if fix_submitted:
-                st.session_state.generated_code = st.session_state.openai_langchain.fix_generated_code(st.session_state.generated_code, st.session_state.code_language)
+                st.session_state.generated_code = st.session_state.palm_langchain.fix_generated_code(st.session_state.generated_code, st.session_state.code_language)
 
         # Run Code button in the fifth column
         with run_code_col:
@@ -260,20 +264,9 @@ def main():
         
         # Display the price of the generated code.
         if st.session_state.generated_code and st.session_state.display_cost:
-            if st.session_state.ai_option == "Open AI":
-                selected_model = st.session_state["openai"]["model_name"]
-                if selected_model == "gpt-3":
-                    cost, cost_per_whole_string, total_cost = general_utils.gpt_3_generation_cost(st.session_state.generated_code)
-                    st.table([["Cost/1K Token", f"{cost} USD"], ["Cost/Whole String", f"{cost_per_whole_string} USD"], ["Total Cost", f"{total_cost} USD"]])
-                elif selected_model == "gpt-4":
-                    cost, cost_per_whole_string, total_cost = general_utils.gpt_4_generation_cost(st.session_state.generated_code)
-                    st.table([["Cost/1K Token", f"{cost} USD"], ["Cost/Whole String", f"{cost_per_whole_string} USD"], ["Total Cost", f"{total_cost} USD"]])
-                elif selected_model == "text-davinci-003":
-                    cost, cost_per_whole_string, total_cost = general_utils.gpt_text_davinci_generation_cost(st.session_state.generated_code)
-                    st.table([["Cost/1K Token", f"{cost} USD"], ["Cost/Whole String", f"{cost_per_whole_string} USD"], ["Total Cost", f"{total_cost} USD"]])
-            elif st.session_state.ai_option == "Vertex AI":
-                selected_model = st.session_state["vertexai"]["model_name"]
-                if selected_model == "code-bison" or selected_model == "code-gecko":
+            if st.session_state.ai_option == "Palm AI":
+                selected_model = st.session_state["palm"]["model_name"]
+                if selected_model in ["chat-bison-001", "text-bison-001", "embedding-gecko-001"]:
                     cost, cost_per_whole_string, total_cost = general_utils.codey_generation_cost(st.session_state.generated_code)
                     st.table([["Cost/1K Token", f"{cost} USD"], ["Cost/Whole String", f"{cost_per_whole_string} USD"], ["Total Cost", f"{total_cost} USD"]])
 
