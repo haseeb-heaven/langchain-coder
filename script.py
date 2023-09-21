@@ -48,11 +48,17 @@ def initialize_session_state():
     if "auto_debug_chain" not in st.session_state:
         st.session_state.auto_debug_chain = False
     if "code_input" not in st.session_state:
-        st.session_state.code_input = None
+        st.session_state.code_input = ""
     if "code_output" not in st.session_state:
-        st.session_state.code_output = None
+        st.session_state.code_output = ""
     if "proxy_api" not in st.session_state:
         st.session_state.proxy_api = None
+    if "stderr" not in st.session_state:
+        st.session_state.stderr = None
+    if "code_fix_instructions" not in st.session_state:
+        st.session_state.code_fix_instructions = ""
+    if "sequential_chain" not in st.session_state:
+        st.session_state.sequential_chain = None
     
     # Initialize session state for Palm AI
     if "palm" not in st.session_state:
@@ -152,16 +158,16 @@ def main():
                     logger.error(f"Error loading Palm AI: {str(exception)}")
     
     # UI Elements - Main Page
-    placeholder = "Enter your prompt for code generation."
     
     # Input box for entering the prompt
-    st.session_state.code_prompt = st.text_area("Enter Prompt", height=200, placeholder=placeholder,label_visibility='hidden')
+    st.session_state.code_prompt = st.text_area("Enter Prompt", height=200, placeholder="Enter your prompt...",label_visibility='hidden')
 
-    with st.expander("Input/Output Options"):
+    with st.expander("Input Options"):
         with st.container():
             st.session_state.code_input = st.text_input("Input (Stdin)", placeholder="Input (Stdin)", label_visibility='collapsed',value=st.session_state.code_input)
             st.session_state.code_output = st.text_input("Output (Stdout)", placeholder="Output (Stdout)", label_visibility='collapsed',value=st.session_state.code_output)
-    
+            st.session_state.code_fix_instructions = st.text_input("Fix instructions", placeholder="Fix instructions", label_visibility='collapsed',value=st.session_state.code_fix_instructions)
+            
     # Set the input and output to None if the input and output is empty
     if len(st.session_state.code_input) == 0:
         st.session_state.code_input = None
@@ -211,9 +217,14 @@ def main():
 
         # Fix Code button in the fourth column
         with fix_code_col:
-            fix_submitted = st.form_submit_button("Fix/Repair")
+            fix_submitted = st.form_submit_button("Auto Fix")
             if fix_submitted:
-                st.session_state.generated_code = st.session_state.palm_langchain.fix_generated_code(st.session_state.generated_code, st.session_state.code_language)
+                if len(st.session_state.code_fix_instructions) == 0:
+                    st.toast("Missing fix instructions", icon="❌")
+                    logger.warning("Missing fix instructions")
+                    
+                logger.info(f"Fixing code with instructions: {st.session_state.code_fix_instructions}")
+                st.session_state.generated_code = st.session_state.palm_langchain.fix_generated_code(st.session_state.generated_code, st.session_state.code_language,st.session_state.code_fix_instructions)
 
         # Run Code button in the fifth column
         with run_code_col:

@@ -21,6 +21,7 @@ class GeneralUtils:
     def execute_code(self, compiler_mode: str):
         code_language = st.session_state.code_language
         generated_code = st.session_state.generated_code
+        output = None
         
         if not generated_code or len(generated_code.strip()) == 0 or not code_language or len(code_language.strip()) == 0:
             st.toast("Generated code is empty. Cannot execute an empty code.", icon="❌")
@@ -50,8 +51,6 @@ class GeneralUtils:
                     fixed_code = response['code_fix']
                     st.code(fixed_code, language=code_language.lower())
 
-                    with st.expander('Message History'):
-                        st.info(st.session_state.memory.buffer)
                     logger.warning(f"Trying to run fixed code: {fixed_code}")
                     output = self.run_code(code=fixed_code, language=code_language)
                     logger.warning(f"Fixed code output: {output}")
@@ -71,6 +70,7 @@ class GeneralUtils:
             # Output the stack trace
             st.toast(traceback.format_exc(), icon="❌")
             logger.error(f"Error in code execution: {traceback.format_exc()}")
+            return output
     
     # Generate Dynamic HTML for JDoodle Compiler iFrame Embedding.
     def generate_dynamic_html(self,language, code_prompt):
@@ -144,6 +144,7 @@ class GeneralUtils:
                 output = subprocess.run(
                     ["python", file.name], capture_output=True, text=True)
                 logger.info(f"Runner Output execution: {output.stdout + output.stderr}")
+                st.session_state.stderr = True if output.stderr else False
                 return output.stdout + output.stderr
 
         elif language == "C" or language == "C++":
@@ -159,12 +160,14 @@ class GeneralUtils:
                         ["gcc" if language == "C" else "g++", "-o", exec_file.name, src_file.name], capture_output=True, text=True)
 
                     if compile_output.returncode != 0:
+                        st.session_state.stderr = True
                         return compile_output.stderr
 
                     logger.info(f"Output file: {exec_file.name}")
                     run_output = subprocess.run(
                         [exec_file.name], capture_output=True, text=True)
                     logger.info(f"Runner Output execution: {run_output.stdout + run_output.stderr}")
+                    st.session_state.stderr = True if run_output.stderr else False
                     return run_output.stdout + run_output.stderr
 
         elif language == "JavaScript":
@@ -176,6 +179,7 @@ class GeneralUtils:
                 output = subprocess.run(
                     ["node", file.name], capture_output=True, text=True)
                 logger.info(f"Runner Output execution: {output.stdout + output.stderr}")
+                st.session_state.stderr = True if output.stderr else False
                 return output.stdout + output.stderr
             
         elif language == "Java":
@@ -185,8 +189,10 @@ class GeneralUtils:
                     classname = "Main"  # Assuming the class name is Main, adjust if needed
                     compile_output = subprocess.run(["javac", file.name], capture_output=True, text=True)
                     if compile_output.returncode != 0:
+                        st.session_state.stderr = True
                         return compile_output.stderr
                     run_output = subprocess.run(["java", "-cp", tempfile.gettempdir(), classname], capture_output=True, text=True)
+                    st.session_state.stderr = True if run_output.stderr else False
                     return run_output.stdout + run_output.stderr
 
         elif language == "Swift":
@@ -194,6 +200,7 @@ class GeneralUtils:
                     file.write(code)
                     file.flush()
                     output = subprocess.run(["swift", file.name], capture_output=True, text=True)
+                    st.session_state.stderr = True if output.stderr else False
                     return output.stdout + output.stderr
 
         elif language == "C#":
@@ -202,9 +209,11 @@ class GeneralUtils:
                     file.flush()
                     compile_output = subprocess.run(["csc", file.name], capture_output=True, text=True)
                     if compile_output.returncode != 0:
+                        st.session_state.stderr = True
                         return compile_output.stderr
                     exe_name = file.name.replace(".cs", ".exe")
                     run_output = subprocess.run([exe_name], capture_output=True, text=True)
+                    st.session_state.stderr = True if run_output.stderr else False
                     return run_output.stdout + run_output.stderr
 
         elif language == "Scala":
@@ -212,6 +221,7 @@ class GeneralUtils:
                     file.write(code)
                     file.flush()
                     output = subprocess.run(["scala", file.name], capture_output=True, text=True)
+                    st.session_state.stderr = True if output.stderr else False
                     return output.stdout + output.stderr
 
         elif language == "Ruby":
@@ -219,6 +229,7 @@ class GeneralUtils:
                     file.write(code)
                     file.flush()
                     output = subprocess.run(["ruby", file.name], capture_output=True, text=True)
+                    st.session_state.stderr = True if output.stderr else False
                     return output.stdout + output.stderr
 
         elif language == "Kotlin":
@@ -227,8 +238,10 @@ class GeneralUtils:
                     file.flush()
                     compile_output = subprocess.run(["kotlinc", file.name, "-include-runtime", "-d", "output.jar"], capture_output=True, text=True)
                     if compile_output.returncode != 0:
+                        st.session_state.stderr = True
                         return compile_output.stderr
                     run_output = subprocess.run(["java", "-jar", "output.jar"], capture_output=True, text=True)
+                    st.session_state.stderr = True if run_output.stderr else False
                     return run_output.stdout + run_output.stderr
 
         elif language == "Go":
@@ -237,8 +250,10 @@ class GeneralUtils:
                     file.flush()
                     compile_output = subprocess.run(["go", "build", "-o", "output.exe", file.name], capture_output=True, text=True)
                     if compile_output.returncode != 0:
+                        st.session_state.stderr = True
                         return compile_output.stderr
                     run_output = subprocess.run(["./output.exe"], capture_output=True, text=True)
+                    st.session_state.stderr = True if run_output.stderr else False
                     return run_output.stdout + run_output.stderr
         else:
             return "Unsupported language."
