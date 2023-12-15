@@ -13,6 +13,7 @@ Date : 06/09/2023
 
 # Install dependencies
 import os
+from libs.palm_coder import PalmAI
 import streamlit as st
 from libs.vertexai_langchain import VertexAILangChain
 from libs.general_utils import GeneralUtils
@@ -60,6 +61,8 @@ def initialize_session_state():
         st.session_state.code_input = None
     if "code_output" not in st.session_state:
         st.session_state.code_output = None
+    if "palm_langchain" not in st.session_state:
+        st.session_state.palm_langchain = None
     
     # Initialize session state for Vertex AI
     if "vertexai" not in st.session_state:
@@ -73,6 +76,14 @@ def initialize_session_state():
     if "openai" not in st.session_state:
         st.session_state["openai"] = {
             "model_name": "text-davinci-003",
+            "temperature": 0.1,
+            "max_tokens": 2048
+        }
+        
+    # Initialize session state for Palm AI
+    if "palm" not in st.session_state:
+        st.session_state["palm"] = {
+            "model_name": "text-bison-001",
             "temperature": 0.1,
             "max_tokens": 2048
         }
@@ -122,7 +133,7 @@ def main():
         st.session_state.compiler_mode = st.session_state.get("compiler_mode", "Offline")
 
         # Dropdown for selecting AI options
-        st.selectbox("Select AI", ["Open AI", "Vertex AI"], key="ai_option")
+        st.selectbox("Select AI", ["Open AI", "Vertex AI", "Palm AI"], key="ai_option")
 
         # Dropdown for selecting code language
         st.selectbox("Select language", list(LangCodes().keys()), key="code_language")
@@ -221,10 +232,31 @@ def main():
                         # Show error message
                         st.toast(error_message, icon="❌")
                         logger.error(error_message)
-                    
+            
             except Exception as exception:
                 st.toast(f"Error loading Vertex AI: {str(exception)}", icon="❌")
                 logger.error(f"Error loading Vertex AI: {str(exception)}")
+                
+        # Setting options for Palm AI
+        elif st.session_state.ai_option == "Palm AI":
+            with st.expander("Palm AI Settings"):
+                try:
+                    # Settings for Palm AI model.
+                    model_options_palm = ["chat-bison-001", "text-bison-001", "embedding-gecko-001"]
+                    st.session_state["palm"]["model_name"] = st.selectbox("Model name", model_options_palm, index=model_options_palm.index(st.session_state["palm"]["model_name"]))
+                    st.session_state["palm"]["temperature"] = st.slider("Temperature", min_value=0.0, max_value=1.0, value=st.session_state["palm"]["temperature"], step=0.1)
+                    st.session_state["palm"]["max_tokens"] = st.slider("Maximum Tokens", min_value=1, max_value=8196, value=st.session_state["palm"]["max_tokens"], step=1)
+                    # Add password option for getting API key
+                    api_key = st.text_input("API Key", type="password")
+                    try:
+                        st.session_state.palm_langchain = PalmAI(api_key, model=st.session_state["palm"]["model_name"], temperature=st.session_state["palm"]["temperature"], max_output_tokens=st.session_state["palm"]["max_tokens"])
+                    except Exception as e:
+                        st.toast(f"Error initializing PalmAI: {str(e)}", icon="❌")
+                        logger.error(f"Error initializing PalmAI: {str(e)}")
+                    st.toast("Palm AI initialized successfully.", icon="✅")
+                except Exception as exception:
+                    st.toast(f"Error loading Palm AI: {str(exception)}", icon="❌")
+                    logger.error(f"Error loading Palm AI: {str(exception)}")
     
     # UI Elements - Main Page
     vertex_model_selected = st.session_state["vertexai"]["model_name"]
@@ -245,16 +277,17 @@ def main():
             st.session_state.code_output = st.text_input("Output (Stdout)", placeholder="Output (Stdout)", label_visibility='collapsed',value=st.session_state.code_output)
     
     # Set the input and output to None if the input and output is empty
-    if len(st.session_state.code_input) == 0:
-        st.session_state.code_input = None
-        logger.info("Stdin is empty.")
-    else:
-        logger.info(f"Stdin: {st.session_state.code_input}")
-    if len(st.session_state.code_output) == 0:
-        st.session_state.code_output = None
-        logger.info("Stdout is empty.")
-    else:
-        logger.info(f"Stdout: {st.session_state.code_output}")
+    if st.session_state.code_input and st.session_state.code_output: 
+        if len(st.session_state.code_input) == 0:
+            st.session_state.code_input = None
+            logger.info("Stdin is empty.")
+        else:
+            logger.info(f"Stdin: {st.session_state.code_input}")
+        if len(st.session_state.code_output) == 0:
+            st.session_state.code_output = None
+            logger.info("Stdout is empty.")
+        else:
+            logger.info(f"Stdout: {st.session_state.code_output}")
     
                 
     with st.form('code_controls_form'):
@@ -276,6 +309,7 @@ def main():
         with generate_code_col:
             button_label = "Generate Code" if st.session_state["vertexai"]["model_name"] == "code-bison" else "Complete Code"
             generate_submitted = st.form_submit_button(button_label)
+            
             if generate_submitted:
                 if st.session_state.ai_option == "Open AI":
                     if st.session_state.openai_langchain:
@@ -301,6 +335,18 @@ def main():
                         st.session_state.vertexai_langchain= VertexAILangChain(project=st.session_state.project, location=st.session_state.region, model_name=st.session_state["vertexai"]["model_name"], max_tokens=st.session_state["vertexai"]["max_tokens"], temperature=st.session_state["vertexai"]["temperature"], credentials_file_path=credentials_file_path)
                         st.session_state.vertex_ai_loaded = st.session_state.vertexai_langchain.load_model(st.session_state["vertexai"]["model_name"],st.session_state["vertexai"]["max_tokens"],st.session_state["vertexai"]["temperature"])
                         st.session_state.generated_code = st.session_state.vertexai_langchain.generate_code(st.session_state.code_prompt, code_language)
+                
+                elif st.session_state.ai_option == "Palm AI":
+                    if st.session_state.palm_langchain:
+                        st.session_state.generated_code = st.session_state.palm_langchain.generate_code(st.session_state.code_prompt, code_language)
+                    else:# Reinitialize the chain
+                        if not api_key:
+                            st.toast("Palm AI API key is not initialized.", icon="❌")
+                            logger.error("Palm AI API key is not initialized.")
+                        else:
+                            st.session_state.palm_langchain = PalmAI(api_key, model=st.session_state["palm"]["model_name"], temperature=st.session_state["palm"]["temperature"], max_output_tokens=st.session_state["palm"]["max_tokens"])
+                            st.session_state.generated_code = st.session_state.palm_langchain.generate_code(st.session_state.code_prompt, code_language)
+                
                 else:
                     st.toast(f"Please select a valid AI option selected '{st.session_state.ai_option}' option", icon="❌")
                     st.session_state.generated_code = ""
@@ -355,6 +401,7 @@ def main():
         
         # Display the price of the generated code.
         if st.session_state.generated_code and st.session_state.display_cost:
+            
             if st.session_state.ai_option == "Open AI":
                 selected_model = st.session_state["openai"]["model_name"]
                 if selected_model == "gpt-3":
@@ -366,13 +413,31 @@ def main():
                 elif selected_model == "text-davinci-003":
                     cost, cost_per_whole_string, total_cost = general_utils.gpt_text_davinci_generation_cost(st.session_state.generated_code)
                     st.table([["Cost/1K Token", f"{cost} USD"], ["Cost/Whole String", f"{cost_per_whole_string} USD"], ["Total Cost", f"{total_cost} USD"]])
+            
             elif st.session_state.ai_option == "Vertex AI":
                 selected_model = st.session_state["vertexai"]["model_name"]
                 if selected_model == "code-bison" or selected_model == "code-gecko":
                     cost, cost_per_whole_string, total_cost = general_utils.codey_generation_cost(st.session_state.generated_code)
                     st.table([["Cost/1K Token", f"{cost} USD"], ["Cost/Whole String", f"{cost_per_whole_string} USD"], ["Total Cost", f"{total_cost} USD"]])
+            
+            elif st.session_state.ai_option == "Palm AI":
+                selected_model = st.session_state["palm"]["model_name"]
+                if selected_model == "text-bison-001":
+                    cost = 0.00025  # Cost per 1K input characters for online requests
+                    cost_per_whole_string = 0.0005  # Cost per 1K output characters for online requests
+                    total_cost = general_utils.palm_text_bison_generation_cost(st.session_state.generated_code)
+                    st.table([["Cost/1K Token", f"{cost} USD"], ["Cost/Whole String", f"{cost_per_whole_string} USD"], ["Total Cost", f"{total_cost} USD"]])
+                elif selected_model == "chat-bison-001":
+                    cost = 0.00025  # Cost per 1K input characters for online requests
+                    cost_per_whole_string = 0.0005  # Cost per 1K output characters for online requests
+                    total_cost = general_utils.palm_chat_bison_generation_cost(st.session_state.generated_code)
+                    st.table([["Cost/1K Token", f"{cost} USD"], ["Cost/Whole String", f"{cost_per_whole_string} USD"], ["Total Cost", f"{total_cost} USD"]])
+                elif selected_model == "embedding-gecko-001":
+                    cost = 0.0002  # Cost per 1K characters input for generating embeddings using text as an input
+                    cost_per_whole_string = 0.0002  # Assuming the same cost for output characters
+                    total_cost = general_utils.palm_embedding_gecko_generation_cost(st.session_state.generated_code)
+                    st.table([["Cost/1K Token", f"{cost} USD"], ["Cost/Whole String", f"{cost_per_whole_string} USD"], ["Total Cost", f"{total_cost} USD"]])
 
-        
     # Expander for coding guidelines
     with st.sidebar.expander("Coding Guidelines"):
         # create checkbox to select all guidelines and change the state of all guidelines
