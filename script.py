@@ -13,6 +13,7 @@ Date : 21/09/2023
 
 import os
 import subprocess
+from matplotlib import pyplot as plt
 import streamlit as st
 from libs.general_utils import GeneralUtils
 from libs.lang_codes import LangCodes
@@ -230,7 +231,23 @@ def main():
         with run_code_col:
             execute_submitted = st.form_submit_button("Execute")
             if execute_submitted:
-                st.session_state.output = general_utils.execute_code(st.session_state.compiler_mode)
+                try:
+                    st.session_state.output = general_utils.execute_code(st.session_state.compiler_mode)
+                    # Check if there are files created as chart.png, table.md, or graph.png
+                    # If they exist, display them using appropriate Streamlit controls
+                    if os.path.isfile('chart.png'):
+                        st.image('chart.png')  # Display the image using Streamlit's st.image
+                    if os.path.isfile('table.md'):
+                        st.markdown(open('table.md').read())
+                    if os.path.isfile('graph.png'):
+                        # Display the graph using Streamlit's st.pyplot
+                        import matplotlib.pyplot as plt
+                        import matplotlib.image as mpimg
+                        img = mpimg.imread('graph.png')
+                        imgplot = plt.imshow(img)
+                        st.pyplot(imgplot,use_container_width=True)
+                except Exception as e:
+                    logger.error(f"Error occurred while executing code: {e}")
             
     # Save and Run Code
     if st.session_state.generated_code:
