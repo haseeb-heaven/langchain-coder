@@ -1,29 +1,49 @@
 import traceback
 import os
 import streamlit as st
-from langchain.llms import OpenAI
+from langchain.chat_models import ChatLiteLLM
+from langchain.prompts.chat import (
+    ChatPromptTemplate,
+    SystemMessagePromptTemplate,
+    AIMessagePromptTemplate,
+    HumanMessagePromptTemplate,
+)
+from langchain.schema import AIMessage, HumanMessage, SystemMessage
 from langchain.prompts import PromptTemplate
 from langchain.chains import LLMChain, SequentialChain
 from langchain.memory import ConversationBufferMemory
-from langchain.llms import OpenAI
 from libs.logger import logger
-import openai
 from dotenv import load_dotenv
 
 class OpenAILangChain:
     code_chain = None
     code_language = 'Python'
-    open_ai_llm = None
+    lite_llm = None  # Change from open_ai_llm to lite_llm
     memory = None
-    def __init__(self,code_language="python",temprature:float=0.3,max_tokens=1000,model="text-davinci-003",api_key=None):
+    
+    def __init__(self,code_language="python",temprature:float=0.3,max_tokens=1000,model="gpt-3.5-turbo",api_key=None):
         code_prompt = st.session_state.code_prompt
         code_language = st.session_state.code_language
-        logger.info(f"Initializing LangChainCoder... with parameters: {code_language}, {temprature}, {max_tokens}, {model} {code_prompt}")
+        logger.info(f"Initializing OpenAILangChain... with parameters: {code_language}, {temprature}, {max_tokens}, {model} {code_prompt}")
 
         # Set the OPENAI_API_KEY environment variable
         load_dotenv()
         
-        openai.api_key = api_key or os.getenv("OPENAI_API_KEY")
+        #st.toast(f"Proxy API value is {st.session_state.proxy_api} and length {len(st.session_state.proxy_api)}", icon="✅")
+        if st.session_state.proxy_api != "" and len(st.session_state.proxy_api) > 0 and api_key == None:
+            st.toast("Using proxy API", icon="✅")
+            os.environ["OPENAI_API_KEY"] = "" # This value is ignored when api_base is set.
+        elif api_key:
+            os.environ["OPENAI_API_KEY"] = api_key
+        
+        # Create a LiteLLM model
+        self.lite_llm = ChatLiteLLM(model=model, temperature=temprature, max_tokens=max_tokens, openai_api_key=api_key)
+        
+        if st.session_state.proxy_api:
+            self.lite_llm.api_base = st.session_state.proxy_api
+        
+        # Define code_template and memory
+        code_template = PromptTemplate(input_variables=['code_prompt'],template='Write a code in ' +f'{code_language} language' + ' for {code_prompt}')
         memory = ConversationBufferMemory(input_key='code_prompt', memory_key='chat_history')
         
         # give info of selected source for API key
@@ -71,15 +91,12 @@ class OpenAILangChain:
         code_template = PromptTemplate(input_variables=["code_prompt", "code_language"], template=template)
         # LLM Chains definition
         
-        # Create an OpenAI LLM model
-        open_ai_llm = OpenAI(temperature=temprature, max_tokens=max_tokens, model=model,openai_api_key=openai.api_key)
-
         # Create a chain that generates the code
-        self.code_chain = LLMChain(llm=open_ai_llm, prompt=code_template,output_key='code', memory=memory, verbose=True)
+        self.code_chain = LLMChain(llm=self.lite_llm, prompt=code_template,output_key='code', memory=memory, verbose=True)  # Change from open_ai_llm to lite_llm
 
         # Auto debug chain
         auto_debug_template = PromptTemplate(input_variables=['code_prompt'],template='Debug and fix any error in the following code in ' +f'{code_language} language' + ' for {code_prompt}')
-        auto_debug_chain = LLMChain(llm=open_ai_llm, prompt=auto_debug_template,output_key='code_fix', memory=self.memory, verbose=True)
+        auto_debug_chain = LLMChain(llm=self.lite_llm, prompt=auto_debug_template,output_key='code_fix', memory=self.memory, verbose=True)  # Change from open_ai_llm to lite_llm
         
         if not st.session_state.auto_debug_chain:
             st.session_state.auto_debug_chain = auto_debug_chain
@@ -118,7 +135,17 @@ class OpenAILangChain:
                 
                 #with st.expander('Message History'):
                     #st.info(memory.buffer)
-                return st.session_state.generated_code
+                code = st.session_state.generated_code
+                if '```' in code:
+                    start = code.find('```') + len('```\n')
+                    end = code.find('```', start)
+                    # Skip the first line after ```
+                    start = code.find('\n', start) + 1
+                    extracted_code = code[start:end]
+                    return extracted_code
+                else:
+                    return code
+
             else:
                 st.toast("Error in code generation: Please enter a valid prompt and language.", icon="❌")
                 logger.error("Error in code generation: Please enter a valid prompt and language.")
