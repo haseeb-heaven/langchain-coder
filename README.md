@@ -16,7 +16,8 @@
 
 ## Introduction
 
-LangChain Coder AI is a state-of-the-art code generation tool powered by OpenAI and Vertex AI. It provides a seamless experience for developers to generate code snippets in various languages based on the provided prompts. The tool is integrated with advanced AI models like GPT-3.5, GPT-3.5 Turbo, GPT-4, Code Gecko, and Code Bison, ensuring high-quality code outputs.
+LangChain Coder AI is a state-of-the-art code generation tool powered by OpenAI and Vertex AI. It provides a seamless experience for developers to generate code snippets in various languages based on the provided prompts. </br>The tool is integrated with advanced AI models like </br>_**OpenAI:** GPT-3.5, GPT-3.5 Turbo, GPT-4_</br> **Google:** _Code Gecko, and Code Bison, PALM and Gemini_</br> 
+Ensuring high-quality code outputs from these powerful models.
 
 ## Features
 
@@ -102,17 +103,20 @@ Here is sample Service JSON file.
 ```
 
 ## PALM AI Integration:
-LangChain Coder AI integrates with [PALM AI](https://ai.google/discover/palm2/) to leverage its powerful machine learning models for code generation. PALM AI is an AI research and deployment company For more details on how LangChain integrates with PALM AI.
+LangChain Coder AI integrates with [PALM AI](https://ai.google/discover/palm2/) to leverage its powerful machine learning models for code generation.
+- PALM AI is legacy model from Google AI and **deprecated** now.
 
-### Install -Get PALM AI key
+## Gemini AI Integration:
+LangChain Coder AI integrates with [GEMINI AI](https://deepmind.google/technologies/gemini/) to leverage its powerful machine learning models for code generation.
+- Gemini AI is the **latest model** from Google AI and successor of PALM AI.
 
-*Step 1:* **Obtain the Google Palm API key.**
-*Step 2:* Visit the following URL: *https://makersuite.google.com/app/apikey*
-*Step 3:* Click on the **Create API Key** button.
-*Step 4:* The generated key is your API key. Please make sure to **copy** it and **paste** it in the required field below.
-*Note:* The API key is crucial for the functioning of the AutoBard-Coder. Please ensure to keep it safe and do not share it with anyone.
+### Setup: Get PALM/GEMINI AI key
 
-
+*Step 1:* **Obtain the Google Palm/Gemini API key.**.</br>
+*Step 2:* Visit the following URL: *https://makersuite.google.com/app/apikey*.</br>
+*Step 3:* Click on the **Create API Key** button.</br>
+*Step 4:* The generated key is your API key. </br>Please make sure to **copy** it and **paste** it in the required field below.</br>
+*Note:* The API key is crucial for the functioning of Google AI models. Please ensure to keep it safe and do not share it with anyone.</br>
 
 ## 📸 Image Showcase
 **__Main Screen UI__**  
@@ -183,6 +187,15 @@ LangChain Coder AI integrates with [PALM AI](https://ai.google/discover/palm2/) 
 
 
 ## Versioning
+
+**Version 1.5** includes these features:
+- **GEMINI AI Integration**: LangChain Coder AI integrates with GEMINI AI.
+- **Customizable Settings**: Adjust Tokens, Temperature, and set your API Key directly in the settings.
+- **Model Selection**: Choose from a variety of models including **gemini-pro**,**emini-pro-vision**.
+- **GEMINI AI Models** GEMINI 2 Supports the following models:
+  - **gemini-pro**: A chatbot model that can be used to generate responses to a given prompt.
+  - **gemini-pro-vision**: An image generation model that can be used to generate text from a given prompt
+
 
 **Version 1.4** includes these features:
 - **PALM AI Integration**: LangChain Coder AI integrates with PALM AI.
