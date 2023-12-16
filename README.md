@@ -105,14 +105,11 @@ Here is sample Service JSON file.
 LangChain Coder AI integrates with [PALM AI](https://ai.google/discover/palm2/) to leverage its powerful machine learning models for code generation. PALM AI is an AI research and deployment company For more details on how LangChain integrates with PALM AI.
 
 ### Install -Get PALM AI key
-
-*Step 1:* **Obtain the Google Palm API key.**
-*Step 2:* Visit the following URL: *https://makersuite.google.com/app/apikey*
-*Step 3:* Click on the **Create API Key** button.
-*Step 4:* The generated key is your API key. Please make sure to **copy** it and **paste** it in the required field below.
-*Note:* The API key is crucial for the functioning of the AutoBard-Coder. Please ensure to keep it safe and do not share it with anyone.
-
-
+**Obtain the Google Palm API key.**.</br>
+1. Visit the following URL: *https://makersuite.google.com/app/apikey*.</br>
+2. Click on the **Create API Key** button.</br>
+3. The generated key is your API key. Please make sure to **copy** it and **paste** it in the required field below.</br>
+*Note:* The API key is crucial for the functioning of the PALM-AI. Please ensure to keep it safe and do not share it with anyone.</br>
 
 ## 📸 Image Showcase
 **__Main Screen UI__**  
