@@ -169,7 +169,6 @@ def main():
                 
         # Setting options for Open AI
         api_key = None
-        st.toast(f"Session state AI Option: {st.session_state.ai_option}", icon="✅")
         if st.session_state.ai_option == "Open AI":
             with st.expander("Open AI Settings"):
                 try:
@@ -214,7 +213,6 @@ def main():
                         file_path = general_utils.save_uploaded_file_temp(st.session_state.uploaded_file)  # Save the uploaded file
                         if file_path:
                             credentials_file_path = file_path
-                            #st.toast(f"Credentials file uploaded {credentials_file_path}", icon="✅")
                         else:
                             st.toast("Failed to save the uploaded file.", icon="❌")
                     
@@ -445,11 +443,7 @@ def main():
                     st.code(st.session_state.output, language=st.session_state.code_language.lower())
         
         # Display the price of the generated code.
-        #st.toast(f"Generated code: {st.session_state.generated_code}", icon="✅")
-        #st.toast(f"Display Cost/API: {st.session_state.display_cost}", icon="✅")
-        
         if st.session_state.generated_code and st.session_state.display_cost:
-            st.toast(f"AI Option Inside: {st.session_state.ai_option}", icon="✅")
             if st.session_state.ai_option == "Open AI":
                 selected_model = st.session_state["openai"]["model_name"]
                 if selected_model == "gpt-3":
@@ -488,7 +482,6 @@ def main():
 
             elif st.session_state.ai_option == "Gemini AI":
                 selected_model = st.session_state["gemini"]["model_name"]
-                st.toast(f"Selected model: {selected_model}", icon="✅")
                 
                 if selected_model == "gemini-pro":
                     cost_per_input_char = 0.00025  # Cost per 1K input characters for online requests
