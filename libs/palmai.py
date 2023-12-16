@@ -10,10 +10,6 @@ from libs.logger import logger
 import streamlit as st
 
 
-# Set up logging
-logging.basicConfig(filename='palm-coder.log', filemode='w', format='%(name)s - %(levelname)s - %(message)s')
-logger = logging.getLogger(__name__)
-
 class PalmAI:
     def __init__(self,api_key, model="text-bison-001", temperature=0.3, max_output_tokens=2048, mode="balanced"):
         """
@@ -87,8 +83,8 @@ class PalmAI:
             else:
                 logger.info("No special characters found in the code. Returning the original code.")
                 return code
-        except Exception as e:
-            logger.error(f"Error occurred while extracting code: {e}")
+        except Exception as exception:
+            logger.error(f"Error occurred while extracting code: {exception}")
             return None
     
     def _install_package(self, package_name):
@@ -164,19 +160,6 @@ class PalmAI:
             And follow the proper coding guidelines and dont add comment unless instructed to do so.
             {self.guidelines}
             """
-
-            # If graph were requested.
-            if 'graph' in code_prompt.lower():
-                prompt += "\n" + "using Python use Matplotlib save the graph in file called 'graph.png'"
-
-            # if Chart were requested
-            if 'chart' in code_prompt.lower() or 'plot' in code_prompt.lower():
-                prompt += "\n" + "using Python use Plotly save the chart in file called 'chart.png'"
-
-            # if Table were requested
-            if 'table' in code_prompt.lower():
-                prompt += "\n" + "using Python use Pandas save the table in file called 'table.md'"
-            
             
             palm_completion = palm.generate_text(
                 model=self.model,
@@ -210,8 +193,8 @@ class PalmAI:
             else:
                 raise Exception("Error in code generation: Please enter a valid code.")
             
-        except Exception as e:
-            st.toast(f"Error in code generation: {e}", icon="❌")
+        except Exception as exception:
+            st.toast(f"Error in code generation: {exception}", icon="❌")
             logger.error(f"Error in code generation: {traceback.format_exc()}")
 
     def fix_generated_code(self, code, code_language, fix_instructions=""):
@@ -308,6 +291,6 @@ class PalmAI:
             else:
                 st.toast("Error in code fixing: Please enter a valid code and language.", icon="❌")
                 logger.error("Error in code fixing: Please enter a valid code and language.")
-        except Exception as e:
-            st.toast(f"Error in code fixing: {e}", icon="❌")
+        except Exception as exception:
+            st.toast(f"Error in code fixing: {exception}", icon="❌")
             logger.error(f"Error in code fixing: {traceback.format_exc()}")

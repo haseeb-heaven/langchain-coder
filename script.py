@@ -13,7 +13,8 @@ Date : 06/09/2023
 
 # Install dependencies
 import os
-from libs.palm_coder import PalmAI
+from libs.geminiai import GeminiAI
+from libs.palmai import PalmAI
 import streamlit as st
 from libs.vertexai_langchain import VertexAILangChain
 from libs.general_utils import GeneralUtils
@@ -63,6 +64,8 @@ def initialize_session_state():
         st.session_state.code_output = None
     if "palm_langchain" not in st.session_state:
         st.session_state.palm_langchain = None
+    if "gemini_langchain" not in st.session_state:
+        st.session_state.gemini_langchain = None
     
     # Initialize session state for Vertex AI
     if "vertexai" not in st.session_state:
@@ -84,6 +87,14 @@ def initialize_session_state():
     if "palm" not in st.session_state:
         st.session_state["palm"] = {
             "model_name": "text-bison-001",
+            "temperature": 0.1,
+            "max_tokens": 2048
+        }
+
+    # Initialize session state for Palm AI
+    if "gemini" not in st.session_state:
+        st.session_state["gemini"] = {
+            "model_name": "gemini-pro",
             "temperature": 0.1,
             "max_tokens": 2048
         }
@@ -133,7 +144,7 @@ def main():
         st.session_state.compiler_mode = st.session_state.get("compiler_mode", "Offline")
 
         # Dropdown for selecting AI options
-        st.selectbox("Select AI", ["Open AI", "Vertex AI", "Palm AI"], key="ai_option")
+        st.selectbox("Select AI", ["Open AI", "Vertex AI", "Palm AI","Gemini AI"], key="ai_option")
 
         # Dropdown for selecting code language
         st.selectbox("Select language", list(LangCodes().keys()), key="code_language")
@@ -158,6 +169,7 @@ def main():
                 
         # Setting options for Open AI
         api_key = None
+        st.toast(f"Session state AI Option: {st.session_state.ai_option}", icon="✅")
         if st.session_state.ai_option == "Open AI":
             with st.expander("Open AI Settings"):
                 try:
@@ -251,14 +263,35 @@ def main():
                     api_key = st.text_input("API Key", type="password")
                     try:
                         st.session_state.palm_langchain = PalmAI(api_key, model=st.session_state["palm"]["model_name"], temperature=st.session_state["palm"]["temperature"], max_output_tokens=st.session_state["palm"]["max_tokens"])
-                    except Exception as e:
-                        st.toast(f"Error initializing PalmAI: {str(e)}", icon="❌")
-                        logger.error(f"Error initializing PalmAI: {str(e)}")
+                    except Exception as exception:
+                        st.toast(f"Error initializing PalmAI: {str(exception)}", icon="❌")
+                        logger.error(f"Error initializing PalmAI: {str(exception)}")
                     st.toast("Palm AI initialized successfully.", icon="✅")
                 except Exception as exception:
                     st.toast(f"Error loading Palm AI: {str(exception)}", icon="❌")
                     logger.error(f"Error loading Palm AI: {str(exception)}")
     
+        # Setting options for Gemini AI
+        elif st.session_state.ai_option == "Gemini AI":
+            with st.expander("Gemini AI Settings"):
+                try:
+                    # Settings for Gemini AI model.
+                    model_options_gemini = ["gemini-pro","gemini-pro-vision"]
+                    st.session_state["gemini"]["model_name"] = st.selectbox("Model name", model_options_gemini, index=model_options_gemini.index(st.session_state["gemini"]["model_name"]))
+                    st.session_state["gemini"]["temperature"] = st.slider("Temperature", min_value=0.0, max_value=1.0, value=st.session_state["gemini"]["temperature"], step=0.1)
+                    st.session_state["gemini"]["max_tokens"] = st.slider("Maximum Tokens", min_value=1, max_value=8196, value=st.session_state["gemini"]["max_tokens"], step=1)
+                    # Add password option for getting API key
+                    api_key = st.text_input("API Key", type="password")
+                    try:
+                        st.session_state.gemini_langchain = GeminiAI(api_key, model=st.session_state["gemini"]["model_name"], temperature=st.session_state["gemini"]["temperature"], max_output_tokens=st.session_state["gemini"]["max_tokens"])
+                    except Exception as exception:
+                        st.toast(f"Error initializing Gemini AI: {str(exception)}", icon="❌")
+                        logger.error(f"Error initializing Gemini AI: {str(exception)}")
+                    st.toast("Gemini AI initialized successfully.", icon="✅")
+                except Exception as exception:
+                    st.toast(f"Error loading Gemini AI: {str(exception)}", icon="❌")
+                    logger.error(f"Error loading Gemini AI: {str(exception)}")
+                    
     # UI Elements - Main Page
     vertex_model_selected = st.session_state["vertexai"]["model_name"]
     if vertex_model_selected == "code-bison":
@@ -347,6 +380,17 @@ def main():
                         else:
                             st.session_state.palm_langchain = PalmAI(api_key, model=st.session_state["palm"]["model_name"], temperature=st.session_state["palm"]["temperature"], max_output_tokens=st.session_state["palm"]["max_tokens"])
                             st.session_state.generated_code = st.session_state.palm_langchain.generate_code(st.session_state.code_prompt, code_language)
+            
+                elif st.session_state.ai_option == "Gemini AI":
+                    if st.session_state.gemini_langchain:
+                        st.session_state.generated_code = st.session_state.gemini_langchain.generate_code(st.session_state.code_prompt, code_language)
+                    else:# Reinitialize the chain
+                        if not api_key:
+                            st.toast("Gemini AI API key is not initialized.", icon="❌")
+                            logger.error("Gemini AI API key is not initialized.")
+                        else:
+                            st.session_state.gemini_langchain = GeminiAI(api_key, model=st.session_state["gemini"]["model_name"], temperature=st.session_state["gemini"]["temperature"], max_output_tokens=st.session_state["gemini"]["max_tokens"])
+                            st.session_state.generated_code = st.session_state.gemini_langchain.generate_code(st.session_state.code_prompt, code_language)
                 
                 else:
                     st.toast(f"Please select a valid AI option selected '{st.session_state.ai_option}' option", icon="❌")
@@ -401,8 +445,11 @@ def main():
                     st.code(st.session_state.output, language=st.session_state.code_language.lower())
         
         # Display the price of the generated code.
+        #st.toast(f"Generated code: {st.session_state.generated_code}", icon="✅")
+        #st.toast(f"Display Cost/API: {st.session_state.display_cost}", icon="✅")
+        
         if st.session_state.generated_code and st.session_state.display_cost:
-            
+            st.toast(f"AI Option Inside: {st.session_state.ai_option}", icon="✅")
             if st.session_state.ai_option == "Open AI":
                 selected_model = st.session_state["openai"]["model_name"]
                 if selected_model == "gpt-3":
@@ -439,6 +486,24 @@ def main():
                     total_cost = general_utils.palm_embedding_gecko_generation_cost(st.session_state.generated_code)
                     st.table([["Cost/1K Token", f"{cost} USD"], ["Cost/Whole String", f"{cost_per_whole_string} USD"], ["Total Cost", f"{total_cost} USD"]])
 
+            elif st.session_state.ai_option == "Gemini AI":
+                selected_model = st.session_state["gemini"]["model_name"]
+                st.toast(f"Selected model: {selected_model}", icon="✅")
+                
+                if selected_model == "gemini-pro":
+                    cost_per_input_char = 0.00025  # Cost per 1K input characters for online requests
+                    cost_per_output_char = 0.0005  # Cost per 1K output characters for online requests
+                    total_cost = general_utils.gemini_pro_generation_cost(st.session_state.generated_code)
+                    st.table([["Cost/1K Input Token", f"{cost_per_input_char} USD"], ["Cost/1K Output Token", f"{cost_per_output_char} USD"], ["Total Cost", f"{total_cost} USD"]])
+                
+                elif selected_model == "gemini-pro-vision":
+                    cost_per_image = 0.0025  # Cost per image for online requests
+                    cost_per_second = 0.002  # Cost per second for online requests
+                    cost_per_input_char = 0.00025  # Cost per 1K input characters for online requests
+                    cost_per_output_char = 0.0005  # Cost per 1K output characters for online requests
+                    total_cost = general_utils.gemini_pro_vision_generation_cost(st.session_state.generated_code)
+                    st.table([["Cost/Image", f"{cost_per_image} USD"], ["Cost/Second", f"{cost_per_second} USD"], ["Cost/1K Input Token", f"{cost_per_input_char} USD"], ["Cost/1K Output Token", f"{cost_per_output_char} USD"], ["Total Cost", f"{total_cost} USD"]])
+                
     # Expander for coding guidelines
     with st.sidebar.expander("Coding Guidelines"):
         # create checkbox to select all guidelines and change the state of all guidelines

@@ -401,24 +401,47 @@ class GeneralUtils:
         total_cost = cost * number_of_words
         
         # Return the cost, cost per whole string and total cost
-        return cost, cost_per_whole_string, total_cost
+        #return cost, cost_per_whole_string, total_cost
+
+        # Return the total cost
+        return total_cost
 
     def codey_generation_cost(self,string):
         codey_price = 0.0005
         return self.calculate_code_generation_cost(string,codey_price)
 
     def gpt_3_generation_cost(self,string):
-        chatgpt_price = 0.0002
-        return self.calculate_code_generation_cost(string,chatgpt_price)
+        model_price = 0.0002
+        return self.calculate_code_generation_cost(string,model_price)
 
     def gpt_3_5_turbo_generation_costself(self,string):
-        chatgpt_price = 0.0080
-        return self.calculate_code_generation_cost(string,chatgpt_price)
+        model_price = 0.0080
+        return self.calculate_code_generation_cost(string,model_price)
 
     def gpt_4_generation_cost(self,string):
-        chatgpt_price = 0.06
-        return self.calculate_code_generation_cost(string,chatgpt_price)
+        model_price = 0.06
+        return self.calculate_code_generation_cost(string,model_price)
     
     def gpt_text_davinci_generation_cost(self,string):
-        chatgpt_price = 0.0060
-        return self.calculate_code_generation_cost(string,chatgpt_price)
+        model_price = 0.0060
+        return self.calculate_code_generation_cost(string,model_price)
+    
+    def palm_text_bison_generation_cost(self,string):
+        model_price = 0.00025
+        return self.calculate_code_generation_cost(string,model_price)
+    
+    def palm_chat_bison_generation_cost(self,string):
+        model_price = 0.00025
+        return self.calculate_code_generation_cost(string,model_price)
+
+    def palm_embedding_gecko_generation_cost(self,string):
+        model_price = 0.0002
+        return self.calculate_code_generation_cost(string,model_price)
+    
+    def gemini_pro_generation_cost(self,string):
+        model_price = 0.00025 
+        return self.calculate_code_generation_cost(string,model_price)
+    
+    def gemini_pro_vision_generation_cost(self,string):
+        model_price = 0.00025 
+        return self.calculate_code_generation_cost(string,model_price)
