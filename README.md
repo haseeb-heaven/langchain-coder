@@ -101,6 +101,19 @@ Here is sample Service JSON file.
 }
 ```
 
+## PALM AI Integration:
+LangChain Coder AI integrates with [PALM AI](https://ai.google/discover/palm2/) to leverage its powerful machine learning models for code generation. PALM AI is an AI research and deployment company For more details on how LangChain integrates with PALM AI.
+
+### Install -Get PALM AI key
+
+*Step 1:* **Obtain the Google Palm API key.**
+*Step 2:* Visit the following URL: *https://makersuite.google.com/app/apikey*
+*Step 3:* Click on the **Create API Key** button.
+*Step 4:* The generated key is your API key. Please make sure to **copy** it and **paste** it in the required field below.
+*Note:* The API key is crucial for the functioning of the AutoBard-Coder. Please ensure to keep it safe and do not share it with anyone.
+
+
+
 ## 📸 Image Showcase
 **__Main Screen UI__**  
 *The main screen of the application.*  
@@ -170,6 +183,15 @@ Here is sample Service JSON file.
 
 
 ## Versioning
+
+**Version 1.4** includes these features:
+- **PALM AI Integration**: LangChain Coder AI integrates with PALM AI.
+- **Customizable Settings**: Adjust Tokens, Temperature, and set your API Key directly in the settings.
+- **Model Selection**: Choose from a variety of models including **chat-bison**,**text-bison**,**embedding-gecko**.
+- **PALM AI Models** PALM 2 Supports the following models:
+  - **chat-bison**: A chatbot model that can be used to generate responses to a given prompt.
+  - **text-bison**: A text generation model that can be used to generate text from a given prompt.
+  - **embedding-gecko**: A text embedding model that can be used to generate embeddings for a given text.
 
 **Version 1.3** includes these features:
 
