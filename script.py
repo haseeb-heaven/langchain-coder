@@ -66,7 +66,11 @@ def initialize_session_state():
         st.session_state.palm_langchain = None
     if "gemini_langchain" not in st.session_state:
         st.session_state.gemini_langchain = None
-    
+    if "code_fix_instructions" not in st.session_state:
+        st.session_state.code_fix_instructions = None
+    if "session_state.sequential_chain" not in st.session_state:
+        st.session_state.sequential_chain = None
+
     # Initialize session state for Vertex AI
     if "vertexai" not in st.session_state:
         st.session_state["vertexai"] = {
@@ -323,11 +327,12 @@ def main():
     # Input box for entering the prompt
     st.session_state.code_prompt = st.text_area("Enter Prompt", height=200, placeholder=placeholder,label_visibility='hidden')
 
-    with st.expander("Input/Output Options"):
+    with st.expander("Input Options"):
         with st.container():
             st.session_state.code_input = st.text_input("Input (Stdin)", placeholder="Input (Stdin)", label_visibility='collapsed',value=st.session_state.code_input)
             st.session_state.code_output = st.text_input("Output (Stdout)", placeholder="Output (Stdout)", label_visibility='collapsed',value=st.session_state.code_output)
-    
+            st.session_state.code_fix_instructions = st.text_input("Fix instructions", placeholder="Fix instructions", label_visibility='collapsed',value=st.session_state.code_fix_instructions)
+
     # Set the input and output to None if the input and output is empty
     if st.session_state.code_input and st.session_state.code_output: 
         if len(st.session_state.code_input) == 0:
@@ -344,7 +349,7 @@ def main():
                 
     with st.form('code_controls_form'):
         # Create columns for alignment
-        file_name_col, save_code_col,generate_code_col,run_code_col = st.columns(4)
+        file_name_col, save_code_col,generate_code_col,run_code_col,fix_code_col = st.columns(5)
 
         # Input Box (for entering the file name) in the first column
         with file_name_col:
@@ -352,14 +357,14 @@ def main():
 
         # Save Code button in the second column
         with save_code_col:
-            download_code_submitted = st.form_submit_button("Download Code")
+            download_code_submitted = st.form_submit_button("Download")
             if download_code_submitted:
                 file_format = "text/plain"
                 st.session_state.download_link = general_utils.generate_download_link(st.session_state.generated_code, code_file,file_format,True)
                 
         # Generate Code button in the third column
         with generate_code_col:
-            button_label = "Generate Code" if st.session_state["vertexai"]["model_name"] == "code-bison" else "Complete Code"
+            button_label = "Generate" if st.session_state["vertexai"]["model_name"] == "code-bison" else "Complete"
             generate_submitted = st.form_submit_button(button_label)
             
             if generate_submitted:
@@ -415,9 +420,21 @@ def main():
                     st.session_state.generated_code = ""
                     logger.error(f"Please select a valid AI option selected '{st.session_state.ai_option}' option")
 
+        # Fix Code button in the fourth column
+        with fix_code_col:
+            fix_submitted = st.form_submit_button("Auto Fix")
+            if fix_submitted:
+                if len(st.session_state.code_fix_instructions) == 0:
+                    st.toast("Missing fix instructions", icon="❌")
+                    logger.warning("Missing fix instructions")
+                    
+                logger.info(f"Fixing code with instructions: {st.session_state.code_fix_instructions}")
+                st.session_state.generated_code = st.session_state.palm_langchain.fix_generated_code(st.session_state.generated_code, st.session_state.code_language,st.session_state.code_fix_instructions)
+
+
         # Run Code button in the fourth column
         with run_code_col:
-            execute_submitted = st.form_submit_button("Execute Code")
+            execute_submitted = st.form_submit_button("Execute")
             if execute_submitted:
                 st.session_state.output = general_utils.execute_code(st.session_state.compiler_mode)
             
