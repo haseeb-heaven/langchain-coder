@@ -2,3 +2,4 @@
 *.pyo
 *.log
 *.json
+secrets.toml
