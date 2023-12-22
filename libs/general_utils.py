@@ -18,6 +18,28 @@ from google.auth.transport import requests
 
 class GeneralUtils:
     
+    def extract_code(self, code):
+        """
+        Extracts the code from the provided string.
+        If the string contains '```', it extracts the code between them.
+        Otherwise, it returns the original string.
+        """
+        try:
+            if '```' in code:
+                start = code.find('```') + len('```\n')
+                end = code.find('```', start)
+                # Skip the first line after ```
+                start = code.find('\n', start) + 1
+                extracted_code = code[start:end]
+                logger.info("Code extracted successfully.")
+                return extracted_code
+            else:
+                logger.info("No special characters found in the code. Returning the original code.")
+                return code
+        except Exception as exception:
+            logger.error(f"Error occurred while extracting code: {exception}")
+            return None
+
     def execute_code(self, compiler_mode: str):
         code_language = st.session_state.code_language
         generated_code = st.session_state.generated_code

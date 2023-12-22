@@ -2,18 +2,12 @@ import traceback
 import os
 import streamlit as st
 from langchain.chat_models import ChatLiteLLM
-from langchain.prompts.chat import (
-    ChatPromptTemplate,
-    SystemMessagePromptTemplate,
-    AIMessagePromptTemplate,
-    HumanMessagePromptTemplate,
-)
-from langchain.schema import AIMessage, HumanMessage, SystemMessage
 from langchain.prompts import PromptTemplate
 from langchain.chains import LLMChain, SequentialChain
 from langchain.memory import ConversationBufferMemory
 from libs.logger import logger
 from dotenv import load_dotenv
+import libs.general_utils
 
 class OpenAILangChain:
     code_chain = None
@@ -24,6 +18,8 @@ class OpenAILangChain:
     def __init__(self,code_language="python",temprature:float=0.3,max_tokens=1000,model="gpt-3.5-turbo",api_key=None):
         code_prompt = st.session_state.code_prompt
         code_language = st.session_state.code_language
+        self.utils = libs.general_utils.GeneralUtils()
+
         logger.info(f"Initializing OpenAILangChain... with parameters: {code_language}, {temprature}, {max_tokens}, {model} {code_prompt}")
 
         # Set the OPENAI_API_KEY environment variable
@@ -136,16 +132,8 @@ class OpenAILangChain:
                 #with st.expander('Message History'):
                     #st.info(memory.buffer)
                 code = st.session_state.generated_code
-                if '```' in code:
-                    start = code.find('```') + len('```\n')
-                    end = code.find('```', start)
-                    # Skip the first line after ```
-                    start = code.find('\n', start) + 1
-                    extracted_code = code[start:end]
-                    return extracted_code
-                else:
-                    return code
-
+                extracted_code = self.utils.extract_code(code)
+                return extracted_code
             else:
                 st.toast("Error in code generation: Please enter a valid prompt and language.", icon="❌")
                 logger.error("Error in code generation: Please enter a valid prompt and language.")

@@ -5,6 +5,7 @@ import google.generativeai as genai
 from dotenv import load_dotenv
 from libs.logger import logger
 import streamlit as st
+import libs.general_utils
 
 class GeminiAI:
     def __init__(self, api_key, model="gemini-pro", temperature=0.1, max_output_tokens=2048,mode="balanced"):
@@ -16,6 +17,7 @@ class GeminiAI:
         self.top_k = 20
         self.top_p = 0.85
         self._configure()
+        self.utils = libs.general_utils.GeneralUtils()
 
         # Dynamically construct guidelines based on session state
         self.guidelines_list = []
@@ -52,28 +54,6 @@ class GeminiAI:
         except Exception as exception:
             logger.error(f"Error configuring Gemini AI Pro: {str(exception)}")
             traceback.print_exc()
-
-    def _extract_code(self, code):
-        """
-        Extracts the code from the provided string.
-        If the string contains '```', it extracts the code between them.
-        Otherwise, it returns the original string.
-        """
-        try:
-            if '```' in code:
-                start = code.find('```') + len('```\n')
-                end = code.find('```', start)
-                # Skip the first line after ```
-                start = code.find('\n', start) + 1
-                extracted_code = code[start:end]
-                logger.info("Code extracted successfully.")
-                return extracted_code
-            else:
-                logger.info("No special characters found in the code. Returning the original code.")
-                return code
-        except Exception as exception:
-            logger.error(f"Error occurred while extracting code: {exception}")
-            return None
         
     def generate_code(self, code_prompt,code_language):
         """
@@ -135,7 +115,7 @@ class GeminiAI:
             
             if gemini_completion:
                 # Extracted code from the gemini completion
-                extracted_code = self._extract_code(code)
+                extracted_code = self.utils.extract_code(code)
                 
                 # Check if the code or extracted code is not empty or null
                 if not code or not extracted_code:
@@ -202,7 +182,7 @@ class GeminiAI:
                 if gemini_completion:
                     # Extracted code from the palm completion
                     code = gemini_completion.text
-                    extracted_code = self._extract_code(code)
+                    extracted_code = self.utils.extract_code(code)
                     
                     # Check if the code or extracted code is not empty or null
                     if not code or not extracted_code:

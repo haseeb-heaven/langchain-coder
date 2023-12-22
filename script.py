@@ -424,7 +424,7 @@ def main():
 
         # Fix Code button in the fourth column
         with fix_code_col:
-            fix_submitted = st.form_submit_button("Auto Fix")
+            fix_submitted = st.form_submit_button("Debug")
             ai_llm_selected = None
             if fix_submitted:
                 # check if vertex ai is selected

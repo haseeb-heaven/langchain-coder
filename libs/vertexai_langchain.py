@@ -6,7 +6,8 @@ from libs.logger import logger
 import streamlit as st
 from google.oauth2 import service_account
 from langchain.prompts import ChatPromptTemplate
-  
+import libs.general_utils
+
 class VertexAILangChain:
     def __init__(self, project="", location="us-central1", model_name="code-bison", max_tokens=256, temperature:float=0.3, credentials_file_path=None):
         self.project = project
@@ -16,6 +17,7 @@ class VertexAILangChain:
         self.temperature = temperature
         self.credentials_file_path = credentials_file_path
         self.vertexai_llm = None
+        self.utils = libs.general_utils.GeneralUtils()
 
     def load_model(self, model_name, max_tokens, temperature):
         try:
