@@ -68,8 +68,10 @@ def initialize_session_state():
         st.session_state.gemini_langchain = None
     if "code_fix_instructions" not in st.session_state:
         st.session_state.code_fix_instructions = None
-    if "session_state.sequential_chain" not in st.session_state:
+    if "sequential_chain" not in st.session_state:
         st.session_state.sequential_chain = None
+    if "stderr" not in st.session_state:
+        st.session_state.stderr = None
 
     # Initialize session state for Vertex AI
     if "vertexai" not in st.session_state:
@@ -430,7 +432,6 @@ def main():
                     
                 logger.info(f"Fixing code with instructions: {st.session_state.code_fix_instructions}")
                 st.session_state.generated_code = st.session_state.palm_langchain.fix_generated_code(st.session_state.generated_code, st.session_state.code_language,st.session_state.code_fix_instructions)
-
 
         # Run Code button in the fourth column
         with run_code_col:

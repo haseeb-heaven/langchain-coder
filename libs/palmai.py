@@ -209,7 +209,7 @@ class PalmAI:
             
             logger.info(f"Fixing code")
             if code and len(code) > 0:
-                logger.info(f"Fixing code {code[:100]}... in language {code_language}")
+                logger.info(f"Fixing code {code[:100]}... in language {code_language} and error is {st.session_state.stderr}")
                 
                 # Improved instructions template
                 template = f"""
@@ -259,7 +259,10 @@ class PalmAI:
                     else:
                         logger.warning("No module-related error found in the output.")
                         
-                
+                else:
+                    st.toast("No error in previous execution.", icon="✅")
+                    return code
+
                 # Prompt Templates
                 code_template = template
                 

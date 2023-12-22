@@ -47,6 +47,7 @@ class GeneralUtils:
                 if "error" in code_output.lower() or "exception" in code_output.lower() or "SyntaxError" in code_output.lower() or "NameError" in code_output.lower():
 
                     logger.error(f"Error in code execution: {code_output}")
+                    st.session_state.stderr = code_output
                     response = st.session_state.sequential_chain({'code_topic': generated_code})
                     fixed_code = response['code_fix']
                     st.code(fixed_code, language=code_language.lower())
