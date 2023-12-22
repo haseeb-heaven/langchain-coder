@@ -425,13 +425,21 @@ def main():
         # Fix Code button in the fourth column
         with fix_code_col:
             fix_submitted = st.form_submit_button("Auto Fix")
+            ai_llm_selected = None
             if fix_submitted:
+                # check if vertex ai is selected
+                
+                if st.session_state.ai_option == "Palm AI":
+                    ai_llm_selected = st.session_state.palm_langchain
+                elif st.session_state.ai_option == "Gemini AI":
+                    ai_llm_selected = st.session_state.gemini_langchain
+
                 if len(st.session_state.code_fix_instructions) == 0:
                     st.toast("Missing fix instructions", icon="❌")
                     logger.warning("Missing fix instructions")
                     
                 logger.info(f"Fixing code with instructions: {st.session_state.code_fix_instructions}")
-                st.session_state.generated_code = st.session_state.palm_langchain.fix_generated_code(st.session_state.generated_code, st.session_state.code_language,st.session_state.code_fix_instructions)
+                st.session_state.generated_code = ai_llm_selected.fix_generated_code(st.session_state.generated_code, st.session_state.code_language,st.session_state.code_fix_instructions)
 
         # Run Code button in the fourth column
         with run_code_col:
