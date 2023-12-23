@@ -2,18 +2,12 @@ import traceback
 import os
 import streamlit as st
 from langchain.chat_models import ChatLiteLLM
-from langchain.prompts.chat import (
-    ChatPromptTemplate,
-    SystemMessagePromptTemplate,
-    AIMessagePromptTemplate,
-    HumanMessagePromptTemplate,
-)
-from langchain.schema import AIMessage, HumanMessage, SystemMessage
 from langchain.prompts import PromptTemplate
 from langchain.chains import LLMChain, SequentialChain
 from langchain.memory import ConversationBufferMemory
 from libs.logger import logger
 from dotenv import load_dotenv
+import libs.general_utils
 
 class OpenAILangChain:
     code_chain = None
@@ -24,6 +18,8 @@ class OpenAILangChain:
     def __init__(self,code_language="python",temprature:float=0.3,max_tokens=1000,model="gpt-3.5-turbo",api_key=None):
         code_prompt = st.session_state.code_prompt
         code_language = st.session_state.code_language
+        self.utils = libs.general_utils.GeneralUtils()
+
         logger.info(f"Initializing OpenAILangChain... with parameters: {code_language}, {temprature}, {max_tokens}, {model} {code_prompt}")
 
         # Set the OPENAI_API_KEY environment variable
@@ -136,19 +132,101 @@ class OpenAILangChain:
                 #with st.expander('Message History'):
                     #st.info(memory.buffer)
                 code = st.session_state.generated_code
-                if '```' in code:
-                    start = code.find('```') + len('```\n')
-                    end = code.find('```', start)
-                    # Skip the first line after ```
-                    start = code.find('\n', start) + 1
-                    extracted_code = code[start:end]
-                    return extracted_code
-                else:
-                    return code
-
+                extracted_code = self.utils.extract_code(code)
+                return extracted_code
             else:
                 st.toast("Error in code generation: Please enter a valid prompt and language.", icon="❌")
                 logger.error("Error in code generation: Please enter a valid prompt and language.")
         except Exception as e:
             st.toast(f"Error in code generation: {e}", icon="❌")
             logger.error(f"Error in code generation: {traceback.format_exc()}")
+
+    def fix_generated_code(self, code_snippet, code_language, fix_instructions=""):
+        """
+        Function to fix the generated code using the palm API.
+        """
+        try:
+            # Check for valid code
+            if not code_snippet or len(code_snippet) == 0:
+                logger.error("Error in code fixing: Please enter a valid code.")
+                return
+            
+            logger.info(f"Fixing code")
+            if code_snippet and len(code_snippet) > 0:
+                logger.info(f"Fixing code {code_snippet[:100]}... in language {code_language} and error is {st.session_state.stderr}")
+                
+                # Improved instructions template
+                template = f"""
+                Task: Correct the code snippet provided below in the {code_language} programming language, following the given instructions {fix_instructions}
+
+                {code_snippet}
+
+                Instructions for Fixing:
+                1. Identify and rectify any syntax errors, logical issues, or bugs in the code.
+                2. Ensure that the code produces the desired output.
+                3. Comment on each line where you make changes, explaining the nature of the fix.
+                4. Verify that the corrected code is displayed in the output.
+
+                Please make sure that the fixed code is included in the output, along with comments detailing the modifications made.
+                """
+
+                # If there was an error in the previous execution, include it in the prompt
+                if st.session_state.stderr:
+                    logger.info(f"Error in previous execution: {st.session_state.stderr}")
+                    st.toast(f"Error in previous execution: {st.session_state.stderr}", icon="❌")
+                    template += f"\nFix the following error: {st.session_state.output}"
+                    
+                    # Check if the error indicates a missing or unavailable module
+                    error_message = st.session_state.output.lower()  # Convert to lowercase for case-insensitive matching
+
+                else:
+                    st.toast("No error in previous execution.", icon="✅")
+                    return code_snippet
+
+                # Prompt Templates
+                code_template = template
+                
+                # LLM Chains definition
+                # Create a chain that fixed the code
+                fix_generated_template = PromptTemplate(
+                    input_variables=['code_prompt', 'code_language'],
+                    template=code_template
+                )
+
+                fix_generated_chain = LLMChain(
+                    llm=self.lite_llm,
+                    prompt=fix_generated_template,
+                    output_key='fixed_code',
+                    memory=self.memory,
+                    verbose=True
+                )
+
+                # Prepare the input for the chain
+                input_data = {
+                    'code_prompt': code_snippet,
+                    'code_language': code_language
+                }
+
+                # Run the chain
+                output = fix_generated_chain.run(input_data)
+
+                logger.info("Text generation completed successfully.")
+
+                if output:
+                    # Extracted code from the palm completion
+                    fixed_code = output['code_fix']
+                    extracted_code = self.utils.extract_code(fixed_code)
+                    
+                    # Check if the code or extracted code is not empty or null
+                    if not code_snippet or not extracted_code:
+                        raise Exception("Error: Generated code or extracted code is empty or null.")
+                    else:
+                        return extracted_code
+                else:
+                    raise Exception("Error in code fixing: Please enter a valid code.")
+            else:
+                st.toast("Error in code fixing: Please enter a valid code and language.", icon="❌")
+                logger.error("Error in code fixing: Please enter a valid code and language.")
+        except Exception as exception:
+            st.toast(f"Error in code fixing: {exception}", icon="❌")
+            logger.error(f"Error in code fixing: {traceback.format_exc()}")

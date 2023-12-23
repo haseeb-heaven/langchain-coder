@@ -8,7 +8,7 @@ import google.generativeai as palm
 from dotenv import load_dotenv
 from libs.logger import logger
 import streamlit as st
-
+import libs.general_utils
 
 class PalmAI:
     def __init__(self,api_key, model="text-bison-001", temperature=0.3, max_output_tokens=2048, mode="balanced"):
@@ -23,6 +23,7 @@ class PalmAI:
         self.top_k = 20
         self.top_p = 0.85
         self._configure_api(api_key)
+        self.utils = libs.general_utils.GeneralUtils()
         
         # Dynamically construct guidelines based on session state
         self.guidelines_list = []
@@ -65,54 +66,6 @@ class PalmAI:
             logger.error(f"Error occurred while configuring Palm API: {exception}")
             st.toast(f"Error occurred while configuring Palm API: {exception}", icon="❌")
 
-    def _extract_code(self, code):
-        """
-        Extracts the code from the provided string.
-        If the string contains '```', it extracts the code between them.
-        Otherwise, it returns the original string.
-        """
-        try:
-            if '```' in code:
-                start = code.find('```') + len('```\n')
-                end = code.find('```', start)
-                # Skip the first line after ```
-                start = code.find('\n', start) + 1
-                extracted_code = code[start:end]
-                logger.info("Code extracted successfully.")
-                return extracted_code
-            else:
-                logger.info("No special characters found in the code. Returning the original code.")
-                return code
-        except Exception as exception:
-            logger.error(f"Error occurred while extracting code: {exception}")
-            return None
-    
-    def _install_package(self, package_name):
-        """
-        Tries to install the missing module using pip or pip3.
-        If the installation fails, it logs an error and shows a toast notification.
-        """
-        try:
-            import subprocess
-            logger.info(f"Trying to install {package_name} using pip.")
-            st.toast(f"Trying to install {package_name} using pip.", icon="⌛")
-            subprocess.check_call(["pip", "install", package_name])
-            logger.info(f"{package_name} installed successfully.")
-            # Check if the package is installed
-            subprocess.check_call([package_name, "--version"])
-        except Exception as e:
-            logger.error(f"Failed to install {package_name} using pip: {e}")
-            try:
-                logger.info(f"Trying to install {package_name} using pip3.")
-                subprocess.check_call(["pip3", "install", package_name])
-                logger.info(f"{package_name} installed successfully.")
-                # Check if the package is installed
-                subprocess.check_call([package_name, "--version"])
-            except Exception as e:
-                logger.error(f"Failed to install {package_name} using pip3: {e}")
-                st.toast(f"Failed to install {package_name}: {e}", icon="❌")
-                raise Exception(f"Failed to install {package_name}: {e}")
-    
     def generate_code(self, code_prompt,code_language):
         """
         Function to generate text using the palm API.
@@ -183,7 +136,7 @@ class PalmAI:
             
             if palm_completion:
                 # Extracted code from the palm completion
-                extracted_code = self._extract_code(code)
+                extracted_code = self.utils.extract_code(code)
                 
                 # Check if the code or extracted code is not empty or null
                 if not code or not extracted_code:
@@ -209,7 +162,7 @@ class PalmAI:
             
             logger.info(f"Fixing code")
             if code and len(code) > 0:
-                logger.info(f"Fixing code {code[:100]}... in language {code_language}")
+                logger.info(f"Fixing code {code[:100]}... in language {code_language} and error is {st.session_state.stderr}")
                 
                 # Improved instructions template
                 template = f"""
@@ -235,31 +188,10 @@ class PalmAI:
                     # Check if the error indicates a missing or unavailable module
                     error_message = st.session_state.output.lower()  # Convert to lowercase for case-insensitive matching
 
-                    # Define regular expression patterns to search for various module-related errors
-                    patterns = [
-                        r"module not found: ([a-zA-Z0-9_]+)",
-                        r"no module named '([a-zA-Z0-9_]+)'",
-                        r"cannot import name '([a-zA-Z0-9_]+)'",
-                    ]
+                else:
+                    st.toast("No error in previous execution.", icon="✅")
+                    return code
 
-                    module_name = None
-
-                    for pattern in patterns:
-                        module_name_match = re.search(pattern, error_message)
-                        
-                        if module_name_match:
-                            module_name = module_name_match.group(1)
-                            logger.info(f"Module issue: {module_name} not found or unavailable.")
-                            st.toast(f"Module issue: {module_name} not found or unavailable.", icon="✅")
-                            break
-
-                    if module_name:
-                        # Call install module with the module name
-                        self._install_package(module_name)
-                    else:
-                        logger.warning("No module-related error found in the output.")
-                        
-                
                 # Prompt Templates
                 code_template = template
                 
@@ -279,7 +211,7 @@ class PalmAI:
                 if palm_completion:
                     # Extracted code from the palm completion
                     code = palm_completion.result
-                    extracted_code = self._extract_code(code)
+                    extracted_code = self.utils.extract_code(code)
                     
                     # Check if the code or extracted code is not empty or null
                     if not code or not extracted_code:

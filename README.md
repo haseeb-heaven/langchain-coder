@@ -188,6 +188,11 @@ LangChain Coder AI integrates with [GEMINI AI](https://deepmind.google/technolog
 
 ## Versioning
 
+**Version 1.6** includes these features:
+- **GEMINI AI Free Tier**: LangChain Coder AI integrates with GEMINI AI Free Tier.
+- **Code Debugger**: LangChain Coder AI integrates with Code Debugger.
+- **New UI/UX design**: LangChain Coder AI integrates with new UI/UX design.
+
 **Version 1.5** includes these features:
 - **GEMINI AI Integration**: LangChain Coder AI integrates with GEMINI AI.
 - **Customizable Settings**: Adjust Tokens, Temperature, and set your API Key directly in the settings.

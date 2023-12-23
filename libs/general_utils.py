@@ -18,10 +18,33 @@ from google.auth.transport import requests
 
 class GeneralUtils:
     
+    def extract_code(self, code):
+        """
+        Extracts the code from the provided string.
+        If the string contains '```', it extracts the code between them.
+        Otherwise, it returns the original string.
+        """
+        try:
+            if '```' in code:
+                start = code.find('```') + len('```\n')
+                end = code.find('```', start)
+                # Skip the first line after ```
+                start = code.find('\n', start) + 1
+                extracted_code = code[start:end]
+                logger.info("Code extracted successfully.")
+                return extracted_code
+            else:
+                logger.info("No special characters found in the code. Returning the original code.")
+                return code
+        except Exception as exception:
+            logger.error(f"Error occurred while extracting code: {exception}")
+            return None
+
     def execute_code(self, compiler_mode: str):
         code_language = st.session_state.code_language
         generated_code = st.session_state.generated_code
-        
+        code_output = None
+
         if not generated_code or len(generated_code.strip()) == 0 or not code_language or len(code_language.strip()) == 0:
             st.toast("Generated code is empty. Cannot execute an empty code.", icon="❌")
             logger.error("Error in code execution: Generated code is empty.")
@@ -40,12 +63,13 @@ class GeneralUtils:
                 return html_content
 
             else:
-                output = self.run_code(generated_code, code_language)
+                code_output = self.run_code(generated_code, code_language)
                 
                 # Check for errors in code execution
-                if "error" in output.lower() or "exception" in output.lower() or "SyntaxError" in output.lower() or "NameError" in output.lower():
+                if "error" in code_output.lower() or "exception" in code_output.lower() or "SyntaxError" in code_output.lower() or "NameError" in code_output.lower():
 
-                    logger.error(f"Error in code execution: {output}")
+                    logger.error(f"Error in code execution: {code_output}")
+                    st.session_state.stderr = code_output
                     response = st.session_state.sequential_chain({'code_topic': generated_code})
                     fixed_code = response['code_fix']
                     st.code(fixed_code, language=code_language.lower())
@@ -53,24 +77,24 @@ class GeneralUtils:
                     with st.expander('Message History'):
                         st.info(st.session_state.memory.buffer)
                     logger.warning(f"Trying to run fixed code: {fixed_code}")
-                    output = self.run_code(code=fixed_code, language=code_language)
-                    logger.warning(f"Fixed code output: {output}")
-                    logger.info(f"Execution Output: '{output}' and session output: '{st.session_state.code_output}'")
+                    code_output = self.run_code(code=fixed_code, language=code_language)
+                    logger.warning(f"Fixed code output: {code_output}")
+                    logger.info(f"Execution Output: '{code_output}' and session output: '{st.session_state.code_output}'")
                 
                 # check for expected output
                 if (st.session_state.code_output is not None and st.session_state.code_output != "" and len(st.session_state.code_output) > 0):
-                    if (output == st.session_state.code_output):
-                        st.toast("Output:\n" + output, icon="🔥")
+                    if (code_output == st.session_state.code_output):
+                        st.toast("Output:\n" + code_output, icon="🔥")
                     else:
                         st.toast("Error the expected output doesnt match the generated output:\n'" + st.session_state.code_output + "'\n", icon="❌")
-                logger.info(f"Execution Output: {output}")
-                return output
+                logger.info(f"Execution Output: {code_output}")
+                return code_output
 
-        except Exception as e:
-            st.toast("Error in code execution:", icon="❌")
+        except Exception as exception:
+            st.toast("Error in code execution: " + code_output, icon="❌")
             # Output the stack trace
-            st.toast(traceback.format_exc(), icon="❌")
             logger.error(f"Error in code execution: {traceback.format_exc()}")
+            return code_output
     
     # Generate Dynamic HTML for JDoodle Compiler iFrame Embedding.
     def generate_dynamic_html(self,language, code_prompt):
