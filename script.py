@@ -136,7 +136,7 @@ def main():
     general_utils = GeneralUtils()
     
     # Streamlit UI 
-    st.title("LangChain Coder - AI 🦜🔗")
+    st.title("LangChain Coder - AI - v1.6 🦜🔗")
     logger.info("LangChain Coder - AI 🦜🔗")
     
     # Support
