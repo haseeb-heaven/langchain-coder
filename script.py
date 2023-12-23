@@ -427,8 +427,7 @@ def main():
             fix_submitted = st.form_submit_button("Debug")
             ai_llm_selected = None
             if fix_submitted:
-                # check if vertex ai is selected
-                
+                # checking for the selected AI option
                 if st.session_state.ai_option == "Palm AI":
                     ai_llm_selected = st.session_state.palm_langchain
                 elif st.session_state.ai_option == "Gemini AI":

@@ -1,63 +1,56 @@
-/* Target the main Streamlit app */
 .streamlit-app {
     font-family: 'Arial', sans-serif;
     font-size: 16px;
 }
 
-/* Target the main content area */
 .main {
-    background-color: #add8e6; /* Light Blue */
+    background-color: #072b33ec;
     padding: 20px;
 }
 
-/* Target the Streamlit expander header */
-div.st-expander-header {
-    background-color: #add8e6; /* Light Blue */
-    color: #808080; /* Gray */
+div.st-expander-header 
+div.st-expander-header :hover
+{
+    background-color: #ffffff;
+    color: #e6c9a9;
     padding: 10px;
     border-radius: 5px;
 }
 
-/* Target the Input/Output Options expander */
 div.st-expander-header.Input-Output-Options {
-    /* Add your custom styles here */
-    background-color: #add8e6; /* Light Blue */
-    color: #808080; /* Gray */
+    background-color: #072b33ec;
+    color: #e6c9a9;
     padding: 10px;
     border-radius: 5px;
     cursor: pointer;
 }
 
-/* Target buttons */
 button.stButton.run-button,
 button.stButton.share-button {
-    background-color: #00008b; /* Dark Blue */
-    color: #808080; /* Gray */
+    background-color: #808080;
+    color: #e6c9a9;
     padding: 10px 20px;
-    border: 2px solid #00008b; /* Dark Blue */
+    border: 2px solid #808080;
     border-radius: 5px;
     cursor: pointer;
 }
 
 button.stButton.run-button:hover,
 button.stButton.share-button:hover {
-    background-color: #00008b; /* Dark Blue */
-    color: #808080; /* Gray */
+    background-color: #808080;
+    color: #e6c9a9;
 }
 
-/* Target textareas and inputs */
 textarea.stTextArea,
-input.stTextInput,
-div.stAlert div {
-    background-color: #808080; /* Gray */
-    color: #808080; /* Gray */
+input.stTextInput {
+    background-color: #808080;
+    color: #e6c9a9;
     padding: 2px;
     font-size: 10px;
 }
 
-/* Target headings */
 h1 {
     font-family: 'Pacifico', cursive;
     font-size: 40px;
-    color: #333333;
+    color: #e6c9a9;
 }
