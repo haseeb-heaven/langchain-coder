@@ -433,8 +433,10 @@ def main():
                     ai_llm_selected = st.session_state.palm_langchain
                 elif st.session_state.ai_option == "Gemini AI":
                     ai_llm_selected = st.session_state.gemini_langchain
+                elif st.session_state.ai_option == "Open AI":
+                    ai_llm_selected = st.session_state.openai_langchain
 
-                if len(st.session_state.code_fix_instructions) == 0:
+                if not st.session_state.code_fix_instructions:
                     st.toast("Missing fix instructions", icon="❌")
                     logger.warning("Missing fix instructions")
                     
