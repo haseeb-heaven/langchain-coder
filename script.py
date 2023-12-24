@@ -21,115 +21,23 @@ from libs.general_utils import GeneralUtils
 from libs.lang_codes import LangCodes
 from libs.openai_langchain import OpenAILangChain
 from libs.logger import logger
+from libs.utils import *
 from streamlit_ace import st_ace
 
 general_utils = None
-
-def initialize_session_state():
-    if "code_language" not in st.session_state:
-        st.session_state.code_language = "Python"
-    if "compiler_mode" not in st.session_state:
-        st.session_state.compiler_mode = "Offline"
-    if "generated_code" not in st.session_state:
-        st.session_state.generated_code = ""
-    if "ai_option" not in st.session_state:
-        st.session_state.ai_option = "Open AI"
-    if "output" not in st.session_state:
-        st.session_state.output = ""
-    if "vertex_ai_loaded" not in st.session_state:
-        st.session_state.vertex_ai_loaded = False
-    if "uploaded_file" not in st.session_state:
-        st.session_state.uploaded_file = None
-    if "project" not in st.session_state:
-        st.session_state.project = ""
-    if "region" not in st.session_state:
-        st.session_state.region = ""
-    if "vertexai_langchain" not in st.session_state:
-        st.session_state.vertexai_langchain= None
-    if "openai_langchain" not in st.session_state:
-        st.session_state.openai_langchain = None
-    if "code_prompt" not in st.session_state:
-        st.session_state.code_prompt = ""
-    if "display_cost" not in st.session_state:
-        st.session_state.display_cost = False
-    if "download_link" not in st.session_state:
-        st.session_state.download_link = None
-    if "download_logs" not in st.session_state:
-        st.session_state.download_logs = False
-    if "auto_debug_chain" not in st.session_state:
-        st.session_state.auto_debug_chain = False
-    if "code_input" not in st.session_state:
-        st.session_state.code_input = None
-    if "code_output" not in st.session_state:
-        st.session_state.code_output = None
-    if "palm_langchain" not in st.session_state:
-        st.session_state.palm_langchain = None
-    if "gemini_langchain" not in st.session_state:
-        st.session_state.gemini_langchain = None
-    if "code_fix_instructions" not in st.session_state:
-        st.session_state.code_fix_instructions = None
-    if "sequential_chain" not in st.session_state:
-        st.session_state.sequential_chain = None
-    if "stderr" not in st.session_state:
-        st.session_state.stderr = None
-
-    # Initialize session state for Vertex AI
-    if "vertexai" not in st.session_state:
-        st.session_state["vertexai"] = {
-            "model_name": "code-bison",
-            "temperature": 0.1,
-            "max_tokens": 2048
-        }
-    
-    # Initialize session state for Open AI
-    if "openai" not in st.session_state:
-        st.session_state["openai"] = {
-            "model_name": "text-davinci-003",
-            "temperature": 0.1,
-            "max_tokens": 2048
-        }
-        
-    # Initialize session state for Palm AI
-    if "palm" not in st.session_state:
-        st.session_state["palm"] = {
-            "model_name": "text-bison-001",
-            "temperature": 0.1,
-            "max_tokens": 2048
-        }
-
-    # Initialize session state for Palm AI
-    if "gemini" not in st.session_state:
-        st.session_state["gemini"] = {
-            "model_name": "gemini-pro",
-            "temperature": 0.1,
-            "max_tokens": 2048
-        }
-    
-    if "coding_guidelines" not in st.session_state:
-        st.session_state["coding_guidelines"] = {
-            "modular_code": False,
-            "exception_handling": False,
-            "error_handling": False,
-            "logs": False,
-            "comments": False,
-            "efficient_code": False,
-            "robust_code": False,
-            "memory_efficiency": False,
-            "speed_efficiency": False,
-            "naming_conventions": False
-        }
-  
-# Load the CSS files
-def load_css(file_name):
-    with open(file_name) as f:
-        st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
 
 def main():
     # Load the CSS files
     load_css('static/css/styles.css')
 
-    # initialize session state
-    initialize_session_state()
+    # initialize session state only once.
+    if "initialize_sessions" not in st.session_state:
+        st.session_state.initialize_sessions = False
+
+    if not st.session_state.initialize_sessions:
+        initialize_session_state()
+        st.session_state.initialize_sessions = True
+        logger.info("Session state initialized successfully.")
     
     # Initialize classes
     code_language = st.session_state.get("code_language", "Python")
@@ -445,9 +353,20 @@ def main():
         # Run Code button in the fourth column
         with run_code_col:
             execute_submitted = st.form_submit_button("Execute")
-            if execute_submitted:
-                st.session_state.output = general_utils.execute_code(st.session_state.compiler_mode)
-            
+            if execute_submitted:          
+                # Execute the code.
+                if st.session_state.compiler_mode in ["Offline", "Online"]:
+                    privacy_accepted = st.session_state.get(f'compiler_{st.session_state.compiler_mode.lower()}_privacy_accepted', False)
+        
+                    if privacy_accepted:
+                        st.session_state.output = general_utils.execute_code(st.session_state.compiler_mode)
+                    else:
+                        st.toast(f"You didn't accept the privacy policy for {st.session_state.compiler_mode} compiler.", icon="❌")
+                        logger.error(f"You didn't accept the privacy policy for {st.session_state.compiler_mode} compiler.")
+
+    # Show the privacy policy for compilers.
+    handle_privacy_policy(st.session_state.compiler_mode)
+
     # Save and Run Code
     if st.session_state.generated_code:
         
@@ -568,70 +487,5 @@ def main():
         for guideline in guidelines:
             st.session_state["coding_guidelines"][guideline.lower().replace(" ", "_")] = st.checkbox(guideline)
     
-def display_code_editor(font_size, tab_size, theme, keybinding, show_gutter, show_print_margin, wrap, auto_update, readonly, language):
-    if st.session_state.generated_code and st.session_state.compiler_mode == "Offline":
-        st.session_state.generated_code = st_ace(
-            language=language.lower(),
-            theme=theme,
-            keybinding=keybinding,
-            height=400,
-            value=st.session_state.generated_code,
-            font_size=font_size,
-            tab_size=tab_size,
-            show_gutter=show_gutter,
-            show_print_margin=show_print_margin,
-            wrap=wrap,
-            auto_update=auto_update,
-            readonly=readonly
-        )
-    elif st.session_state.generated_code and st.session_state.compiler_mode == "Online":
-        st.components.v1.html(st.session_state.output,width=720, height=800, scrolling=True)
-
-
-def handle_onchange_vertexai_temperature(value):
-    st.session_state["vertexai"]["temperature"] = value
-    logger.info(f"Vertex AI temperature: {value}")
-    st.toast(f"Vertex AI temperature: {value}", icon="✅")
-    if st.session_state.vertexai_langchain:
-        st.session_state.vertexai_langchain.set_temperature(value)
-    
-def handle_onchange_vertexai_tokens(value):
-    st.session_state["vertexai"]["max_tokens"] = value
-    logger.info(f"Vertex AI max_tokens: {value}")
-    st.toast(f"Vertex AI max_tokens: {value}", icon="✅")
-    if st.session_state.vertexai_langchain:
-        st.session_state.vertexai_langchain.set_max_tokens(value)
-    
-def handle_onchange_vertexai_model(value):
-    st.session_state["vertexai"]["model_name"] = value
-    logger.info(f"Vertex AI model_name: {value}")
-    st.toast(f"Vertex AI model_name: {value}", icon="✅")
-    if st.session_state.vertexai_langchain:
-        st.session_state.vertexai_langchain.set_model_name(value)
-
-def display_support():
-    st.markdown("<div style='text-align: center;'>Share and Support</div>", unsafe_allow_html=True)
-    
-    st.write("""
-        <div style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
-            <ul style="list-style-type: none; margin: 0; padding: 0; display: flex;">
-                <li style="margin-right: 10px;"><a href="https://twitter.com/haseeb_heaven" target="_blank"><img src="https://img.icons8.com/color/32/000000/twitter--v1.png"/></a></li>
-                <li style="margin-right: 10px;"><a href="https://www.buymeacoffee.com/haseebheaven" target="_blank"><img src="https://img.icons8.com/color/32/000000/coffee-to-go--v1.png"/></a></li>
-                <li style="margin-right: 10px;"><a href="https://www.youtube.com/@HaseebHeaven/videos" target="_blank"><img src="https://img.icons8.com/color/32/000000/youtube-play.png"/></a></li>
-                <li><a href="https://github.com/haseeb-heaven/LangChain-Coder" target="_blank"><img src="https://img.icons8.com/color/32/000000/github--v1.png"/></a></li>
-            </ul>
-        </div>
-    """, unsafe_allow_html=True)
-
-# create method to upgrade the pip packages and pip
-def upgrade_pip_packages():
-    try:
-        # upgrade pip
-        os.system("python -m pip install --upgrade pip")
-        # upgrade pip packages
-        os.system("pip install -r requirements.txt --upgrade")
-    except Exception as e:
-        print(f"Error upgrading pip packages: {e}")
-
 if __name__ == "__main__":
     main()
