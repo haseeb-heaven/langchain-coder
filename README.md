@@ -16,6 +16,7 @@
 
 ## Introduction
 
+- English:
 LangChain Coder AI is a state-of-the-art code generation tool powered by OpenAI and Vertex AI. It provides a seamless experience for developers to generate code snippets in various languages based on the provided prompts. </br>The tool is integrated with advanced AI models like </br>_**OpenAI:** GPT-3.5, GPT-3.5 Turbo, GPT-4_</br> **Google:** _Code Gecko, and Code Bison, PALM and Gemini_</br> 
 Ensuring high-quality code outputs from these powerful models.
 
@@ -238,6 +239,22 @@ If you want to contribute to this project and make it better with new ideas, you
 
 ## License
 This project is licensed under the MIT License so feel free to use it.
+
+### Code Execution License - OFFLINE:
+- You are solely responsible for the code that you write, compile, and run using the Platform.
+- You agree not to write, compile, or run any code that is *illegal*, *harmful*, *malicious*, *offensive*, *infringing*, or otherwise violates any laws, rights, or policies. 
+- You agree not to write, compile, or run any code that may *damage*, *interfere with*, or *compromise* the Platform, the JDoodle Compiler API, or any other systems or services. 
+- You agree not to write, compile, or run any code that may *access* or *disclose* any *confidential* or *sensitive* information.
+
+
+
+### Code Execution License - ONLINE:
+
+- **The platform uses the [JDoodle Compiler](https://www.jdoodle.com/) to compile and run your code.** 
+  - *The JDoodle Compiler is a third-party service that provides online code execution for various programming languages.*
+  - *The JDoodle Compiler may collect and use your code and other information in accordance with their own [terms and conditions](https://www.jdoodle.com/terms) and [privacy policy](https://www.jdoodle.com/privacy).*
+
+
 
 ## Author
 Crafted with ❤️ by HeavenHM.
