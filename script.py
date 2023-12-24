@@ -27,6 +27,10 @@ from streamlit_ace import st_ace
 general_utils = None
 
 def main():
+
+    # set the streamlit app to full width and dark theme
+    st.set_page_config(layout="wide", page_title="LangChain Coder - AI", page_icon="🦜🔗")
+
     # Load the CSS files
     load_css('static/css/styles.css')
 
@@ -44,7 +48,7 @@ def main():
     general_utils = GeneralUtils()
     
     # Streamlit UI 
-    st.title("LangChain Coder - AI - v1.6 🦜🔗")
+    st.markdown("<h1 style='text-align: center; color: black;'>LangChain Coder - AI - v1.6 🦜🔗</h1>", unsafe_allow_html=True)
     logger.info("LangChain Coder - AI 🦜🔗")
     
     # Support
@@ -392,7 +396,7 @@ def main():
         with st.sidebar.expander("Code Editor Settings", expanded=False):
 
             # Font size setting
-            font_size = st.slider("Font Size", min_value=8, max_value=30, value=14, step=1)
+            font_size = st.slider("Font Size", min_value=8, max_value=30, value=16, step=1)
 
             # Tab size setting
             tab_size = st.slider("Tab Size", min_value=2, max_value=8, value=4, step=1)

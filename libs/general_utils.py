@@ -91,7 +91,7 @@ class GeneralUtils:
                 return code_output
 
         except Exception as exception:
-            st.toast("Error in code execution: " + code_output, icon="❌")
+            st.toast(f"Error in code execution:{code_output}", icon="❌")
             # Output the stack trace
             logger.error(f"Error in code execution: {traceback.format_exc()}")
             return code_output
