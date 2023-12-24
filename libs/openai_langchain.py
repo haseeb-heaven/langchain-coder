@@ -15,7 +15,7 @@ class OpenAILangChain:
     lite_llm = None  # Change from open_ai_llm to lite_llm
     memory = None
     
-    def __init__(self,code_language="python",temprature:float=0.3,max_tokens=1000,model="gpt-3.5-turbo",api_key=None):
+    def __init__(self,api_key=None,code_language="python",temprature:float=0.3,max_tokens=1000,model="gpt-3.5-turbo"):
         code_prompt = st.session_state.code_prompt
         code_language = st.session_state.code_language
         self.utils = libs.general_utils.GeneralUtils()

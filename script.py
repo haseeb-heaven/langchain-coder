@@ -87,20 +87,27 @@ def main():
             with st.expander("Open AI Settings"):
                 try:
                     # Settings for Open AI model.
-                    model_options_openai = ["gpt-4", "gpt-4-0613", "gpt-4-32k", "gpt-4-32k-0613", "gpt-3.5-turbo", "gpt-3.5-turbo", "gpt-3.5-turbo-16k", "gpt-3.5-turbo-0613", "gpt-3.5-turbo-16k-0613", "gpt-3.5-turbo-0301", "text-davinci-003"]
+                    model_options_openai = ["gpt-4", "gpt-4-0613", "gpt-4-32k", "gpt-4-32k-0613", "gpt-3.5-turbo", "gpt-3.5-turbo-16k", "gpt-3.5-turbo-0613", "gpt-3.5-turbo-16k-0613", "gpt-3.5-turbo-0301", "text-davinci-003"]
                     st.session_state["openai"]["model_name"] = st.selectbox("Model name", model_options_openai, index=model_options_openai.index(st.session_state["openai"]["model_name"]))
                     st.session_state["openai"]["temperature"] = st.slider("Temperature", min_value=0.0, max_value=2.0, value=st.session_state["openai"]["temperature"], step=0.1)
                     st.session_state["openai"]["max_tokens"] = st.slider("Maximum Tokens", min_value=1, max_value=4096, value=st.session_state["openai"]["max_tokens"], step=1)
                     
-                    # Check if the API key is in App secrets.
-                    if st.secrets["OPENAI_API_KEY"]:
-                        api_key = st.secrets["OPENAI_API_KEY"]
-                        logger.info("Gemini AI API key is initialized from App secrets.")
-                    else:
+                    try:
+                        # Check if the API key is in App secrets.
+                        if st.secrets["OPENAI_API_KEY"]:
+                            api_key = st.secrets["OPENAI_API_KEY"]
+                            logger.info("OpenAI API key is initialized from App secrets.")
+
+                    except Exception as exception:
+                        logger.error(f"Error loading : {str(exception)}")
+                        st.toast(f"Error loading : {str(exception)}", icon="❌")
+
+                        # Create API key input box on error.
                         api_key = st.text_input("API Key", value="", key="api_key", type="password")
+                        logger.info("OpenAI API key is initialized from user input.")
                     
                     st.session_state.proxy_api = st.text_input("Proxy API", value="",placeholder="http://myproxy-api.replit.co/")
-                    st.session_state.openai_langchain = OpenAILangChain(st.session_state.code_language, st.session_state["openai"]["temperature"], st.session_state["openai"]["max_tokens"], st.session_state["openai"]["model_name"], api_key)
+                    st.session_state.openai_langchain = OpenAILangChain(api_key,st.session_state.code_language, st.session_state["openai"]["temperature"], st.session_state["openai"]["max_tokens"], st.session_state["openai"]["model_name"])
                     st.toast("Open AI initialized successfully.", icon="✅")
                 except Exception as exception:
                     st.toast(f"Error loading Open AI: {str(exception)}", icon="❌")
@@ -179,13 +186,19 @@ def main():
                     st.session_state["palm"]["temperature"] = st.slider("Temperature", min_value=0.0, max_value=1.0, value=st.session_state["palm"]["temperature"], step=0.1)
                     st.session_state["palm"]["max_tokens"] = st.slider("Maximum Tokens", min_value=1, max_value=8196, value=st.session_state["palm"]["max_tokens"], step=1)
                     
-                    # Check if the API key is in App secrets.
-                    if st.secrets["PALM_API_KEY"]:
-                        api_key = st.secrets["PALM_API_KEY"]
-                        logger.info("Gemini AI API key is initialized from App secrets.")
-                    else:
-                        # Add password option for getting API key
-                        api_key = st.text_input("API Key", type="password")
+                    try:
+                        # Check if the API key is in App secrets.
+                        if st.secrets["PALM_API_KEY"]:
+                            api_key = st.secrets["PALM_API_KEY"]
+                            logger.info("Palm AI API key is initialized from App secrets.")
+                    except Exception as exception:
+                        logger.error(f"Error loading : {str(exception)}")
+                        st.toast(f"Error loading : {str(exception)}", icon="❌")
+                        
+                        # Create API key input box on error.
+                        api_key = st.text_input("API Key", value="", key="api_key", type="password")
+                        logger.info("Palm API key is initialized from user input.")
+
                     try:
                         st.session_state.palm_langchain = PalmAI(api_key, model=st.session_state["palm"]["model_name"], temperature=st.session_state["palm"]["temperature"], max_output_tokens=st.session_state["palm"]["max_tokens"])
                     except Exception as exception:
@@ -204,16 +217,21 @@ def main():
                     model_options_gemini = ["gemini-pro","gemini-pro-vision"]
                     st.session_state["gemini"]["model_name"] = st.selectbox("Model name", model_options_gemini, index=model_options_gemini.index(st.session_state["gemini"]["model_name"]))
                     st.session_state["gemini"]["temperature"] = st.slider("Temperature", min_value=0.0, max_value=1.0, value=st.session_state["gemini"]["temperature"], step=0.1)
-                    st.session_state["gemini"]["max_tokens"] = st.slider("Maximum Tokens", min_value=1, max_value=8196, value=st.session_state["gemini"]["max_tokens"], step=1)
+                    st.session_state["gemini"]["max_tokens"] = st.slider("Maximum Tokens", min_value=1, max_value=30720, value=st.session_state["gemini"]["max_tokens"], step=1)
 
-                    # Check if the API key is in App secrets.
-                    if st.secrets["GEMINI_API_KEY"]:
-                        api_key = st.secrets["GEMINI_API_KEY"]
-                        logger.info("Gemini AI API key is initialized from App secrets.")
-                    else:
-                        # Add password option for getting API key
-                        api_key = st.text_input("API Key", type="password")
-                        logger.info("Gemini AI API key is initialized from user input.")
+                    try:
+                        # Check if the API key is in App secrets.
+                        if st.secrets["GEMINI_API_KEY"]:
+                            api_key = st.secrets["GEMINI_API_KEY"]
+                            logger.info("Gemini AI API key is initialized from App secrets.")
+                    except Exception as exception:
+                        logger.error(f"Error loading : {str(exception)}")
+                        st.toast(f"Error loading : {str(exception)}", icon="❌")
+                        
+                        # Create API key input box on error.
+                        api_key = st.text_input("API Key", value="", key="api_key", type="password")
+                        logger.info("Gemini API key is initialized from user input.")
+
                     try:
                         st.session_state.gemini_langchain = GeminiAI(api_key, model=st.session_state["gemini"]["model_name"], temperature=st.session_state["gemini"]["temperature"], max_output_tokens=st.session_state["gemini"]["max_tokens"])
                     except Exception as exception:
@@ -282,11 +300,11 @@ def main():
                     if st.session_state.openai_langchain:
                         st.session_state.generated_code = st.session_state.openai_langchain.generate_code(st.session_state.code_prompt, code_language)
                     else:# Reinitialize the chain
-                        if not api_key:
+                        if api_key == None:
                             st.toast("Open AI API key is not initialized.", icon="❌")
                             logger.error("Open AI API key is not initialized.")
                         else:
-                            st.session_state.openai_langchain = OpenAILangChain(st.session_state.code_language,st.session_state["openai"]["temperature"],st.session_state["openai"]["max_tokens"],st.session_state["openai"]["model_name"],api_key)
+                            st.session_state.openai_langchain = OpenAILangChain(api_key,st.session_state.code_language,st.session_state["openai"]["temperature"],st.session_state["openai"]["max_tokens"],st.session_state["openai"]["model_name"])
                             st.session_state.generated_code = st.session_state.openai_langchain.generate_code(st.session_state.code_prompt, code_language)
                 elif st.session_state.ai_option == "Vertex AI":
                     if st.session_state.vertexai_langchain:
@@ -307,7 +325,7 @@ def main():
                     if st.session_state.palm_langchain:
                         st.session_state.generated_code = st.session_state.palm_langchain.generate_code(st.session_state.code_prompt, code_language)
                     else:# Reinitialize the chain
-                        if not api_key:
+                        if api_key == None:
                             st.toast("Palm AI API key is not initialized.", icon="❌")
                             logger.error("Palm AI API key is not initialized.")
                         else:
@@ -318,7 +336,7 @@ def main():
                     if st.session_state.gemini_langchain:
                         st.session_state.generated_code = st.session_state.gemini_langchain.generate_code(st.session_state.code_prompt, code_language)
                     else:# Reinitialize the chain
-                        if not api_key:
+                        if api_key == None:
                             st.toast("Gemini AI API key is not initialized.", icon="❌")
                             logger.error("Gemini AI API key is not initialized.")
                         else:
