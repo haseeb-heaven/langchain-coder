@@ -122,11 +122,11 @@ class GeneralUtils:
         
         compilers = {
             "python": ["python", "--version"],
-            "nodejs": ["node", "--version"],
+            "javascript": ["node", "--version"],
             "c": ["gcc", "--version"],
             "c++": ["g++", "--version"],
-            "csharp": ["csc", "--version"],
-            "go": ["go", "version"],
+            "c#": ["csc", "--version"],
+            "go": ["go", "--version"],
             "ruby": ["ruby", "--version"],
             "java": ["java", "--version"],
             "kotlin": ["kotlinc", "--version"],
@@ -135,8 +135,8 @@ class GeneralUtils:
         }
 
         if language not in compilers:
-            logger.error("Invalid language selected.")
-            st.toast("Invalid language selected.", icon="❌")
+            logger.error(f"Invalid language selected. {language} not found in compilers list.")
+            st.toast(f"Invalid language selected. {language} not found in compilers list.", icon="❌")
             return False
 
         compiler = subprocess.run(compilers[language], capture_output=True, text=True)
@@ -171,9 +171,11 @@ class GeneralUtils:
                 return output.stdout + output.stderr
 
         elif language == "C" or language == "C++":
+            
             ext = ".c" if language == "C" else ".cpp"
             compiler = "gcc" if language == "C" else "g++"
             std = "-std=c11" if language == "C" else "-std=c++17"
+
             with tempfile.NamedTemporaryFile(mode="w", suffix=ext, delete=True) as src_file:
                 src_file.write(code)
                 src_file.flush()

@@ -281,7 +281,7 @@ def main():
                 
     with st.form('code_controls_form'):
         # Create columns for alignment
-        file_name_col, save_code_col,generate_code_col,run_code_col,fix_code_col = st.columns(5)
+        file_name_col, save_code_col,generate_code_col,run_code_col,debug_code_col,convert_code_col = st.columns(6)
 
         # Input Box (for entering the file name) in the first column
         with file_name_col:
@@ -352,11 +352,11 @@ def main():
                     st.session_state.generated_code = ""
                     logger.error(f"Please select a valid AI option selected '{st.session_state.ai_option}' option")
 
-        # Fix Code button in the fourth column
-        with fix_code_col:
-            fix_submitted = st.form_submit_button("Debug")
+        # Debug Code button in the fourth column
+        with debug_code_col:
+            debug_submitted = st.form_submit_button("Debug")
             ai_llm_selected = None
-            if fix_submitted:
+            if debug_submitted:
                 # checking for the selected AI option
                 if st.session_state.ai_option == "Palm AI":
                     ai_llm_selected = st.session_state.palm_langchain
@@ -371,6 +371,23 @@ def main():
                     
                 logger.info(f"Fixing code with instructions: {st.session_state.code_fix_instructions}")
                 st.session_state.generated_code = ai_llm_selected.fix_generated_code(st.session_state.generated_code, st.session_state.code_language,st.session_state.code_fix_instructions)
+
+        # Debug Code button in the fourth column
+        with convert_code_col:
+            convert_submitted = st.form_submit_button("Convert")
+            ai_llm_selected = None
+            if convert_submitted:
+                # checking for the selected AI option
+                if st.session_state.ai_option == "Palm AI":
+                    ai_llm_selected = st.session_state.palm_langchain
+                elif st.session_state.ai_option == "Gemini AI":
+                    ai_llm_selected = st.session_state.gemini_langchain
+                elif st.session_state.ai_option == "Open AI":
+                    ai_llm_selected = st.session_state.openai_langchain
+                    
+                logger.info(f"Converting code with instructions: {st.session_state.code_fix_instructions}")
+                st.session_state.generated_code = ai_llm_selected.convert_generated_code(st.session_state.generated_code, st.session_state.code_language)
+
 
         # Run Code button in the fourth column
         with run_code_col:

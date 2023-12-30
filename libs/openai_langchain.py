@@ -230,3 +230,77 @@ class OpenAILangChain:
         except Exception as exception:
             st.toast(f"Error in code fixing: {exception}", icon="❌")
             logger.error(f"Error in code fixing: {traceback.format_exc()}")
+
+    def convert_generated_code(self, code_snippet, code_language):
+        """
+        Function to convert the generated code to a different language using the palm API.
+        """
+        try:
+            # Check for valid code
+            if not code_snippet or len(code_snippet) == 0:
+                logger.error("Error in code conversion: Please enter a valid code.")
+                return
+            
+            logger.info(f"Converting code")
+            if code_snippet and len(code_snippet) > 0:
+                logger.info(f"Converting code {code_snippet[:100]}... to language {code_language}")
+                
+                # Improved instructions template
+                template = f"""
+                Task: Convert the code snippet provided below to the {code_language} programming language, following the given instructions:
+
+                {code_snippet}
+
+                Instructions for Conversion:
+                1. Identify the functionality of the original code.
+                2. Translate the code into the {code_language} programming language, maintaining the same functionality.
+                3. Verify that the converted code is displayed in the output.
+
+                Please make sure only the converted code should be included in the output.
+                """
+
+                # Prompt Templates
+                code_template = template
+                
+                # LLM Chains definition
+                # Create a chain that fixed the code
+                fix_generated_template = PromptTemplate(
+                    input_variables=['code_prompt', 'code_language'],
+                    template=code_template
+                )
+
+                fix_generated_chain = LLMChain(
+                    llm=self.lite_llm,
+                    prompt=fix_generated_template,
+                    output_key='fixed_code',
+                    memory=self.memory,
+                    verbose=True
+                )
+
+                # Prepare the input for the chain
+                input_data = {
+                    'code_prompt': code_snippet,
+                    'code_language': code_language
+                }
+
+                # Run the chain
+                output = fix_generated_chain.run(input_data)
+
+                logger.info("Text generation completed successfully.")
+
+                if output:
+                    # Extracted code from the palm completion
+                    fixed_code = output['code_fix']
+                    extracted_code = self.utils.extract_code(fixed_code)
+                    
+                    # Check if the code or extracted code is not empty or null
+                    if not code_snippet or not extracted_code:
+                        raise Exception("Error: Generated code or extracted code is empty or null.")
+                    else:
+                        return extracted_code
+                else:
+                    raise Exception("Error in code conversion: Please enter a valid code.")
+            else:
+                logger.error("Error in code conversion: Please enter a valid code and language.")
+        except Exception as exception:
+            logger.error(f"Error in code conversion: {traceback.format_exc()}")
