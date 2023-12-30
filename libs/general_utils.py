@@ -172,6 +172,8 @@ class GeneralUtils:
 
         elif language == "C" or language == "C++":
             ext = ".c" if language == "C" else ".cpp"
+            compiler = "gcc" if language == "C" else "g++"
+            std = "-std=c11" if language == "C" else "-std=c++17"
             with tempfile.NamedTemporaryFile(mode="w", suffix=ext, delete=True) as src_file:
                 src_file.write(code)
                 src_file.flush()
@@ -180,7 +182,7 @@ class GeneralUtils:
 
                 with tempfile.NamedTemporaryFile(mode="w", suffix="", delete=True) as exec_file:
                     compile_output = subprocess.run(
-                        ["gcc" if language == "C" else "g++", "-o", exec_file.name, src_file.name], capture_output=True, text=True)
+                        [compiler, std, "-o", exec_file.name, src_file.name], capture_output=True, text=True)
 
                     if compile_output.returncode != 0:
                         return compile_output.stderr
