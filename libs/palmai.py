@@ -284,4 +284,5 @@ class PalmAI:
             else:
                 logger.error("Error in code conversion: Please enter a valid code and language.")
         except Exception as exception:
+            st.toast(f"Error in code conversion: {exception}", icon="❌")
             logger.error(f"Error in code conversion: {traceback.format_exc()}")

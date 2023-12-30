@@ -6,7 +6,7 @@ from libs.logger import logger
 import subprocess
 import traceback
 import streamlit as st
-from libs.lang_codes import LangCodes
+from libs.lang_codes import get_language_codes
 import shutil
 import threading
 import time
@@ -113,19 +113,20 @@ class GeneralUtils:
             <script src="https://www.jdoodle.com/assets/jdoodle-pym.min.js" type="text/javascript"></script>
         </body>
         </html>
-        """.format(language=LangCodes()[language], script_code=code_prompt)
+        """.format(language=get_language_codes()[language], script_code=code_prompt)
         return html_template
     
 
     def check_compilers(self, language):
-        language = language.lower().strip()
-        
+        language_code=get_language_codes()[language]
+        logger.info(f"Checking compilers for language: {language} with lang_code: {language_code}")
+
         compilers = {
             "python": ["python", "--version"],
-            "javascript": ["node", "--version"],
+            "nodejs": ["node", "--version"],
             "c": ["gcc", "--version"],
-            "c++": ["g++", "--version"],
-            "c#": ["csc", "--version"],
+            "cpp": ["g++", "--version"],
+            "csharp": ["csc", "--version"],
             "go": ["go", "--version"],
             "ruby": ["ruby", "--version"],
             "java": ["java", "--version"],
@@ -134,12 +135,12 @@ class GeneralUtils:
             "swift": ["swift", "--version"]
         }
 
-        if language not in compilers:
-            logger.error(f"Invalid language selected. {language} not found in compilers list.")
-            st.toast(f"Invalid language selected. {language} not found in compilers list.", icon="❌")
+        if language_code not in compilers:
+            logger.error(f"Invalid language selected '{language_code}' not found in compilers list.")
+            st.toast(f"Invalid language selected '{language_code}' not found in compilers list.", icon="❌")
             return False
 
-        compiler = subprocess.run(compilers[language], capture_output=True, text=True)
+        compiler = subprocess.run(compilers[language_code], capture_output=True, text=True)
         if compiler.returncode != 0:
             logger.error(f"{language.capitalize()} compiler not found.")
             st.toast(f"{language.capitalize()} compiler not found.", icon="❌")

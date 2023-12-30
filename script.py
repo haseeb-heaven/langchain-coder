@@ -18,7 +18,7 @@ from libs.palmai import PalmAI
 import streamlit as st
 from libs.vertexai_langchain import VertexAILangChain
 from libs.general_utils import GeneralUtils
-from libs.lang_codes import LangCodes
+from libs.lang_codes import get_language_codes
 from libs.openai_langchain import OpenAILangChain
 from libs.logger import logger
 from libs.utils import *
@@ -65,7 +65,7 @@ def main():
         st.selectbox("Select AI", ["Open AI", "Vertex AI", "Palm AI","Gemini AI"], key="ai_option")
 
         # Dropdown for selecting code language
-        st.selectbox("Select language", list(LangCodes().keys()), key="code_language")
+        st.selectbox("Select language", list(get_language_codes().keys()), key="code_language")
 
         # Radio buttons for selecting compiler mode
         st.radio("Compiler Mode", ("Online", "Offline"), key="compiler_mode")
@@ -432,7 +432,7 @@ def main():
             wrap = st.checkbox("Wrap", value=True)
             auto_update = st.checkbox("Auto Update", value=False)
             readonly = st.checkbox("Readonly", value=False)
-            language = st.selectbox("Language", options=list(LangCodes().keys()), index=list(LangCodes().keys()).index("Python"))
+            language = st.selectbox("Language", options=list(get_language_codes().keys()), index=list(get_language_codes().keys()).index("Python"))
             
         # Display the st_ace code editor with the selected settings
         display_code_editor(font_size, tab_size, theme, keybinding, show_gutter, show_print_margin, wrap, auto_update, readonly, language)

@@ -1,4 +1,4 @@
-def LangCodes():
+def get_language_codes():
     
     LANGUAGE_CODES = {
         'C': 'c',
@@ -11,7 +11,7 @@ def LangCodes():
         'Swift': 'swift',
         'JavaScript': 'nodejs',
         'Kotlin': 'kotlin',
-        'Python': 'python3',
+        'Python': 'python',
         'GO Lang': 'go',
     }
     return LANGUAGE_CODES
