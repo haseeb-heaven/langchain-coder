@@ -6,7 +6,7 @@ from libs.logger import logger
 import subprocess
 import traceback
 import streamlit as st
-from libs.lang_codes import LangCodes
+from libs.lang_codes import get_language_codes
 import shutil
 import threading
 import time
@@ -91,7 +91,7 @@ class GeneralUtils:
                 return code_output
 
         except Exception as exception:
-            st.toast("Error in code execution: " + code_output, icon="❌")
+            st.toast(f"Error in code execution:{code_output}", icon="❌")
             # Output the stack trace
             logger.error(f"Error in code execution: {traceback.format_exc()}")
             return code_output
@@ -113,20 +113,21 @@ class GeneralUtils:
             <script src="https://www.jdoodle.com/assets/jdoodle-pym.min.js" type="text/javascript"></script>
         </body>
         </html>
-        """.format(language=LangCodes()[language], script_code=code_prompt)
+        """.format(language=get_language_codes()[language], script_code=code_prompt)
         return html_template
     
 
     def check_compilers(self, language):
-        language = language.lower().strip()
-        
+        language_code=get_language_codes()[language]
+        logger.info(f"Checking compilers for language: {language} with lang_code: {language_code}")
+
         compilers = {
             "python": ["python", "--version"],
             "nodejs": ["node", "--version"],
             "c": ["gcc", "--version"],
-            "c++": ["g++", "--version"],
+            "cpp": ["g++", "--version"],
             "csharp": ["csc", "--version"],
-            "go": ["go", "version"],
+            "go": ["go", "--version"],
             "ruby": ["ruby", "--version"],
             "java": ["java", "--version"],
             "kotlin": ["kotlinc", "--version"],
@@ -134,12 +135,12 @@ class GeneralUtils:
             "swift": ["swift", "--version"]
         }
 
-        if language not in compilers:
-            logger.error("Invalid language selected.")
-            st.toast("Invalid language selected.", icon="❌")
+        if language_code not in compilers:
+            logger.error(f"Invalid language selected '{language_code}' not found in compilers list.")
+            st.toast(f"Invalid language selected '{language_code}' not found in compilers list.", icon="❌")
             return False
 
-        compiler = subprocess.run(compilers[language], capture_output=True, text=True)
+        compiler = subprocess.run(compilers[language_code], capture_output=True, text=True)
         if compiler.returncode != 0:
             logger.error(f"{language.capitalize()} compiler not found.")
             st.toast(f"{language.capitalize()} compiler not found.", icon="❌")
@@ -171,7 +172,11 @@ class GeneralUtils:
                 return output.stdout + output.stderr
 
         elif language == "C" or language == "C++":
+            
             ext = ".c" if language == "C" else ".cpp"
+            compiler = "gcc" if language == "C" else "g++"
+            std = "-std=c11" if language == "C" else "-std=c++17"
+
             with tempfile.NamedTemporaryFile(mode="w", suffix=ext, delete=True) as src_file:
                 src_file.write(code)
                 src_file.flush()
@@ -180,7 +185,7 @@ class GeneralUtils:
 
                 with tempfile.NamedTemporaryFile(mode="w", suffix="", delete=True) as exec_file:
                     compile_output = subprocess.run(
-                        ["gcc" if language == "C" else "g++", "-o", exec_file.name, src_file.name], capture_output=True, text=True)
+                        [compiler, std, "-o", exec_file.name, src_file.name], capture_output=True, text=True)
 
                     if compile_output.returncode != 0:
                         return compile_output.stderr

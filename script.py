@@ -18,7 +18,7 @@ from libs.palmai import PalmAI
 import streamlit as st
 from libs.vertexai_langchain import VertexAILangChain
 from libs.general_utils import GeneralUtils
-from libs.lang_codes import LangCodes
+from libs.lang_codes import get_language_codes
 from libs.openai_langchain import OpenAILangChain
 from libs.logger import logger
 from libs.utils import *
@@ -27,6 +27,10 @@ from streamlit_ace import st_ace
 general_utils = None
 
 def main():
+
+    # set the streamlit app to full width and dark theme
+    st.set_page_config(layout="wide", page_title="LangChain Coder - AI", page_icon="🦜🔗")
+
     # Load the CSS files
     load_css('static/css/styles.css')
 
@@ -44,7 +48,7 @@ def main():
     general_utils = GeneralUtils()
     
     # Streamlit UI 
-    st.title("LangChain Coder - AI - v1.6 🦜🔗")
+    st.markdown("<h1 style='text-align: center; color: black;'>LangChain Coder - AI - v1.6 🦜🔗</h1>", unsafe_allow_html=True)
     logger.info("LangChain Coder - AI 🦜🔗")
     
     # Support
@@ -61,7 +65,7 @@ def main():
         st.selectbox("Select AI", ["Open AI", "Vertex AI", "Palm AI","Gemini AI"], key="ai_option")
 
         # Dropdown for selecting code language
-        st.selectbox("Select language", list(LangCodes().keys()), key="code_language")
+        st.selectbox("Select language", list(get_language_codes().keys()), key="code_language")
 
         # Radio buttons for selecting compiler mode
         st.radio("Compiler Mode", ("Online", "Offline"), key="compiler_mode")
@@ -277,7 +281,7 @@ def main():
                 
     with st.form('code_controls_form'):
         # Create columns for alignment
-        file_name_col, save_code_col,generate_code_col,run_code_col,fix_code_col = st.columns(5)
+        file_name_col, save_code_col,generate_code_col,run_code_col,debug_code_col,convert_code_col = st.columns(6)
 
         # Input Box (for entering the file name) in the first column
         with file_name_col:
@@ -348,11 +352,11 @@ def main():
                     st.session_state.generated_code = ""
                     logger.error(f"Please select a valid AI option selected '{st.session_state.ai_option}' option")
 
-        # Fix Code button in the fourth column
-        with fix_code_col:
-            fix_submitted = st.form_submit_button("Debug")
+        # Debug Code button in the fourth column
+        with debug_code_col:
+            debug_submitted = st.form_submit_button("Debug")
             ai_llm_selected = None
-            if fix_submitted:
+            if debug_submitted:
                 # checking for the selected AI option
                 if st.session_state.ai_option == "Palm AI":
                     ai_llm_selected = st.session_state.palm_langchain
@@ -367,6 +371,23 @@ def main():
                     
                 logger.info(f"Fixing code with instructions: {st.session_state.code_fix_instructions}")
                 st.session_state.generated_code = ai_llm_selected.fix_generated_code(st.session_state.generated_code, st.session_state.code_language,st.session_state.code_fix_instructions)
+
+        # Debug Code button in the fourth column
+        with convert_code_col:
+            convert_submitted = st.form_submit_button("Convert")
+            ai_llm_selected = None
+            if convert_submitted:
+                # checking for the selected AI option
+                if st.session_state.ai_option == "Palm AI":
+                    ai_llm_selected = st.session_state.palm_langchain
+                elif st.session_state.ai_option == "Gemini AI":
+                    ai_llm_selected = st.session_state.gemini_langchain
+                elif st.session_state.ai_option == "Open AI":
+                    ai_llm_selected = st.session_state.openai_langchain
+                    
+                logger.info(f"Converting code with instructions: {st.session_state.code_fix_instructions}")
+                st.session_state.generated_code = ai_llm_selected.convert_generated_code(st.session_state.generated_code, st.session_state.code_language)
+
 
         # Run Code button in the fourth column
         with run_code_col:
@@ -392,7 +413,7 @@ def main():
         with st.sidebar.expander("Code Editor Settings", expanded=False):
 
             # Font size setting
-            font_size = st.slider("Font Size", min_value=8, max_value=30, value=14, step=1)
+            font_size = st.slider("Font Size", min_value=8, max_value=30, value=16, step=1)
 
             # Tab size setting
             tab_size = st.slider("Tab Size", min_value=2, max_value=8, value=4, step=1)
@@ -411,7 +432,7 @@ def main():
             wrap = st.checkbox("Wrap", value=True)
             auto_update = st.checkbox("Auto Update", value=False)
             readonly = st.checkbox("Readonly", value=False)
-            language = st.selectbox("Language", options=list(LangCodes().keys()), index=list(LangCodes().keys()).index("Python"))
+            language = st.selectbox("Language", options=list(get_language_codes().keys()), index=list(get_language_codes().keys()).index("Python"))
             
         # Display the st_ace code editor with the selected settings
         display_code_editor(font_size, tab_size, theme, keybinding, show_gutter, show_print_margin, wrap, auto_update, readonly, language)

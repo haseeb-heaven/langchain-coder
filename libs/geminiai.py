@@ -197,3 +197,57 @@ class GeminiAI:
         except Exception as exception:
             st.toast(f"Error in code fixing: {exception}", icon="❌")
             logger.error(f"Error in code fixing: {traceback.format_exc()}")
+
+    def convert_generated_code(self, code, code_language):
+        """
+        Function to convert the generated code to a different language using the palm API.
+        """
+        try:
+            # Check for valid code
+            if not code or len(code) == 0:
+                logger.error("Error in code conversion: Please enter a valid code.")
+                return
+            
+            logger.info(f"Converting code")
+            if code and len(code) > 0:
+                logger.info(f"Converting code {code[:100]}... to language {code_language}")
+                
+                # Improved instructions template
+                template = f"""
+                Task: Convert the code snippet provided below to the {code_language} programming language, following the given instructions:
+
+                {code}
+
+                Instructions for Conversion:
+                1. Identify the functionality of the original code.
+                2. Translate the code into the {code_language} programming language, maintaining the same functionality.
+                3. Verify that the converted code is displayed in the output.
+
+                Please make sure only the converted code should be included in the output.
+                """
+
+                # Prompt Templates
+                code_template = template
+                
+                # LLM Chains definition
+                # Create a chain that generates the code
+                gemini_completion = self.model.generate_content(code_template)
+                logger.info("Text generation completed successfully.")
+
+                if gemini_completion:
+                    # Extracted code from the palm completion
+                    code = gemini_completion.text
+                    extracted_code = self.utils.extract_code(code)
+                    
+                    # Check if the code or extracted code is not empty or null
+                    if not code or not extracted_code:
+                        raise Exception("Error: Generated code or extracted code is empty or null.")
+                    else:
+                        return extracted_code
+                else:
+                    raise Exception("Error in code conversion: Please enter a valid code.")
+            else:
+                logger.error("Error in code conversion: Please enter a valid code and language.")
+        except Exception as exception:
+            st.toast(f"Error in code conversion: {exception}", icon="❌")
+            logger.error(f"Error in code conversion: {traceback.format_exc()}")
