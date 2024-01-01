@@ -240,7 +240,9 @@ class GeminiAI:
                 if gemini_completion:
                     # Extracted code from the palm completion
                     code = gemini_completion.text
-                    extracted_code = self.utils.extract_code(code)
+                    extracted_code = None
+                    if code:
+                        extracted_code = self.utils.extract_code(code)
                     
                     # Check if the code or extracted code is not empty or null
                     if not code or not extracted_code:

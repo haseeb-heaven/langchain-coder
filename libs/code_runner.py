@@ -56,7 +56,7 @@ class CodeRunner:
             self.logger.error(f"Language {lang} not found")
             return None
 
-    def run_code(self, code, language):
+    def run_code(self, code, language,code_input=None,compile_only=False):
         try:
             if not code or not language:
                 self.logger.error("Code or language is not provided.")
@@ -73,7 +73,7 @@ class CodeRunner:
 
             # Replace escape sequences with empty characters
             code = code.replace("\\n", "").replace("\\t", "").replace("\\r", "").replace("\"", "\"")
-            data = {"code": code, "language": language}
+            data = {"code": code, "language": language,"input" : code_input,"compileOnly" : compile_only}
 
             self.logger.info(f"Sending request to {self.server_url}/run_code and data is '{data}'")
             response = requests.post(f"{self.server_url}/run_code", json=data)

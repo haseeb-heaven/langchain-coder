@@ -15,6 +15,7 @@ Date : 06/09/2023
 import os
 from libs.geminiai import GeminiAI
 from libs.palmai import PalmAI
+from libs.tasks_parser import CodingTasksParser
 import streamlit as st
 from libs.vertexai_langchain import VertexAILangChain
 from libs.general_utils import GeneralUtils
@@ -24,7 +25,7 @@ from libs.logger import logger
 from libs.utils import *
 from streamlit_ace import st_ace
 
-general_utils = None
+st.session_state.general_utils = None
 
 def main():
 
@@ -45,7 +46,8 @@ def main():
     
     # Initialize classes
     code_language = st.session_state.get("code_language", "Python")
-    general_utils = GeneralUtils()
+    st.session_state.general_utils = GeneralUtils()
+    st.session_state.tasks_parser = CodingTasksParser()
     
     # Streamlit UI 
     st.markdown("<h1 style='text-align: center; color: black;'>LangChain Coder - AI - v1.7 🦜🔗</h1>", unsafe_allow_html=True)
@@ -83,7 +85,7 @@ def main():
                     logs_data = file.read()
                     # download the logs
                     file_format = "text/plain"
-                    st.session_state.download_link = general_utils.generate_download_link(logs_data, logs_filename, file_format,True)
+                    st.session_state.download_link = st.session_state.general_utils.generate_download_link(logs_data, logs_filename, file_format,True)
                 
         # Setting options for Open AI
         api_key = None
@@ -141,7 +143,7 @@ def main():
                     if st.session_state.uploaded_file:
                         logger.info(f"Vertex AI File credentials file '{st.session_state.uploaded_file.name}' initialized state {st.session_state.vertex_ai_loaded}")         
                         # Save the temorary uploaded file and delete it after 60 seconds due to security reasons. (Credentials file is deleted after 60 seconds)
-                        file_path = general_utils.save_uploaded_file_temp(st.session_state.uploaded_file)  # Save the uploaded file
+                        file_path = st.session_state.general_utils.save_uploaded_file_temp(st.session_state.uploaded_file)  # Save the uploaded file
                         if file_path:
                             credentials_file_path = file_path
                         else:
@@ -244,23 +246,33 @@ def main():
                     logger.error(f"Error loading Gemini AI: {str(exception)}")
                     
     # UI Elements - Main Page
-    vertex_model_selected = st.session_state["vertexai"]["model_name"]
-    if vertex_model_selected == "code-bison":
-        placeholder = "Enter your prompt for code generation."
-    elif vertex_model_selected == "code-gecko":
-        placeholder = "Enter your code for code completion."
+    if st.session_state.ai_option == "Vertex AI":
+        vertex_model_selected = st.session_state["vertexai"]["model_name"]
+        if vertex_model_selected == "code-bison":
+            placeholder = "Enter your prompt for code generation."
+        elif vertex_model_selected == "code-gecko":
+            placeholder = "Enter your code for code completion."
     else:
-        placeholder = "Enter your prompt for code generation."
-        st.error(f"Invalid Vertex AI model selected: {vertex_model_selected}")
-    
-    # Input box for entering the prompt
-    st.session_state.code_prompt = st.text_area("Enter Prompt", height=200, placeholder=placeholder,label_visibility='hidden')
+        if st.session_state.code_prompt:
+            placeholder = st.session_state.code_prompt
+        else:
+            placeholder = "Enter your prompt for code generation."
 
+    # Input box for entering the prompt
+    st.session_state.code_prompt = st.text_area(
+        "Enter Prompt", 
+        value=st.session_state.code_prompt if 'code_prompt' in st.session_state else "",
+        height=130, 
+        placeholder="Enter your prompt for code generation." if 'code_prompt' not in st.session_state else "", 
+        label_visibility='hidden'
+    )
+
+    # Settings for input and output options.
     with st.expander("Input Options"):
         with st.container():
             st.session_state.code_input = st.text_input("Input (Stdin)", placeholder="Input (Stdin)", label_visibility='collapsed',value=st.session_state.code_input)
             st.session_state.code_output = st.text_input("Output (Stdout)", placeholder="Output (Stdout)", label_visibility='collapsed',value=st.session_state.code_output)
-            st.session_state.code_fix_instructions = st.text_input("Fix instructions", placeholder="Fix instructions", label_visibility='collapsed',value=st.session_state.code_fix_instructions)
+            st.session_state.code_fix_instructions = st.text_input("Debug instructions", placeholder="Debug instructions", label_visibility='collapsed',value=st.session_state.code_fix_instructions)
 
     # Set the input and output to None if the input and output is empty
     if st.session_state.code_input and st.session_state.code_output: 
@@ -275,10 +287,10 @@ def main():
         else:
             logger.info(f"Stdout: {st.session_state.code_output}")
     
-                
+    # Buttons for generating, saving, running and debugging the code            
     with st.form('code_controls_form'):
         # Create columns for alignment
-        file_name_col, save_code_col,generate_code_col,run_code_col,debug_code_col,convert_code_col = st.columns(6)
+        file_name_col, save_code_col,generate_code_col,run_code_col,debug_code_col,convert_code_col,example_code_col = st.columns(7)
 
         # Input Box (for entering the file name) in the first column
         with file_name_col:
@@ -289,7 +301,7 @@ def main():
             download_code_submitted = st.form_submit_button("Download")
             if download_code_submitted:
                 file_format = "text/plain"
-                st.session_state.download_link = general_utils.generate_download_link(st.session_state.generated_code, code_file,file_format,True)
+                st.session_state.download_link = st.session_state.general_utils.generate_download_link(st.session_state.generated_code, code_file,file_format,True)
                 
         # Generate Code button in the third column
         with generate_code_col:
@@ -363,8 +375,12 @@ def main():
                     ai_llm_selected = st.session_state.openai_langchain
 
                 if not st.session_state.code_fix_instructions:
-                    st.toast("Missing fix instructions", icon="❌")
-                    logger.warning("Missing fix instructions")
+                    st.toast("Missing Debug instructions", icon="❌")
+                    logger.warning("Missing Debug instructions")
+
+                if not st.session_state.stderr and st.session_state.code_fix_instructions:
+                    st.session_state.stderr = st.session_state.code_fix_instructions
+                    logger.info("Setting Stderr from input to Debug instructions.")
                     
                 logger.info(f"Fixing code with instructions: {st.session_state.code_fix_instructions}")
                 st.session_state.generated_code = ai_llm_selected.fix_generated_code(st.session_state.generated_code, st.session_state.code_language,st.session_state.code_fix_instructions)
@@ -394,10 +410,22 @@ def main():
                 privacy_accepted = st.session_state.get(f'compiler_{st.session_state.compiler_mode.lower()}_privacy_accepted', False)
     
                 if privacy_accepted:
-                    st.session_state.output = general_utils.execute_code(st.session_state.compiler_mode)
+                    st.session_state.output = st.session_state.general_utils.execute_code(st.session_state.compiler_mode)
                 else:
                     st.toast(f"You didn't accept the privacy policy for {st.session_state.compiler_mode} compiler.", icon="❌")
                     logger.error(f"You didn't accept the privacy policy for {st.session_state.compiler_mode} compiler.")
+
+        # Example Code button in the fifth column
+        with example_code_col:
+            example_submitted = st.form_submit_button("Example")
+            if example_submitted:
+                task_name, task_input, task_output = st.session_state.tasks_parser.get_random_task()
+                st.session_state.code_prompt = "Task = '" + str(task_name) + "'\nInput = '" + str(task_input) + "'\nOutput = '" + str(task_output) + "'"
+                st.session_state.code_input = task_input
+                st.session_state.code_output = task_output
+                logger.info(f"Example code loaded successfully. Task name: {task_name}, Task input: {task_input}, Task output: {task_output}")
+                st.toast(f"Example code loaded successfully. Task name: {task_name}, Task input: {task_input}, Task output: {task_output}", icon="✅")
+                st.rerun()
 
     # Show the privacy policy for compilers.
     handle_privacy_policy(st.session_state.compiler_mode)
@@ -435,26 +463,31 @@ def main():
         # Display the code output
         if st.session_state.output:
             st.markdown("### Output")
-            st.code(st.session_state.output, language=st.session_state.code_language.lower())
-        
+            #st.toast(f"Compiler mode selected '{st.session_state.compiler_mode}'", icon="✅")
+            if (st.session_state.compiler_mode.lower() in ["offline", "api"]):
+                if "https://www.jdoodle.com/plugin" in st.session_state.output:
+                    pass
+                else:
+                    st.code(st.session_state.output, language=st.session_state.code_language.lower())
+
         # Display the price of the generated code.
         if st.session_state.generated_code and st.session_state.display_cost:
             if st.session_state.ai_option == "Open AI":
                 selected_model = st.session_state["openai"]["model_name"]
                 if selected_model == "gpt-3":
-                    cost, cost_per_whole_string, total_cost = general_utils.gpt_3_generation_cost(st.session_state.generated_code)
+                    cost, cost_per_whole_string, total_cost = st.session_state.general_utils.gpt_3_generation_cost(st.session_state.generated_code)
                     st.table([["Cost/1K Token", f"{cost} USD"], ["Cost/Whole String", f"{cost_per_whole_string} USD"], ["Total Cost", f"{total_cost} USD"]])
                 elif selected_model == "gpt-4":
-                    cost, cost_per_whole_string, total_cost = general_utils.gpt_4_generation_cost(st.session_state.generated_code)
+                    cost, cost_per_whole_string, total_cost = st.session_state.general_utils.gpt_4_generation_cost(st.session_state.generated_code)
                     st.table([["Cost/1K Token", f"{cost} USD"], ["Cost/Whole String", f"{cost_per_whole_string} USD"], ["Total Cost", f"{total_cost} USD"]])
                 elif selected_model == "text-davinci-003":
-                    cost, cost_per_whole_string, total_cost = general_utils.gpt_text_davinci_generation_cost(st.session_state.generated_code)
+                    cost, cost_per_whole_string, total_cost = st.session_state.general_utils.gpt_text_davinci_generation_cost(st.session_state.generated_code)
                     st.table([["Cost/1K Token", f"{cost} USD"], ["Cost/Whole String", f"{cost_per_whole_string} USD"], ["Total Cost", f"{total_cost} USD"]])
             
             elif st.session_state.ai_option == "Vertex AI":
                 selected_model = st.session_state["vertexai"]["model_name"]
                 if selected_model == "code-bison" or selected_model == "code-gecko":
-                    cost, cost_per_whole_string, total_cost = general_utils.codey_generation_cost(st.session_state.generated_code)
+                    cost, cost_per_whole_string, total_cost = st.session_state.general_utils.codey_generation_cost(st.session_state.generated_code)
                     st.table([["Cost/1K Token", f"{cost} USD"], ["Cost/Whole String", f"{cost_per_whole_string} USD"], ["Total Cost", f"{total_cost} USD"]])
             
             elif st.session_state.ai_option == "Palm AI":
@@ -462,17 +495,17 @@ def main():
                 if selected_model == "text-bison-001":
                     cost = 0.00025  # Cost per 1K input characters for online requests
                     cost_per_whole_string = 0.0005  # Cost per 1K output characters for online requests
-                    total_cost = general_utils.palm_text_bison_generation_cost(st.session_state.generated_code)
+                    total_cost = st.session_state.general_utils.palm_text_bison_generation_cost(st.session_state.generated_code)
                     st.table([["Cost/1K Token", f"{cost} USD"], ["Cost/Whole String", f"{cost_per_whole_string} USD"], ["Total Cost", f"{total_cost} USD"]])
                 elif selected_model == "chat-bison-001":
                     cost = 0.00025  # Cost per 1K input characters for online requests
                     cost_per_whole_string = 0.0005  # Cost per 1K output characters for online requests
-                    total_cost = general_utils.palm_chat_bison_generation_cost(st.session_state.generated_code)
+                    total_cost = st.session_state.general_utils.palm_chat_bison_generation_cost(st.session_state.generated_code)
                     st.table([["Cost/1K Token", f"{cost} USD"], ["Cost/Whole String", f"{cost_per_whole_string} USD"], ["Total Cost", f"{total_cost} USD"]])
                 elif selected_model == "embedding-gecko-001":
                     cost = 0.0002  # Cost per 1K characters input for generating embeddings using text as an input
                     cost_per_whole_string = 0.0002  # Assuming the same cost for output characters
-                    total_cost = general_utils.palm_embedding_gecko_generation_cost(st.session_state.generated_code)
+                    total_cost = st.session_state.general_utils.palm_embedding_gecko_generation_cost(st.session_state.generated_code)
                     st.table([["Cost/1K Token", f"{cost} USD"], ["Cost/Whole String", f"{cost_per_whole_string} USD"], ["Total Cost", f"{total_cost} USD"]])
 
             elif st.session_state.ai_option == "Gemini AI":
@@ -481,7 +514,7 @@ def main():
                 if selected_model == "gemini-pro":
                     cost_per_input_char = 0.00025  # Cost per 1K input characters for online requests
                     cost_per_output_char = 0.0005  # Cost per 1K output characters for online requests
-                    total_cost = general_utils.gemini_pro_generation_cost(st.session_state.generated_code)
+                    total_cost = st.session_state.general_utils.gemini_pro_generation_cost(st.session_state.generated_code)
                     st.table([["Cost/1K Input Token", f"{cost_per_input_char} USD"], ["Cost/1K Output Token", f"{cost_per_output_char} USD"], ["Total Cost", f"{total_cost} USD"]])
                 
                 elif selected_model == "gemini-pro-vision":
@@ -489,7 +522,7 @@ def main():
                     cost_per_second = 0.002  # Cost per second for online requests
                     cost_per_input_char = 0.00025  # Cost per 1K input characters for online requests
                     cost_per_output_char = 0.0005  # Cost per 1K output characters for online requests
-                    total_cost = general_utils.gemini_pro_vision_generation_cost(st.session_state.generated_code)
+                    total_cost = st.session_state.general_utils.gemini_pro_vision_generation_cost(st.session_state.generated_code)
                     st.table([["Cost/Image", f"{cost_per_image} USD"], ["Cost/Second", f"{cost_per_second} USD"], ["Cost/1K Input Token", f"{cost_per_input_char} USD"], ["Cost/1K Output Token", f"{cost_per_output_char} USD"], ["Total Cost", f"{total_cost} USD"]])
                 
     # Expander for coding guidelines
@@ -510,7 +543,7 @@ def main():
             "Robust Code",
             "Memory efficiency",
             "Speed efficiency",
-            "Standard Naming conventions"
+            "Standard Naming"
         ]
 
         for guideline in guidelines:
