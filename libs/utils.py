@@ -148,9 +148,10 @@ def show_privacy_policy(mode) -> bool:
     elif mode == 'api':
         st.markdown("""
         ## Code Execution License - API:
-        - **The platform uses the [JDoodle Compiler API](https://www.jdoodle.com/compiler-api) to compile and run your code.** 
+        - **The platform uses the [Code Runner - API](https://code-runner-plugin.vercel.app/privacy) which in backend uses [JDoodle Compiler API](https://www.jdoodle.com/compiler-api) to compile and run your code.** 
           - *The JDoodle Compiler API is a third-party service that provides online code execution for various programming languages.*
-          - *The JDoodle Compiler API may collect and use your code and other information in accordance with their own [terms and conditions](https://www.jdoodle.com/terms) and [privacy policy](https://code-runner-plugin.vercel.app/privacy).*
+          - *The JDoodle Compiler API may collect and use your code and other information in accordance with their own [terms and conditions](https://www.jdoodle.com/terms).*
+          - *The Code Runner API may collect and use your code and other information in accordance with their own [privacy policy](https://code-runner-plugin.vercel.app/privacy).*
         """)
         agree = st.radio('I agree to the Code Execution License - API', ('Not Sure','Yes', 'No'), index=0)
         if agree == 'Yes':
@@ -232,3 +233,5 @@ def handle_privacy_policy(compiler_mode):
 
             if st.session_state[privacy_accepted_key] in [True, False]:
                 st.session_state[privacy_shown_key] = False
+            # Update the application.
+            st.rerun()
