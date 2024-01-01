@@ -2,6 +2,7 @@
 import base64
 import os
 import tempfile
+from libs.code_runner import CodeRunner
 from libs.logger import logger
 import subprocess
 import traceback
@@ -17,7 +18,11 @@ from google.auth import exceptions
 from google.auth.transport import requests
 
 class GeneralUtils:
-    
+    code_runer = None
+
+    def __init__(self):
+        self.code_runer = CodeRunner()
+
     def extract_code(self, code):
         """
         Extracts the code from the provided string.
@@ -57,12 +62,23 @@ class GeneralUtils:
                 st.toast("Generated code is empty. Cannot execute an empty code.", icon="❌")
                 return
             
+            # Execute code using JDoodle iFrame Embedding
             if compiler_mode.lower() == "online":
+                logger.info("Executing code using JDoodle iFrame Embedding")
                 html_content = self.generate_dynamic_html(code_language, generated_code)
                 logger.info(f"HTML Template: {html_content[:100]}")
                 return html_content
+            
+            # Execute code using JDoodle API
+            elif compiler_mode.lower() == "api":
+                logger.info("Executing code using JDoodle API")
+                code_output = self.code_runer.run_code(generated_code, code_language)
+                logger.info(f"Execution Output: {code_output}")
+                return code_output
 
+            # Execute code using local compilers
             else:
+                logger.info("Executing code using local compilers")
                 code_output = self.run_code(generated_code, code_language)
                 
                 # Check for errors in code execution

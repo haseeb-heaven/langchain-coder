@@ -103,6 +103,9 @@ class GeminiAI:
             {self.guidelines}
             """
             
+            # Print prompt in Log
+            logger.info(f"Gemini AI prompt: {prompt}")
+
             gemini_completion = self.model.generate_content(prompt)
             logger.info("Text generation completed successfully.")
             

@@ -48,7 +48,7 @@ def main():
     general_utils = GeneralUtils()
     
     # Streamlit UI 
-    st.markdown("<h1 style='text-align: center; color: black;'>LangChain Coder - AI - v1.6 🦜🔗</h1>", unsafe_allow_html=True)
+    st.markdown("<h1 style='text-align: center; color: black;'>LangChain Coder - AI - v1.7 🦜🔗</h1>", unsafe_allow_html=True)
     logger.info("LangChain Coder - AI 🦜🔗")
     
     # Support
@@ -68,7 +68,7 @@ def main():
         st.selectbox("Select language", list(get_language_codes().keys()), key="code_language")
 
         # Radio buttons for selecting compiler mode
-        st.radio("Compiler Mode", ("Online", "Offline"), key="compiler_mode")
+        st.radio("Compiler Mode", ("Online", "Offline","API"), key="compiler_mode")
         credentials_file_path = None
         
         # Create checkbox for Displaying cost of generated code
@@ -104,7 +104,6 @@ def main():
 
                     except Exception as exception:
                         logger.error(f"Error loading : {str(exception)}")
-                        st.toast(f"Error loading : {str(exception)}", icon="❌")
 
                         # Create API key input box on error.
                         api_key = st.text_input("API Key", value="", key="api_key", type="password")
@@ -197,7 +196,6 @@ def main():
                             logger.info("Palm AI API key is initialized from App secrets.")
                     except Exception as exception:
                         logger.error(f"Error loading : {str(exception)}")
-                        st.toast(f"Error loading : {str(exception)}", icon="❌")
                         
                         # Create API key input box on error.
                         api_key = st.text_input("API Key", value="", key="api_key", type="password")
@@ -230,7 +228,6 @@ def main():
                             logger.info("Gemini AI API key is initialized from App secrets.")
                     except Exception as exception:
                         logger.error(f"Error loading : {str(exception)}")
-                        st.toast(f"Error loading : {str(exception)}", icon="❌")
                         
                         # Create API key input box on error.
                         api_key = st.text_input("API Key", value="", key="api_key", type="password")
@@ -394,21 +391,19 @@ def main():
             execute_submitted = st.form_submit_button("Execute")
             if execute_submitted:          
                 # Execute the code.
-                if st.session_state.compiler_mode in ["Offline", "Online"]:
-                    privacy_accepted = st.session_state.get(f'compiler_{st.session_state.compiler_mode.lower()}_privacy_accepted', False)
-        
-                    if privacy_accepted:
-                        st.session_state.output = general_utils.execute_code(st.session_state.compiler_mode)
-                    else:
-                        st.toast(f"You didn't accept the privacy policy for {st.session_state.compiler_mode} compiler.", icon="❌")
-                        logger.error(f"You didn't accept the privacy policy for {st.session_state.compiler_mode} compiler.")
+                privacy_accepted = st.session_state.get(f'compiler_{st.session_state.compiler_mode.lower()}_privacy_accepted', False)
+    
+                if privacy_accepted:
+                    st.session_state.output = general_utils.execute_code(st.session_state.compiler_mode)
+                else:
+                    st.toast(f"You didn't accept the privacy policy for {st.session_state.compiler_mode} compiler.", icon="❌")
+                    logger.error(f"You didn't accept the privacy policy for {st.session_state.compiler_mode} compiler.")
 
     # Show the privacy policy for compilers.
     handle_privacy_policy(st.session_state.compiler_mode)
-
+    
     # Save and Run Code
     if st.session_state.generated_code:
-        
         # Sidebar for settings
         with st.sidebar.expander("Code Editor Settings", expanded=False):
 
@@ -440,12 +435,7 @@ def main():
         # Display the code output
         if st.session_state.output:
             st.markdown("### Output")
-            #st.toast(f"Compiler mode selected '{st.session_state.compiler_mode}'", icon="✅")
-            if (st.session_state.compiler_mode.lower() == "offline"):
-                if "https://www.jdoodle.com/plugin" in st.session_state.output:
-                    pass
-                else:
-                    st.code(st.session_state.output, language=st.session_state.code_language.lower())
+            st.code(st.session_state.output, language=st.session_state.code_language.lower())
         
         # Display the price of the generated code.
         if st.session_state.generated_code and st.session_state.display_cost:
