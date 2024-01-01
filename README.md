@@ -189,6 +189,12 @@ LangChain Coder AI integrates with [GEMINI AI](https://deepmind.google/technolog
 
 ## Versioning
 
+**Version 1.7** includes these features:
+- **Online compiler API**: LangChain Coder AI integrates with Online compiler API.
+- **Code Debugger**: LangChain Coder AI integrates with Code Debugger.
+- **JDoodle Compiler**: LangChain Coder AI integrates with JDoodle Compiler with over **70** programming languages.
+- **New UI/UX design**: LangChain Coder AI integrates with new UI/UX design.
+
 **Version 1.6** includes these features:
 - **GEMINI AI Free Tier**: LangChain Coder AI integrates with GEMINI AI Free Tier.
 - **Code Debugger**: LangChain Coder AI integrates with Code Debugger.
@@ -248,7 +254,7 @@ This project is licensed under the MIT License so feel free to use it.
 
 
 
-### Code Execution License - ONLINE:
+### Code Execution License - ONLINE/API:
 
 - **The platform uses the [JDoodle Compiler](https://www.jdoodle.com/) to compile and run your code.** 
   - *The JDoodle Compiler is a third-party service that provides online code execution for various programming languages.*

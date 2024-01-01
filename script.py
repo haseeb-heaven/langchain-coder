@@ -48,7 +48,7 @@ def main():
     general_utils = GeneralUtils()
     
     # Streamlit UI 
-    st.markdown("<h1 style='text-align: center; color: black;'>LangChain Coder - AI - v1.6 🦜🔗</h1>", unsafe_allow_html=True)
+    st.markdown("<h1 style='text-align: center; color: black;'>LangChain Coder - AI - v1.7 🦜🔗</h1>", unsafe_allow_html=True)
     logger.info("LangChain Coder - AI 🦜🔗")
     
     # Support
