@@ -62,6 +62,10 @@ def initialize_session_state():
         st.session_state.compiler_online_privacy_accepted = None
     if "compiler_api_privacy_accepted" not in st.session_state:
         st.session_state.compiler_api_privacy_accepted = None
+    if "general_utils" not in st.session_state:
+        st.session_state.general_utils = None
+    if "tasks_parser" not in st.session_state:
+        st.session_state.tasks_parser = None
 
     # Initialize session state for Vertex AI
     if "vertexai" not in st.session_state:
@@ -162,12 +166,12 @@ def load_css(file_name):
         st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
 
 def display_code_editor(font_size, tab_size, theme, keybinding, show_gutter, show_print_margin, wrap, auto_update, readonly, language):
-    if st.session_state.generated_code and st.session_state.compiler_mode == "Offline":
+    if st.session_state.generated_code and st.session_state.compiler_mode in ["Offline", "API"]:
         st.session_state.generated_code = st_ace(
             language=language.lower(),
             theme=theme,
             keybinding=keybinding,
-            height=400,
+            height=600,
             value=st.session_state.generated_code,
             font_size=font_size,
             tab_size=tab_size,
