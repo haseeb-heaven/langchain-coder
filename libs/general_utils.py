@@ -72,7 +72,7 @@ class GeneralUtils:
             # Execute code using JDoodle API
             elif compiler_mode.lower() == "api":
                 logger.info("Executing code using JDoodle API")
-                code_output = self.code_runer.run_code(generated_code, code_language)
+                code_output = self.code_runer.run_code(generated_code, code_language,code_input=st.session_state.code_input,compile_only=False)
                 logger.info(f"Execution Output: {code_output}")
                 return code_output
 
