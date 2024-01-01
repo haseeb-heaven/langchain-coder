@@ -1,0 +1,255 @@
+{
+    "coding_tasks": [
+      {
+        "task": "Find the factorial of a number",
+        "example": {
+          "input": 5,
+          "output": "5! = 120"
+        }
+      },
+      {
+        "task": "Calculate the area of a rectangle",
+        "example": {
+          "input": {
+            "Length": 8,
+            "Width": 6
+          },
+          "output": "Area = 48"
+        }
+      },
+      {
+        "task": "Reverse a string",
+        "example": {
+          "input": "hello",
+          "output": "olleh"
+        }
+      },
+      {
+        "task": "Check if a string is a palindrome",
+        "example": {
+          "input": "racecar",
+          "output": "Yes (it's a palindrome)"
+        }
+      },
+      {
+        "task": "Count the number of vowels in a string",
+        "example": {
+          "input": "programming",
+          "output": 3
+        }
+      },
+      {
+        "task": "Calculate the sum of all prime numbers up to a given number",
+        "example": {
+          "input": 10,
+          "output": 17
+        }
+      },
+      {
+        "task": "Implement a basic calculator for addition, subtraction, multiplication, and division",
+        "example": {
+          "input": "5 + 3",
+          "output": 8
+        }
+      },
+      {
+        "task": "Swap two numbers without using a temporary variable",
+        "example": {
+          "input": {
+            "a": 5,
+            "b": 7
+          },
+          "output": {
+            "a": 7,
+            "b": 5
+          }
+        }
+      },
+      {
+        "task": "Find the largest element in an array",
+        "example": {
+          "input": [3, 8, 2, 10, 5],
+          "output": 10
+        }
+      },
+      {
+        "task": "Calculate the average of elements in an array",
+        "example": {
+          "input": [4, 6, 8, 10],
+          "output": 7
+        }
+      },
+      {
+        "task": "Implement a binary search algorithm",
+        "example": {
+          "input": {
+            "Sorted Array": [1, 3, 5, 7, 9],
+            "Target": 5
+          },
+          "output": "Index = 2"
+        }
+      },
+      {
+        "task": "Merge two sorted arrays into a single sorted array",
+        "example": {
+          "input": {
+            "Array 1": [2, 4, 6],
+            "Array 2": [1, 3, 5]
+          },
+          "output": "Merged Array = [1, 2, 3, 4, 5, 6]"
+        }
+      },
+      {
+        "task": "Calculate the nth Fibonacci number using dynamic programming",
+        "example": {
+          "input": 6,
+          "output": "Fibonacci(6) = 8"
+        }
+      },
+      {
+        "task": "Find the longest common subsequence of two strings",
+        "example": {
+          "input": {
+            "String 1": "AGGTAB",
+            "String 2": "GXTXAYB"
+          },
+          "output": "GTAB"
+        }
+      },
+      {
+        "task": "Reverse a linked list",
+        "example": {
+          "input": "1 -> 2 -> 3 -> 4 -> 5",
+          "output": "5 -> 4 -> 3 -> 2 -> 1"
+        }
+      },
+      {
+        "task": "Implement a queue using two stacks",
+        "example": {
+          "input": "Enqueue 1, Enqueue 2, Dequeue",
+          "output": "Dequeued item = 1"
+        }
+      },
+      {
+        "task": "Implement a basic file compression algorithm (e.g., Huffman coding)",
+        "example": {
+          "input": "aabbbbcc",
+          "output": "Compressed Data = \"a2b4c2\""
+        }
+      },
+      {
+        "task": "Perform matrix multiplication",
+        "example": {
+          "input": {
+            "Matrix A": [[1, 2], [3, 4]],
+            "Matrix B": [[5, 6], [7, 8]]
+          },
+          "output": {
+            "Result": [[19, 22], [43, 50]]
+          }
+        }
+      },
+      {
+        "task": "Detect a cycle in a directed graph",
+        "example": {
+          "input": "Graph with cycles",
+          "output": "Cycle detected"
+        }
+      },
+      {
+        "task": "Implement a basic web scraper to extract data from a website",
+        "example": {
+          "input": "Website URL",
+          "output": "Extracted data (e.g., headlines)"
+        }
+      },
+      {
+        "task": "Find the middle element of a linked list",
+        "example": {
+          "input": "1 -> 2 -> 3 -> 4 -> 5",
+          "output": "Middle element = 3"
+        }
+      },
+      {
+        "task": "Check if a number is prime",
+        "example": {
+          "input": 17,
+          "output": "Yes (it's prime)"
+        }
+      },
+      {
+        "task": "Implement a stack with push, pop, and getMin operations in O(1) time",
+        "example": {
+          "input": "Push 5, Push 3, Push 7, Pop, GetMin",
+          "output": "Min element = 3"
+        }
+      },
+      {
+        "task": "Calculate the greatest common divisor (GCD) of two numbers",
+        "example": {
+          "input": {
+            "Number 1": 24,
+            "Number 2": 36
+          },
+          "output": 12
+        }
+      },
+      {
+        "task": "Find the first non-repeating character in a string",
+        "example": {
+          "input": "programming",
+          "output": "First non-repeating character = 'r'"
+        }
+      },
+      {
+        "task": "Reverse words in a string",
+        "example": {
+          "input": "Hello World",
+          "output": "World Hello"
+        }
+      },
+      {
+        "task": "Sort an array in descending order using bubble sort",
+        "example": {
+          "input": [5, 2, 9, 1, 5, 6],
+          "output": [9, 6, 5, 5, 2, 1]
+        }
+      },
+      {
+        "task": "Implement a singly linked list data structure with basic operations",
+        "example": {
+          "input": "Insert 1, Insert 2, Delete 1, Search 2",
+  
+  
+          "output": "Linked List: 2"
+        }
+      },
+      {
+        "task": "Calculate the power of a number using recursion",
+        "example": {
+          "input": {
+            "Base": 2,
+            "Exponent": 3
+          },
+          "output": 8
+        }
+      },
+      {
+        "task": "Find the kth smallest element in an unsorted array",
+        "example": {
+          "input": {
+            "Array": [6, 3, 2, 7, 1, 5],
+            "k": 3
+          },
+          "output": 3
+        }
+      },
+      {
+        "task": "Implement a binary tree data structure with traversal algorithms (in-order, pre-order, post-order)",
+        "example": {
+          "input": "Insert 5, Insert 3, Insert 7, In-order traversal",
+          "output": "Traversal result: 3, 5, 7"
+        }
+      }
+    ]
+  }
