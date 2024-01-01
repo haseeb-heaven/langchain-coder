@@ -391,14 +391,13 @@ def main():
             execute_submitted = st.form_submit_button("Execute")
             if execute_submitted:          
                 # Execute the code.
-                if st.session_state.compiler_mode in ["Offline", "Online","API"]:
-                    privacy_accepted = st.session_state.get(f'compiler_{st.session_state.compiler_mode.lower()}_privacy_accepted', False)
-        
-                    if privacy_accepted:
-                        st.session_state.output = general_utils.execute_code(st.session_state.compiler_mode)
-                    else:
-                        st.toast(f"You didn't accept the privacy policy for {st.session_state.compiler_mode} compiler.", icon="❌")
-                        logger.error(f"You didn't accept the privacy policy for {st.session_state.compiler_mode} compiler.")
+                privacy_accepted = st.session_state.get(f'compiler_{st.session_state.compiler_mode.lower()}_privacy_accepted', False)
+    
+                if privacy_accepted:
+                    st.session_state.output = general_utils.execute_code(st.session_state.compiler_mode)
+                else:
+                    st.toast(f"You didn't accept the privacy policy for {st.session_state.compiler_mode} compiler.", icon="❌")
+                    logger.error(f"You didn't accept the privacy policy for {st.session_state.compiler_mode} compiler.")
 
     # Show the privacy policy for compilers.
     handle_privacy_policy(st.session_state.compiler_mode)
@@ -436,12 +435,7 @@ def main():
         # Display the code output
         if st.session_state.output:
             st.markdown("### Output")
-            #st.toast(f"Compiler mode selected '{st.session_state.compiler_mode}'", icon="✅")
-            if (st.session_state.compiler_mode.lower() == "offline"):
-                if "https://www.jdoodle.com/plugin" in st.session_state.output:
-                    pass
-                else:
-                    st.code(st.session_state.output, language=st.session_state.code_language.lower())
+            st.code(st.session_state.output, language=st.session_state.code_language.lower())
         
         # Display the price of the generated code.
         if st.session_state.generated_code and st.session_state.display_cost:
