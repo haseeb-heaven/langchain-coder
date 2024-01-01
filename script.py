@@ -68,7 +68,7 @@ def main():
         st.selectbox("Select language", list(get_language_codes().keys()), key="code_language")
 
         # Radio buttons for selecting compiler mode
-        st.radio("Compiler Mode", ("Online", "Offline"), key="compiler_mode")
+        st.radio("Compiler Mode", ("Online", "Offline","API"), key="compiler_mode")
         credentials_file_path = None
         
         # Create checkbox for Displaying cost of generated code
@@ -391,7 +391,7 @@ def main():
             execute_submitted = st.form_submit_button("Execute")
             if execute_submitted:          
                 # Execute the code.
-                if st.session_state.compiler_mode in ["Offline", "Online"]:
+                if st.session_state.compiler_mode in ["Offline", "Online","API"]:
                     privacy_accepted = st.session_state.get(f'compiler_{st.session_state.compiler_mode.lower()}_privacy_accepted', False)
         
                     if privacy_accepted:
@@ -402,10 +402,9 @@ def main():
 
     # Show the privacy policy for compilers.
     handle_privacy_policy(st.session_state.compiler_mode)
-
+    
     # Save and Run Code
     if st.session_state.generated_code:
-        
         # Sidebar for settings
         with st.sidebar.expander("Code Editor Settings", expanded=False):
 

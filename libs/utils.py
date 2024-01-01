@@ -54,10 +54,14 @@ def initialize_session_state():
         st.session_state.compiler_offline_privacy_shown = True
     if "compiler_online_privacy_shown" not in st.session_state:
         st.session_state.compiler_online_privacy_shown = True
+    if "compiler_api_privacy_shown" not in st.session_state:
+        st.session_state.compiler_api_privacy_shown = True
     if "compiler_offline_privacy_accepted" not in st.session_state:
         st.session_state.compiler_offline_privacy_accepted = None
     if "compiler_online_privacy_accepted" not in st.session_state:
         st.session_state.compiler_online_privacy_accepted = None
+    if "compiler_api_privacy_accepted" not in st.session_state:
+        st.session_state.compiler_api_privacy_accepted = None
 
     # Initialize session state for Vertex AI
     if "vertexai" not in st.session_state:
@@ -136,6 +140,21 @@ def show_privacy_policy(mode) -> bool:
             return False
         else :
             return None
+    
+    elif mode == 'api':
+        st.markdown("""
+        ## Code Execution License - API:
+        - **The platform uses the [JDoodle Compiler API](https://www.jdoodle.com/compiler-api) to compile and run your code.** 
+          - *The JDoodle Compiler API is a third-party service that provides online code execution for various programming languages.*
+          - *The JDoodle Compiler API may collect and use your code and other information in accordance with their own [terms and conditions](https://www.jdoodle.com/terms) and [privacy policy](https://code-runner-plugin.vercel.app/privacy).*
+        """)
+        agree = st.radio('I agree to the Code Execution License - API', ('Not Sure','Yes', 'No'), index=0)
+        if agree == 'Yes':
+            return True
+        elif agree == 'No':
+            return False
+        else :
+            return None
 
 # Load the CSS files
 def load_css(file_name):
@@ -188,6 +207,7 @@ def upgrade_pip_packages():
 def handle_privacy_policy(compiler_mode):
     privacy_shown_key = f'compiler_{compiler_mode.lower()}_privacy_shown'
     privacy_accepted_key = f'compiler_{compiler_mode.lower()}_privacy_accepted'
+    logger.info(f"Compiler mode is {compiler_mode.lower()} and privacy_shown_key is {privacy_shown_key}")
 
     if st.session_state[privacy_shown_key]:
         # Display the privacy policy for the selected compiler mode.

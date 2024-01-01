@@ -1,8 +1,4 @@
-import logging
-import pprint
 import os
-import re
-import sys
 import traceback
 import google.generativeai as palm
 from dotenv import load_dotenv
