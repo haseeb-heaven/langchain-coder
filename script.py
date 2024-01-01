@@ -104,7 +104,6 @@ def main():
 
                     except Exception as exception:
                         logger.error(f"Error loading : {str(exception)}")
-                        st.toast(f"Error loading : {str(exception)}", icon="❌")
 
                         # Create API key input box on error.
                         api_key = st.text_input("API Key", value="", key="api_key", type="password")
@@ -197,7 +196,6 @@ def main():
                             logger.info("Palm AI API key is initialized from App secrets.")
                     except Exception as exception:
                         logger.error(f"Error loading : {str(exception)}")
-                        st.toast(f"Error loading : {str(exception)}", icon="❌")
                         
                         # Create API key input box on error.
                         api_key = st.text_input("API Key", value="", key="api_key", type="password")
@@ -230,7 +228,6 @@ def main():
                             logger.info("Gemini AI API key is initialized from App secrets.")
                     except Exception as exception:
                         logger.error(f"Error loading : {str(exception)}")
-                        st.toast(f"Error loading : {str(exception)}", icon="❌")
                         
                         # Create API key input box on error.
                         api_key = st.text_input("API Key", value="", key="api_key", type="password")
