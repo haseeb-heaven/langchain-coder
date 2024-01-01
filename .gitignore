@@ -1,5 +1,4 @@
 *.pyc
 *.pyo
 *.log
-*.json
 secrets.toml
