@@ -186,6 +186,17 @@ LangChain Coder AI integrates with [GEMINI AI](https://deepmind.google/technolog
 - [LangChain Integration with Vertex AI](https://python.langchain.com/docs/integrations/llms/google_vertex_ai_palm)
 - [Vertex AI SDK for Python](https://cloud.google.com/vertex-ai/docs/python-sdk/use-vertex-ai-python-sdk)
 
+## Star History
+
+<a href="https://star-history.com/#haseeb-heaven/langchain-coder&Date">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=haseeb-heaven/langchain-coder&type=Date&theme=dark" />
+    <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=haseeb-heaven/langchain-coder&type=Date" />
+    <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=haseeb-heaven/langchain-coder&type=Date" />
+  </picture>
+</a>
+
+
 
 ## Versioning
 
