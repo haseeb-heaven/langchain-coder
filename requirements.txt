@@ -8,3 +8,4 @@ openai
 python-dotenv
 vertexai
 google-generativeai
+litellm
