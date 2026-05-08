@@ -9,7 +9,7 @@ from libs.logger import logger
 from dotenv import load_dotenv
 import libs.general_utils
 
-class OpenAILangChain:
+class OpenAICoder:
     code_chain = None
     code_language = 'Python'
     lite_llm = None  # Change from open_ai_llm to lite_llm
@@ -20,7 +20,7 @@ class OpenAILangChain:
         code_language = st.session_state.code_language
         self.utils = libs.general_utils.GeneralUtils()
 
-        logger.info(f"Initializing OpenAILangChain... with parameters: {code_language}, {temprature}, {max_tokens}, {model} {code_prompt}")
+        logger.info(f"Initializing OpenAICoder... with parameters: {code_language}, {temprature}, {max_tokens}, {model} {code_prompt}")
 
         # Set the OPENAI_API_KEY environment variable
         load_dotenv()

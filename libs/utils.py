@@ -22,10 +22,10 @@ def initialize_session_state():
         st.session_state.project = ""
     if "region" not in st.session_state:
         st.session_state.region = ""
-    if "vertexai_langchain" not in st.session_state:
-        st.session_state.vertexai_langchain= None
-    if "openai_langchain" not in st.session_state:
-        st.session_state.openai_langchain = None
+    if "vertexai_coder" not in st.session_state:
+        st.session_state.vertexai_coder= None
+    if "openai_coder" not in st.session_state:
+        st.session_state.openai_coder = None
     if "code_prompt" not in st.session_state:
         st.session_state.code_prompt = ""
     if "display_cost" not in st.session_state:
@@ -40,10 +40,10 @@ def initialize_session_state():
         st.session_state.code_input = None
     if "code_output" not in st.session_state:
         st.session_state.code_output = None
-    if "palm_langchain" not in st.session_state:
-        st.session_state.palm_langchain = None
-    if "gemini_langchain" not in st.session_state:
-        st.session_state.gemini_langchain = None
+    if "palm_coder" not in st.session_state:
+        st.session_state.palm_coder = None
+    if "gemini_coder" not in st.session_state:
+        st.session_state.gemini_coder = None
     if "code_fix_instructions" not in st.session_state:
         st.session_state.code_fix_instructions = None
     if "sequential_chain" not in st.session_state:
@@ -194,7 +194,7 @@ def display_support():
                 <li style="margin-right: 10px;"><a href="https://twitter.com/haseeb_heaven" target="_blank"><img src="https://img.icons8.com/color/32/000000/twitter--v1.png"/></a></li>
                 <li style="margin-right: 10px;"><a href="https://www.buymeacoffee.com/haseebheaven" target="_blank"><img src="https://img.icons8.com/color/32/000000/coffee-to-go--v1.png"/></a></li>
                 <li style="margin-right: 10px;"><a href="https://www.youtube.com/@HaseebHeaven/videos" target="_blank"><img src="https://img.icons8.com/color/32/000000/youtube-play.png"/></a></li>
-                <li><a href="https://github.com/haseeb-heaven/LangChain-Coder" target="_blank"><img src="https://img.icons8.com/color/32/000000/github--v1.png"/></a></li>
+                <li><a href="https://github.com/haseeb-heaven/agentic-swe-coder" target="_blank"><img src="https://img.icons8.com/color/32/000000/github--v1.png"/></a></li>
             </ul>
         </div>
     """, unsafe_allow_html=True)
