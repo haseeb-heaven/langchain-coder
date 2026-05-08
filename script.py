@@ -27,6 +27,20 @@ from streamlit_ace import st_ace
 
 st.session_state.general_utils = None
 
+# Precomputed coding guidelines for performance optimization
+CODING_GUIDELINES = {
+    "Modular Code": "modular_code",
+    "Exception handling": "exception_handling",
+    "Error handling": "error_handling",
+    "Logs": "logs",
+    "Comments": "comments",
+    "Efficient code": "efficient_code",
+    "Robust Code": "robust_code",
+    "Memory efficiency": "memory_efficiency",
+    "Speed efficiency": "speed_efficiency",
+    "Standard Naming": "naming_conventions"
+}
+
 def main():
 
     # set the streamlit app to full width and dark theme
@@ -524,21 +538,8 @@ def main():
             for key in st.session_state["coding_guidelines"]:
                 st.session_state["coding_guidelines"][key] = True
                     
-        guidelines = [
-            "Modular Code",
-            "Exception handling",
-            "Error handling",
-            "Logs",
-            "Comments",
-            "Efficient code",
-            "Robust Code",
-            "Memory efficiency",
-            "Speed efficiency",
-            "Standard Naming"
-        ]
-
-        for guideline in guidelines:
-            st.session_state["coding_guidelines"][guideline.lower().replace(" ", "_")] = st.checkbox(guideline)
+        for guideline, key in CODING_GUIDELINES.items():
+            st.session_state["coding_guidelines"][key] = st.checkbox(guideline)
     
 if __name__ == "__main__":
     main()
