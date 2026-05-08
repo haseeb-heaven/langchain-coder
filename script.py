@@ -491,6 +491,9 @@ def main():
                 if selected_model == "gpt-3":
                     cost, cost_per_whole_string, total_cost = st.session_state.general_utils.gpt_3_generation_cost(st.session_state.generated_code)
                     st.table([["Cost/1K Token", f"{cost} USD"], ["Cost/Whole String", f"{cost_per_whole_string} USD"], ["Total Cost", f"{total_cost} USD"]])
+                elif "gpt-3.5-turbo" in selected_model:
+                    cost, cost_per_whole_string, total_cost = st.session_state.general_utils.gpt_3_5_turbo_generation_cost(st.session_state.generated_code)
+                    st.table([["Cost/1K Token", f"{cost} USD"], ["Cost/Whole String", f"{cost_per_whole_string} USD"], ["Total Cost", f"{total_cost} USD"]])
                 elif selected_model == "gpt-4":
                     cost, cost_per_whole_string, total_cost = st.session_state.general_utils.gpt_4_generation_cost(st.session_state.generated_code)
                     st.table([["Cost/1K Token", f"{cost} USD"], ["Cost/Whole String", f"{cost_per_whole_string} USD"], ["Total Cost", f"{total_cost} USD"]])
@@ -507,37 +510,25 @@ def main():
             elif st.session_state.ai_option == "Palm AI":
                 selected_model = st.session_state["palm"]["model_name"]
                 if selected_model == "text-bison-001":
-                    cost = 0.00025  # Cost per 1K input characters for online requests
-                    cost_per_whole_string = 0.0005  # Cost per 1K output characters for online requests
-                    total_cost = st.session_state.general_utils.palm_text_bison_generation_cost(st.session_state.generated_code)
+                    cost, cost_per_whole_string, total_cost = st.session_state.general_utils.palm_text_bison_generation_cost(st.session_state.generated_code)
                     st.table([["Cost/1K Token", f"{cost} USD"], ["Cost/Whole String", f"{cost_per_whole_string} USD"], ["Total Cost", f"{total_cost} USD"]])
                 elif selected_model == "chat-bison-001":
-                    cost = 0.00025  # Cost per 1K input characters for online requests
-                    cost_per_whole_string = 0.0005  # Cost per 1K output characters for online requests
-                    total_cost = st.session_state.general_utils.palm_chat_bison_generation_cost(st.session_state.generated_code)
+                    cost, cost_per_whole_string, total_cost = st.session_state.general_utils.palm_chat_bison_generation_cost(st.session_state.generated_code)
                     st.table([["Cost/1K Token", f"{cost} USD"], ["Cost/Whole String", f"{cost_per_whole_string} USD"], ["Total Cost", f"{total_cost} USD"]])
                 elif selected_model == "embedding-gecko-001":
-                    cost = 0.0002  # Cost per 1K characters input for generating embeddings using text as an input
-                    cost_per_whole_string = 0.0002  # Assuming the same cost for output characters
-                    total_cost = st.session_state.general_utils.palm_embedding_gecko_generation_cost(st.session_state.generated_code)
+                    cost, cost_per_whole_string, total_cost = st.session_state.general_utils.palm_embedding_gecko_generation_cost(st.session_state.generated_code)
                     st.table([["Cost/1K Token", f"{cost} USD"], ["Cost/Whole String", f"{cost_per_whole_string} USD"], ["Total Cost", f"{total_cost} USD"]])
 
             elif st.session_state.ai_option == "Gemini AI":
                 selected_model = st.session_state["gemini"]["model_name"]
                 
                 if selected_model == "gemini-pro":
-                    cost_per_input_char = 0.00025  # Cost per 1K input characters for online requests
-                    cost_per_output_char = 0.0005  # Cost per 1K output characters for online requests
-                    total_cost = st.session_state.general_utils.gemini_pro_generation_cost(st.session_state.generated_code)
-                    st.table([["Cost/1K Input Token", f"{cost_per_input_char} USD"], ["Cost/1K Output Token", f"{cost_per_output_char} USD"], ["Total Cost", f"{total_cost} USD"]])
+                    cost, cost_per_whole_string, total_cost = st.session_state.general_utils.gemini_pro_generation_cost(st.session_state.generated_code)
+                    st.table([["Cost/1K Input Token", f"{cost} USD"], ["Cost/1K Output Token", f"{cost_per_whole_string} USD"], ["Total Cost", f"{total_cost} USD"]])
                 
                 elif selected_model == "gemini-pro-vision":
-                    cost_per_image = 0.0025  # Cost per image for online requests
-                    cost_per_second = 0.002  # Cost per second for online requests
-                    cost_per_input_char = 0.00025  # Cost per 1K input characters for online requests
-                    cost_per_output_char = 0.0005  # Cost per 1K output characters for online requests
-                    total_cost = st.session_state.general_utils.gemini_pro_vision_generation_cost(st.session_state.generated_code)
-                    st.table([["Cost/Image", f"{cost_per_image} USD"], ["Cost/Second", f"{cost_per_second} USD"], ["Cost/1K Input Token", f"{cost_per_input_char} USD"], ["Cost/1K Output Token", f"{cost_per_output_char} USD"], ["Total Cost", f"{total_cost} USD"]])
+                    cost, cost_per_whole_string, total_cost = st.session_state.general_utils.gemini_pro_vision_generation_cost(st.session_state.generated_code)
+                    st.table([["Cost/Image", "0.0025 USD"], ["Cost/Second", "0.002 USD"], ["Cost/1K Input Token", f"{cost} USD"], ["Cost/1K Output Token", f"{cost_per_whole_string} USD"], ["Total Cost", f"{total_cost} USD"]])
                 
     # Expander for coding guidelines
     with st.sidebar.expander("Coding Guidelines"):

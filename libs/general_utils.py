@@ -448,20 +448,17 @@ class GeneralUtils:
         # Calculate number of letters
         number_of_letters = len(string)
         
-        # Calculate cost
-        cost = price * (number_of_letters / 1000)
+        # Calculate cost per 1K characters
+        cost = price
         
         # Calculate cost per whole string
-        cost_per_whole_string = price * (len(string) / 1000)
+        cost_per_whole_string = price * (number_of_letters / 1000)
         
         # Calculate total cost
-        total_cost = cost * number_of_words
+        total_cost = cost_per_whole_string
         
         # Return the cost, cost per whole string and total cost
-        #return cost, cost_per_whole_string, total_cost
-
-        # Return the total cost
-        return total_cost
+        return cost, cost_per_whole_string, total_cost
 
     def codey_generation_cost(self,string):
         codey_price = 0.0005
@@ -471,7 +468,7 @@ class GeneralUtils:
         model_price = 0.0002
         return self.calculate_code_generation_cost(string,model_price)
 
-    def gpt_3_5_turbo_generation_costself(self,string):
+    def gpt_3_5_turbo_generation_cost(self,string):
         model_price = 0.0080
         return self.calculate_code_generation_cost(string,model_price)
 
