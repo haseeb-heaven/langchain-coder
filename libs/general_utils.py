@@ -296,6 +296,8 @@ class GeneralUtils:
                 logger.error("Error in code saving: Please enter a valid file name.")
                 return
             
+            # Sanitize file_name to prevent path traversal
+            file_name = os.path.basename(file_name)
             file_extension = file_name.split(".")[-1]
             logger.info(f"Saving code to file: {file_name} with extension: {file_extension}")
             
@@ -412,7 +414,9 @@ class GeneralUtils:
             os.makedirs(temp_dir, exist_ok=True)
             
             logger.info(f"Saving uploaded file to {temp_dir}")
-            file_path = os.path.join(temp_dir, uploadedfile.name)
+            # Sanitize uploadedfile.name to prevent path traversal
+            safe_filename = os.path.basename(uploadedfile.name)
+            file_path = os.path.join(temp_dir, safe_filename)
             with open(file_path, "wb") as f:
                 f.write(uploadedfile.getbuffer())
                 
