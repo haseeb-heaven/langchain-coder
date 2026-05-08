@@ -90,6 +90,7 @@ class LanguageSpec:
     compile_cmd: Optional[list[str]] = None   # compile step if needed
     checker: str = ""       # binary to check availability
     test_framework: str = ""
+    required_binaries: Optional[list[str]] = None  # all binaries needed for runtime
 
 
 LANGUAGE_REGISTRY: dict[str, LanguageSpec] = {
@@ -112,6 +113,7 @@ LANGUAGE_REGISTRY: dict[str, LanguageSpec] = {
         test_cmd=["npx", "jest", "{test_file}", "--no-coverage"],
         checker="node",
         test_framework="jest",
+        required_binaries=["node", "npx"],
     ),
     "typescript": LanguageSpec(
         name="TypeScript",
@@ -122,6 +124,7 @@ LANGUAGE_REGISTRY: dict[str, LanguageSpec] = {
         test_cmd=["npx", "jest", "{test_file}", "--no-coverage"],
         checker="node",
         test_framework="jest",
+        required_binaries=["node", "npx"],
     ),
     "go": LanguageSpec(
         name="Go",
@@ -153,6 +156,7 @@ LANGUAGE_REGISTRY: dict[str, LanguageSpec] = {
         test_cmd=["java", "-cp", ".:junit-platform-console-standalone.jar", "org.junit.platform.console.ConsoleLauncher", "--scan-class-path"],
         checker="java",
         test_framework="junit",
+        required_binaries=["java", "javac"],
     ),
     "cpp": LanguageSpec(
         name="C++",
@@ -237,7 +241,14 @@ def detect_language(requirement: str, hint: str = "") -> str:
 
 def check_language_runtime(spec: LanguageSpec) -> bool:
     """Verify the language runtime is available on this system."""
-    return bool(shutil.which(spec.checker)) if spec.checker else False
+    # Check all required binaries if specified, otherwise fall back to checker
+    binaries_to_check = spec.required_binaries if spec.required_binaries else ([spec.checker] if spec.checker else [])
+
+    if not binaries_to_check:
+        return False
+
+    # Return True only if all required binaries are found
+    return all(shutil.which(binary) for binary in binaries_to_check)
 
 
 # ─────────────────────────────────────────────
@@ -246,7 +257,7 @@ def check_language_runtime(spec: LanguageSpec) -> bool:
 
 @dataclass
 class Config:
-    model_fleet: list[tuple[str, str]] = field(default_factory=list)
+    model_fleet: list[tuple[str, str, str]] = field(default_factory=list)  # (model, key, provider_env)
     max_iterations: int = 5
     timeout: int = 60
     log_file: str = "miniswe.log"
@@ -254,21 +265,36 @@ class Config:
     language_hint: str = ""
 
 
+def _detect_provider_env(model: str) -> str:
+    """Detect the appropriate API key environment variable based on model name."""
+    model_lower = model.lower()
+    if any(x in model_lower for x in ["llama", "mixtral", "gemma", "groq"]):
+        return "GROQ_API_KEY"
+    elif any(x in model_lower for x in ["gpt", "openai"]):
+        return "OPENAI_API_KEY"
+    elif any(x in model_lower for x in ["claude", "anthropic"]):
+        return "ANTHROPIC_API_KEY"
+    # Default fallback
+    return "OPENAI_API_KEY"
+
+
 def load_config() -> Config:
     load_dotenv()
 
-    fleet: list[tuple[str, str]] = []
+    fleet: list[tuple[str, str, str]] = []
     primary_model = os.getenv("LLM_MODEL")
     primary_key = os.getenv("GROQ_API_KEY") or os.getenv("LLM_API_KEY") or os.getenv("OPENAI_API_KEY") or os.getenv("ANTHROPIC_API_KEY")
 
     if primary_model and primary_key:
-        fleet.append((primary_model, primary_key))
+        provider_env = _detect_provider_env(primary_model)
+        fleet.append((primary_model, primary_key, provider_env))
 
     for i in range(1, 6):
         m = os.getenv(f"LLM_FALLBACK_MODEL{i}" if i > 1 else "LLM_FALLBACK_MODEL")
         k = os.getenv(f"LLM_API_KEY{i}" if i > 1 else "LLM_API_KEY") or primary_key
         if m and k:
-            fleet.append((m, k))
+            provider_env = _detect_provider_env(m)
+            fleet.append((m, k, provider_env))
 
     if not fleet:
         raise ValueError(
@@ -323,10 +349,9 @@ class LLMClient:
         return self.config.model_fleet[self._fleet_index][0]
 
     def _set_api_key(self) -> None:
-        _, key = self.config.model_fleet[self._fleet_index]
-        os.environ["GROQ_API_KEY"] = key
-        os.environ["OPENAI_API_KEY"] = key
-        os.environ["ANTHROPIC_API_KEY"] = key
+        _, key, provider_env = self.config.model_fleet[self._fleet_index]
+        # Only set the specific provider's environment variable
+        os.environ[provider_env] = key
 
     def complete(
         self,
@@ -410,7 +435,20 @@ class BaseAgent:
         cwd: Optional[str] = None,
         stdin_data: Optional[str] = None,
     ) -> subprocess.CompletedProcess:
-        """Shared helper to run shell commands safely."""
+        """Shared helper to run shell commands safely in a minimal environment."""
+        # Create a minimal whitelist environment (no API keys, restricted PATH)
+        safe_env = {
+            "PATH": "/usr/local/bin:/usr/bin:/bin",
+            "HOME": os.environ.get("HOME", "/tmp"),
+            "LANG": "en_US.UTF-8",
+            "LC_ALL": "en_US.UTF-8",
+        }
+
+        # Preserve only essential language-specific env vars
+        for key in ["PYTHONPATH", "NODE_PATH", "GOPATH", "CARGO_HOME", "RUSTUP_HOME"]:
+            if key in os.environ:
+                safe_env[key] = os.environ[key]
+
         try:
             return subprocess.run(
                 cmd,
@@ -419,6 +457,7 @@ class BaseAgent:
                 text=True,
                 timeout=self.config.timeout,
                 cwd=cwd,
+                env=safe_env,
             )
         except subprocess.TimeoutExpired:
             return subprocess.CompletedProcess(cmd, 1, stdout="", stderr="Process timed out.")
@@ -603,10 +642,12 @@ class ReviewerAgent(BaseAgent):
         temp_test.write_text(sanity_test_code, encoding="utf-8")
 
         # Resolve command (use basename since we use cwd)
-        test_cmd = [c.replace("{file}", spec.file_name).replace("{test_file}", temp_test.name) for c in spec.run_cmd if "{file}" in c]
-        # If no specific run command for test, try test_cmd
-        if not test_cmd:
+        # Prefer test_cmd if available, otherwise use run_cmd
+        # Replace placeholders in ALL elements, not just those containing them
+        if spec.test_cmd:
             test_cmd = [c.replace("{file}", spec.file_name).replace("{test_file}", temp_test.name) for c in spec.test_cmd]
+        else:
+            test_cmd = [c.replace("{file}", spec.file_name).replace("{test_file}", temp_test.name) for c in spec.run_cmd]
 
         result = self._run_cmd(test_cmd, cwd=str(out_dir))
 
@@ -735,6 +776,22 @@ class ExecutorAgent(BaseAgent):
                 "success": True,
                 "artifacts": artifacts,
             }
+
+        # ── Step 3a: Compile tests (if needed) ───────────────────────────
+        if spec.compile_cmd and state.get("tests"):
+            # Build test compile command by replacing {file} with test_file_name
+            test_compile_cmd = [c.replace("{file}", spec.test_file_name) for c in spec.compile_cmd]
+            self.logger.info(f"[phase.exec]Compiling tests: {' '.join(test_compile_cmd)}[/phase.exec]")
+            test_compile_result = self._run_cmd(test_compile_cmd, cwd=str(output_dir))
+            if test_compile_result.returncode != 0:
+                err = test_compile_result.stderr or test_compile_result.stdout
+                self.logger.warning(f"Test compilation failed:\n{err}")
+                return self._fail_state(
+                    exec_results=exec_output,
+                    test_results=f"Test compilation failed:\n{err}",
+                    feedback=f"Test compilation failed:\n{err}",
+                    artifacts=artifacts,
+                )
 
         test_cmd = self._resolve_cmd(spec.test_cmd, spec.file_name, spec.test_file_name)
         self.logger.info(f"[phase.exec]Testing: {' '.join(test_cmd)}[/phase.exec]")
