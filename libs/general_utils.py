@@ -29,13 +29,25 @@ class GeneralUtils:
         If the string contains '```', it extracts the code between them.
         Otherwise, it returns the original string.
         """
+        if code is None:
+            return None
+
         try:
             if '```' in code:
-                start = code.find('```') + len('```\n')
-                end = code.find('```', start)
-                # Skip the first line after ```
-                start = code.find('\n', start) + 1
-                extracted_code = code[start:end]
+                start_idx = code.find('```')
+                end_idx = code.find('```', start_idx + 3)
+
+                if end_idx == -1:
+                    end_idx = len(code)
+
+                # Find the newline after the first ```
+                first_newline = code.find('\n', start_idx)
+
+                if first_newline != -1 and first_newline < end_idx:
+                    extracted_code = code[first_newline + 1:end_idx]
+                else:
+                    extracted_code = code[start_idx + 3:end_idx]
+
                 logger.info("Code extracted successfully.")
                 return extracted_code
             else:
