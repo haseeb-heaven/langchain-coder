@@ -2,7 +2,6 @@
 import re
 import traceback
 import google.generativeai as genai
-from dotenv import load_dotenv
 from libs.logger import logger
 import streamlit as st
 import libs.general_utils
