@@ -309,111 +309,115 @@ def main():
             generate_submitted = st.form_submit_button(button_label)
             
             if generate_submitted:
-                if st.session_state.ai_option == "Open AI":
-                    if st.session_state.openai_langchain:
-                        st.session_state.generated_code = st.session_state.openai_langchain.generate_code(st.session_state.code_prompt, code_language)
-                    else:# Reinitialize the chain
-                        if api_key == None:
-                            st.toast("Open AI API key is not initialized.", icon="❌")
-                            logger.error("Open AI API key is not initialized.")
-                        else:
-                            st.session_state.openai_langchain = OpenAILangChain(api_key,st.session_state.code_language,st.session_state["openai"]["temperature"],st.session_state["openai"]["max_tokens"],st.session_state["openai"]["model_name"])
+                with st.spinner('Generating code...'):
+                    if st.session_state.ai_option == "Open AI":
+                        if st.session_state.openai_langchain:
                             st.session_state.generated_code = st.session_state.openai_langchain.generate_code(st.session_state.code_prompt, code_language)
-                elif st.session_state.ai_option == "Vertex AI":
-                    if st.session_state.vertexai_langchain:
-                        if not st.session_state.vertex_ai_loaded:
-                            st.toast("Vetex AI is not initialized.", icon="❌")
-                            logger.error("Vetex AI is not initialized.")
-                            return
-                        if st.session_state["vertexai"]["model_name"] == "code-bison":
+                        else:# Reinitialize the chain
+                            if api_key == None:
+                                st.toast("Open AI API key is not initialized.", icon="❌")
+                                logger.error("Open AI API key is not initialized.")
+                            else:
+                                st.session_state.openai_langchain = OpenAILangChain(api_key,st.session_state.code_language,st.session_state["openai"]["temperature"],st.session_state["openai"]["max_tokens"],st.session_state["openai"]["model_name"])
+                                st.session_state.generated_code = st.session_state.openai_langchain.generate_code(st.session_state.code_prompt, code_language)
+                    elif st.session_state.ai_option == "Vertex AI":
+                        if st.session_state.vertexai_langchain:
+                            if not st.session_state.vertex_ai_loaded:
+                                st.toast("Vetex AI is not initialized.", icon="❌")
+                                logger.error("Vetex AI is not initialized.")
+                                return
+                            if st.session_state["vertexai"]["model_name"] == "code-bison":
+                                st.session_state.generated_code = st.session_state.vertexai_langchain.generate_code(st.session_state.code_prompt, code_language)
+                            else:
+                                st.session_state.generated_code = st.session_state.vertexai_langchain.generate_code_completion(st.session_state.code_prompt, code_language)
+                        else: # Reinitalize the chain
+                            st.session_state.vertexai_langchain= VertexAILangChain(project=st.session_state.project, location=st.session_state.region, model_name=st.session_state["vertexai"]["model_name"], max_tokens=st.session_state["vertexai"]["max_tokens"], temperature=st.session_state["vertexai"]["temperature"], credentials_file_path=credentials_file_path)
+                            st.session_state.vertex_ai_loaded = st.session_state.vertexai_langchain.load_model(st.session_state["vertexai"]["model_name"],st.session_state["vertexai"]["max_tokens"],st.session_state["vertexai"]["temperature"])
                             st.session_state.generated_code = st.session_state.vertexai_langchain.generate_code(st.session_state.code_prompt, code_language)
-                        else:
-                            st.session_state.generated_code = st.session_state.vertexai_langchain.generate_code_completion(st.session_state.code_prompt, code_language)
-                    else: # Reinitalize the chain
-                        st.session_state.vertexai_langchain= VertexAILangChain(project=st.session_state.project, location=st.session_state.region, model_name=st.session_state["vertexai"]["model_name"], max_tokens=st.session_state["vertexai"]["max_tokens"], temperature=st.session_state["vertexai"]["temperature"], credentials_file_path=credentials_file_path)
-                        st.session_state.vertex_ai_loaded = st.session_state.vertexai_langchain.load_model(st.session_state["vertexai"]["model_name"],st.session_state["vertexai"]["max_tokens"],st.session_state["vertexai"]["temperature"])
-                        st.session_state.generated_code = st.session_state.vertexai_langchain.generate_code(st.session_state.code_prompt, code_language)
-                
-                elif st.session_state.ai_option == "Palm AI":
-                    if st.session_state.palm_langchain:
-                        st.session_state.generated_code = st.session_state.palm_langchain.generate_code(st.session_state.code_prompt, code_language)
-                    else:# Reinitialize the chain
-                        if api_key == None:
-                            st.toast("Palm AI API key is not initialized.", icon="❌")
-                            logger.error("Palm AI API key is not initialized.")
-                        else:
-                            st.session_state.palm_langchain = PalmAI(api_key, model=st.session_state["palm"]["model_name"], temperature=st.session_state["palm"]["temperature"], max_output_tokens=st.session_state["palm"]["max_tokens"])
+
+                    elif st.session_state.ai_option == "Palm AI":
+                        if st.session_state.palm_langchain:
                             st.session_state.generated_code = st.session_state.palm_langchain.generate_code(st.session_state.code_prompt, code_language)
-            
-                elif st.session_state.ai_option == "Gemini AI":
-                    if st.session_state.gemini_langchain:
-                        st.session_state.generated_code = st.session_state.gemini_langchain.generate_code(st.session_state.code_prompt, code_language)
-                    else:# Reinitialize the chain
-                        if api_key == None:
-                            st.toast("Gemini AI API key is not initialized.", icon="❌")
-                            logger.error("Gemini AI API key is not initialized.")
-                        else:
-                            st.session_state.gemini_langchain = GeminiAI(api_key, model=st.session_state["gemini"]["model_name"], temperature=st.session_state["gemini"]["temperature"], max_output_tokens=st.session_state["gemini"]["max_tokens"])
-                            st.session_state.generated_code = st.session_state.gemini_langchain.generate_code(st.session_state.code_prompt, code_language)
+                        else:# Reinitialize the chain
+                            if api_key == None:
+                                st.toast("Palm AI API key is not initialized.", icon="❌")
+                                logger.error("Palm AI API key is not initialized.")
+                            else:
+                                st.session_state.palm_langchain = PalmAI(api_key, model=st.session_state["palm"]["model_name"], temperature=st.session_state["palm"]["temperature"], max_output_tokens=st.session_state["palm"]["max_tokens"])
+                                st.session_state.generated_code = st.session_state.palm_langchain.generate_code(st.session_state.code_prompt, code_language)
                 
-                else:
-                    st.toast(f"Please select a valid AI option selected '{st.session_state.ai_option}' option", icon="❌")
-                    st.session_state.generated_code = ""
-                    logger.error(f"Please select a valid AI option selected '{st.session_state.ai_option}' option")
+                    elif st.session_state.ai_option == "Gemini AI":
+                        if st.session_state.gemini_langchain:
+                            st.session_state.generated_code = st.session_state.gemini_langchain.generate_code(st.session_state.code_prompt, code_language)
+                        else:# Reinitialize the chain
+                            if api_key == None:
+                                st.toast("Gemini AI API key is not initialized.", icon="❌")
+                                logger.error("Gemini AI API key is not initialized.")
+                            else:
+                                st.session_state.gemini_langchain = GeminiAI(api_key, model=st.session_state["gemini"]["model_name"], temperature=st.session_state["gemini"]["temperature"], max_output_tokens=st.session_state["gemini"]["max_tokens"])
+                                st.session_state.generated_code = st.session_state.gemini_langchain.generate_code(st.session_state.code_prompt, code_language)
+
+                    else:
+                        st.toast(f"Please select a valid AI option selected '{st.session_state.ai_option}' option", icon="❌")
+                        st.session_state.generated_code = ""
+                        logger.error(f"Please select a valid AI option selected '{st.session_state.ai_option}' option")
 
         # Debug Code button in the fourth column
         with debug_code_col:
             debug_submitted = st.form_submit_button("Debug")
             ai_llm_selected = None
             if debug_submitted:
-                # checking for the selected AI option
-                if st.session_state.ai_option == "Palm AI":
-                    ai_llm_selected = st.session_state.palm_langchain
-                elif st.session_state.ai_option == "Gemini AI":
-                    ai_llm_selected = st.session_state.gemini_langchain
-                elif st.session_state.ai_option == "Open AI":
-                    ai_llm_selected = st.session_state.openai_langchain
+                with st.spinner('Debugging code...'):
+                    # checking for the selected AI option
+                    if st.session_state.ai_option == "Palm AI":
+                        ai_llm_selected = st.session_state.palm_langchain
+                    elif st.session_state.ai_option == "Gemini AI":
+                        ai_llm_selected = st.session_state.gemini_langchain
+                    elif st.session_state.ai_option == "Open AI":
+                        ai_llm_selected = st.session_state.openai_langchain
 
-                if not st.session_state.code_fix_instructions:
-                    st.toast("Missing Debug instructions", icon="❌")
-                    logger.warning("Missing Debug instructions")
+                    if not st.session_state.code_fix_instructions:
+                        st.toast("Missing Debug instructions", icon="❌")
+                        logger.warning("Missing Debug instructions")
 
-                if not st.session_state.stderr and st.session_state.code_fix_instructions:
-                    st.session_state.stderr = st.session_state.code_fix_instructions
-                    logger.info("Setting Stderr from input to Debug instructions.")
-                    
-                logger.info(f"Fixing code with instructions: {st.session_state.code_fix_instructions}")
-                st.session_state.generated_code = ai_llm_selected.fix_generated_code(st.session_state.generated_code, st.session_state.code_language,st.session_state.code_fix_instructions)
+                    if not st.session_state.stderr and st.session_state.code_fix_instructions:
+                        st.session_state.stderr = st.session_state.code_fix_instructions
+                        logger.info("Setting Stderr from input to Debug instructions.")
+
+                    logger.info(f"Fixing code with instructions: {st.session_state.code_fix_instructions}")
+                    st.session_state.generated_code = ai_llm_selected.fix_generated_code(st.session_state.generated_code, st.session_state.code_language,st.session_state.code_fix_instructions)
 
         # Debug Code button in the fourth column
         with convert_code_col:
             convert_submitted = st.form_submit_button("Convert")
             ai_llm_selected = None
             if convert_submitted:
-                # checking for the selected AI option
-                if st.session_state.ai_option == "Palm AI":
-                    ai_llm_selected = st.session_state.palm_langchain
-                elif st.session_state.ai_option == "Gemini AI":
-                    ai_llm_selected = st.session_state.gemini_langchain
-                elif st.session_state.ai_option == "Open AI":
-                    ai_llm_selected = st.session_state.openai_langchain
-                    
-                logger.info(f"Converting code with instructions: {st.session_state.code_fix_instructions}")
-                st.session_state.generated_code = ai_llm_selected.convert_generated_code(st.session_state.generated_code, st.session_state.code_language)
+                with st.spinner('Converting code...'):
+                    # checking for the selected AI option
+                    if st.session_state.ai_option == "Palm AI":
+                        ai_llm_selected = st.session_state.palm_langchain
+                    elif st.session_state.ai_option == "Gemini AI":
+                        ai_llm_selected = st.session_state.gemini_langchain
+                    elif st.session_state.ai_option == "Open AI":
+                        ai_llm_selected = st.session_state.openai_langchain
+
+                    logger.info(f"Converting code with instructions: {st.session_state.code_fix_instructions}")
+                    st.session_state.generated_code = ai_llm_selected.convert_generated_code(st.session_state.generated_code, st.session_state.code_language)
 
 
         # Run Code button in the fourth column
         with run_code_col:
             execute_submitted = st.form_submit_button("Execute")
             if execute_submitted:          
-                # Execute the code.
-                privacy_accepted = st.session_state.get(f'compiler_{st.session_state.compiler_mode.lower()}_privacy_accepted', False)
-    
-                if privacy_accepted:
-                    st.session_state.output = st.session_state.general_utils.execute_code(st.session_state.compiler_mode)
-                else:
-                    st.toast(f"You didn't accept the privacy policy for {st.session_state.compiler_mode} compiler.", icon="❌")
-                    logger.error(f"You didn't accept the privacy policy for {st.session_state.compiler_mode} compiler.")
+                with st.spinner('Executing code...'):
+                    # Execute the code.
+                    privacy_accepted = st.session_state.get(f'compiler_{st.session_state.compiler_mode.lower()}_privacy_accepted', False)
+
+                    if privacy_accepted:
+                        st.session_state.output = st.session_state.general_utils.execute_code(st.session_state.compiler_mode)
+                    else:
+                        st.toast(f"You didn't accept the privacy policy for {st.session_state.compiler_mode} compiler.", icon="❌")
+                        logger.error(f"You didn't accept the privacy policy for {st.session_state.compiler_mode} compiler.")
 
         # Example Code button in the fifth column
         with example_code_col:
