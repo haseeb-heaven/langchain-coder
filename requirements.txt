@@ -4,6 +4,8 @@ google-auth
 google-auth-oauthlib
 google-cloud-aiplatform
 langchain
+langchain-community
+litellm
 openai
 python-dotenv
 vertexai

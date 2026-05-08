@@ -93,8 +93,7 @@ def main():
             with st.expander("Open AI Settings"):
                 try:
                     # Settings for Open AI model.
-                    model_options_openai = ["gpt-4", "gpt-4-0613", "gpt-4-32k", "gpt-4-32k-0613", "gpt-3.5-turbo", "gpt-3.5-turbo-16k", "gpt-3.5-turbo-0613", "gpt-3.5-turbo-16k-0613", "gpt-3.5-turbo-0301", "text-davinci-003"]
-                    st.session_state["openai"]["model_name"] = st.selectbox("Model name", model_options_openai, index=model_options_openai.index(st.session_state["openai"]["model_name"]))
+                    st.session_state["openai"]["model_name"] = st.text_input("Model name", value=st.session_state["openai"].get("model_name", "gpt-3.5-turbo"), help="Enter any modern LLM supported by LiteLLM (e.g., groq/llama3-8b-8192, openai/gpt-4, anthropic/claude-3-sonnet-20240229, together/, ollama/, openrouter/, cerebras/, gemini/, meta/ etc.)")
                     st.session_state["openai"]["temperature"] = st.slider("Temperature", min_value=0.0, max_value=2.0, value=st.session_state["openai"]["temperature"], step=0.1)
                     st.session_state["openai"]["max_tokens"] = st.slider("Maximum Tokens", min_value=1, max_value=4096, value=st.session_state["openai"]["max_tokens"], step=1)
                     
