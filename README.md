@@ -1,4 +1,4 @@
-# LangChain Coder AI README
+# Agentic SWE Coder AI README
 
 ## 📌 Table of Contents
 1. [Introduction](#introduction)
@@ -17,7 +17,7 @@
 ## Introduction
 
 - English:
-LangChain Coder AI is a state-of-the-art code generation tool powered by OpenAI and Vertex AI. It provides a seamless experience for developers to generate code snippets in various languages based on the provided prompts. </br>The tool is integrated with advanced AI models like </br>_**OpenAI:** GPT-3.5, GPT-3.5 Turbo, GPT-4_</br> **Google:** _Code Gecko, and Code Bison, PALM and Gemini_</br> 
+Agentic SWE Coder AI is a state-of-the-art code generation tool powered by OpenAI and Vertex AI. It provides a seamless experience for developers to generate code snippets in various languages based on the provided prompts. </br>The tool is integrated with advanced AI models like </br>_**OpenAI:** GPT-3.5, GPT-3.5 Turbo, GPT-4_</br> **Google:** _Code Gecko, and Code Bison, PALM and Gemini_</br>
 Ensuring high-quality code outputs from these powerful models.
 
 ## Features
@@ -29,11 +29,11 @@ Ensuring high-quality code outputs from these powerful models.
 - **Customizable Settings**: Adjust settings like temperature, max tokens, model name, project, region, and credentials file for Vertex AI.
 - **Offline and Online Compilation Modes**: Choose between offline and online compiler modes for code execution.
 
-## LangChain Coder in Action
+## Agentic SWE Coder in Action
 
-[![LangChain Coder in Action](https://img.youtube.com/vi/ezlYpv_gpck/0.jpg)](https://www.youtube.com/watch?v=ezlYpv_gpck)
+[![Agentic SWE Coder in Action](https://img.youtube.com/vi/ezlYpv_gpck/0.jpg)](https://www.youtube.com/watch?v=ezlYpv_gpck)
 
-Watch LangChain Coder in action in this video!
+Watch Agentic SWE Coder in action in this video!
 
 
 ## AI-Sections.
@@ -49,15 +49,15 @@ Watch LangChain Coder in action in this video!
 ## WebUI - Application Showcase
 
 🌆 This is the main screen of the application. Dive in with a text prompt, choose your language, and let the magic happen with buttons that feel just right.</br>
-![langchain-main-screen-ui](https://github.com/haseeb-heaven/LangChain-CoderAI/blob/master/resources/langchain-main-screen-ui.png?raw=true "")
+![agentic-swe-main-screen-ui](https://github.com/haseeb-heaven/agentic-swe-coderAI/blob/master/resources/agentic-swe-main-screen-ui.png?raw=true "")
 
 🎨 Behold the canvas after the masterpiece is painted. Code generation was never this beautiful.</br>
-![generated_code_ui](https://github.com/haseeb-heaven/LangChain-CoderAI/blob/master/resources/langchain-code-ui.png?raw=true "")
+![generated_code_ui](https://github.com/haseeb-heaven/agentic-swe-coderAI/blob/master/resources/agentic-swe-code-ui.png?raw=true "")
 
 ## OpenAI Integration
-LangChain Coder AI integrates with [OpenAI](https://openai.com/) to leverage its powerful machine learning models for code generation. OpenAI is an AI research and deployment company For more details on how LangChain integrates with OpenAI, refer to the [official documentation](https://python.langchain.com/docs/integrations/providers/openai).
+Agentic SWE Coder AI integrates with [OpenAI](https://openai.com/) to leverage its powerful machine learning models for code generation. OpenAI is an AI research and deployment company For more details on how Agentic SWE Coder integrates with OpenAI, refer to the [official documentation](https://python.langchain.com/docs/integrations/providers/openai).
 
-You need Open AI API **Key** to use LangChain Coder AI. To get your key, follow these steps:
+You need Open AI API **Key** to use Agentic SWE Coder AI. To get your key, follow these steps:
 ### Get OpenAI API key
 
 1. Go to the [OpenAI website](https://beta.openai.com/signup/).
@@ -68,11 +68,11 @@ You need Open AI API **Key** to use LangChain Coder AI. To get your key, follow 
 
 ## Vertex AI Integration
 
-LangChain Coder AI integrates with [Google Vertex AI](https://cloud.google.com/python/docs/reference/aiplatform/latest) to leverage its powerful machine learning models for code generation. Vertex AI offers a range of tools and services for ML and AI, and LangChain Coder AI taps into these resources to provide top-notch code suggestions. For more details on how LangChain integrates with Vertex AI, refer to the [official documentation](https://python.langchain.com/docs/integrations/llms/google_vertex_ai_palm).
+Agentic SWE Coder AI integrates with [Google Vertex AI](https://cloud.google.com/python/docs/reference/aiplatform/latest) to leverage its powerful machine learning models for code generation. Vertex AI offers a range of tools and services for ML and AI, and Agentic SWE Coder AI taps into these resources to provide top-notch code suggestions. For more details on how Agentic SWE Coder integrates with Vertex AI, refer to the [official documentation](https://python.langchain.com/docs/integrations/llms/google_vertex_ai_palm).
 
 Additionally, the Vertex AI SDK for Python allows for automation of data ingestion, model training, and predictions on Vertex AI. It provides a programmatic way to access most of the functionalities available in the Google Cloud console. For more information, check out the [Vertex AI SDK for Python](https://cloud.google.com/vertex-ai/docs/python-sdk/use-vertex-ai-python-sdk).
 
-You need Google Vertex **Service Account Credentials** to use LangChain Coder AI. To get your credentials, follow these steps:
+You need Google Vertex **Service Account Credentials** to use Agentic SWE Coder AI. To get your credentials, follow these steps:
 
 ### Credentials for Google Vertex AI Service account
 
@@ -104,11 +104,11 @@ Here is sample Service JSON file.
 ```
 
 ## PALM AI Integration:
-LangChain Coder AI integrates with [PALM AI](https://ai.google/discover/palm2/) to leverage its powerful machine learning models for code generation.
+Agentic SWE Coder AI integrates with [PALM AI](https://ai.google/discover/palm2/) to leverage its powerful machine learning models for code generation.
 - PALM AI is legacy model from Google AI and **deprecated** now.
 
 ## Gemini AI Integration:
-LangChain Coder AI integrates with [GEMINI AI](https://deepmind.google/technologies/gemini/) to leverage its powerful machine learning models for code generation.
+Agentic SWE Coder AI integrates with [GEMINI AI](https://deepmind.google/technologies/gemini/) to leverage its powerful machine learning models for code generation.
 - Gemini AI is the **latest model** from Google AI and successor of PALM AI.
 
 ### Setup: Get PALM/GEMINI AI key
@@ -122,47 +122,47 @@ LangChain Coder AI integrates with [GEMINI AI](https://deepmind.google/technolog
 ## 📸 Image Showcase
 **__Main Screen UI__**  
 *The main screen of the application.*  
-![langchain-main-screen-ui](https://github.com/haseeb-heaven/LangChain-Coder/blob/master/resources/langchain-main-screen-ui.png?raw=true "")  
+![agentic-swe-main-screen-ui](https://github.com/haseeb-heaven/agentic-swe-coder/blob/master/resources/agentic-swe-main-screen-ui.png?raw=true "")
 </br>
 
 **__Generated Code UI__**  
 *Displays the generated code in a user-friendly UI.*  
-![generated_code_ui](https://github.com/haseeb-heaven/LangChain-Coder/blob/master/resources/langchain-code-ui.png?raw=true "")  
+![generated_code_ui](https://github.com/haseeb-heaven/agentic-swe-coder/blob/master/resources/agentic-swe-code-ui.png?raw=true "")
 </br>
 
 **__API Rates__**  
 *Shows the API rates for OpenAi and Vertex AI.*  
-![langchain-api-rates](https://github.com/haseeb-heaven/LangChain-Coder/blob/master/resources/langchain-api-rates.png?raw=true "")  
+![agentic-swe-api-rates](https://github.com/haseeb-heaven/agentic-swe-coder/blob/master/resources/agentic-swe-api-rates.png?raw=true "")
 </br>
 
 **__Dark Theme Code Editor__**  
 *A dark-themed code editor for a comfortable coding experience.*  
-![langchain-code-editor-dark-theme](https://github.com/haseeb-heaven/LangChain-Coder/blob/master/resources/langchain-code-editor-dark-theme.png?raw=true "")  
+![agentic-swe-code-editor-dark-theme](https://github.com/haseeb-heaven/agentic-swe-coder/blob/master/resources/agentic-swe-code-editor-dark-theme.png?raw=true "")
 </br>
 
 **__Coding Guidelines__**  
-*Highlights the coding guidelines supported by LangChain Coder AI.*  
-![langchain-code-guidelines](https://github.com/haseeb-heaven/LangChain-Coder/blob/master/resources/langchain-code-guidelines.png?raw=true "")  
+*Highlights the coding guidelines supported by Agentic SWE Coder AI.*
+![agentic-swe-code-guidelines](https://github.com/haseeb-heaven/agentic-swe-coder/blob/master/resources/agentic-swe-code-guidelines.png?raw=true "")
 </br>
 
 **__Offline Compiler__**  
 *Showcases the offline compiler mode for executing code.*  
-![langchain-offline-compiler](https://github.com/haseeb-heaven/LangChain-Coder/blob/master/resources/langchain-offline-compiler.png?raw=true "")  
+![agentic-swe-offline-compiler](https://github.com/haseeb-heaven/agentic-swe-coder/blob/master/resources/agentic-swe-offline-compiler.png?raw=true "")
 </br>
 
 **__Online Compiler__**  
 *The online compiler mode with support for multiple languages.*  
-![langchain-online-compiler](https://github.com/haseeb-heaven/LangChain-Coder/blob/master/resources/langchain-online-compiler.png?raw=true "")  
+![agentic-swe-online-compiler](https://github.com/haseeb-heaven/agentic-swe-coder/blob/master/resources/agentic-swe-online-compiler.png?raw=true "")
 </br>
 
 **__Swift Code Demo__**  
 *A demonstration showcasing Swift code generation.*  
-![langchain-swift-code-demo](https://github.com/haseeb-heaven/LangChain-Coder/blob/master/resources/langchain-swift-code-demo.png?raw=true "")  
+![agentic-swe-swift-code-demo](https://github.com/haseeb-heaven/agentic-swe-coder/blob/master/resources/agentic-swe-swift-code-demo.png?raw=true "")
 </br>
 
 **__Vertex AI Code Gecko__**  
 *Illustrates the code completion feature of Vertex AI Code Gecko.* 
-![langchain-vertex-ai-code-gecko](https://github.com/haseeb-heaven/LangChain-Coder/blob/master/resources/langchain-vertex-ai-code-gecko.png?raw=true "")  
+![agentic-swe-vertex-ai-code-gecko](https://github.com/haseeb-heaven/agentic-swe-coder/blob/master/resources/agentic-swe-vertex-ai-code-gecko.png?raw=true "")
 </br>
 
 
@@ -183,16 +183,16 @@ LangChain Coder AI integrates with [GEMINI AI](https://deepmind.google/technolog
 
 ## 📚 Links-and-References
 - [Google Vertex AI Documentation](https://cloud.google.com/python/docs/reference/aiplatform/latest)
-- [LangChain Integration with Vertex AI](https://python.langchain.com/docs/integrations/llms/google_vertex_ai_palm)
+- [Agentic SWE Coder Integration with Vertex AI](https://python.langchain.com/docs/integrations/llms/google_vertex_ai_palm)
 - [Vertex AI SDK for Python](https://cloud.google.com/vertex-ai/docs/python-sdk/use-vertex-ai-python-sdk)
 
 ## Star History
 
-<a href="https://star-history.com/#haseeb-heaven/langchain-coder&Date">
+<a href="https://star-history.com/#haseeb-heaven/agentic-swe-coder&Date">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=haseeb-heaven/langchain-coder&type=Date&theme=dark" />
-    <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=haseeb-heaven/langchain-coder&type=Date" />
-    <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=haseeb-heaven/langchain-coder&type=Date" />
+    <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=haseeb-heaven/agentic-swe-coder&type=Date&theme=dark" />
+    <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=haseeb-heaven/agentic-swe-coder&type=Date" />
+    <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=haseeb-heaven/agentic-swe-coder&type=Date" />
   </picture>
 </a>
 
@@ -208,12 +208,12 @@ LangChain Coder AI integrates with [GEMINI AI](https://deepmind.google/technolog
 - **New UI/UX design**: Updated new UI/UX design.
 
 **Version 1.6** includes these features:
-- **GEMINI AI Free Tier**: LangChain Coder AI integrates with GEMINI AI Free Tier.
-- **Code Debugger**: LangChain Coder AI integrates with Code Debugger.
-- **New UI/UX design**: LangChain Coder AI integrates with new UI/UX design.
+- **GEMINI AI Free Tier**: Agentic SWE Coder AI integrates with GEMINI AI Free Tier.
+- **Code Debugger**: Agentic SWE Coder AI integrates with Code Debugger.
+- **New UI/UX design**: Agentic SWE Coder AI integrates with new UI/UX design.
 
 **Version 1.5** includes these features:
-- **GEMINI AI Integration**: LangChain Coder AI integrates with GEMINI AI.
+- **GEMINI AI Integration**: Agentic SWE Coder AI integrates with GEMINI AI.
 - **Customizable Settings**: Adjust Tokens, Temperature, and set your API Key directly in the settings.
 - **Model Selection**: Choose from a variety of models including **gemini-pro**,**emini-pro-vision**.
 - **GEMINI AI Models** GEMINI 2 Supports the following models:
@@ -222,7 +222,7 @@ LangChain Coder AI integrates with [GEMINI AI](https://deepmind.google/technolog
 
 
 **Version 1.4** includes these features:
-- **PALM AI Integration**: LangChain Coder AI integrates with PALM AI.
+- **PALM AI Integration**: Agentic SWE Coder AI integrates with PALM AI.
 - **Customizable Settings**: Adjust Tokens, Temperature, and set your API Key directly in the settings.
 - **Model Selection**: Choose from a variety of models including **chat-bison**,**text-bison**,**embedding-gecko**.
 - **PALM AI Models** PALM 2 Supports the following models:
