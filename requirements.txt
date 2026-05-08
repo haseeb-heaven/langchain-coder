@@ -2,4 +2,3 @@ langgraph
 litellm
 python-dotenv
 rich
-pytest
