@@ -1,0 +1,4 @@
+## 2024-05-24 - [CRITICAL] Replace eval() with st.session_state.get() in Streamlit app
+**Vulnerability:** The code used `eval()` to dynamically check values in Streamlit's `st.session_state` (`eval(var)` where `var` was a string like `'st.session_state.project'`). Using `eval()` is a critical security anti-pattern that can lead to arbitrary code execution if the input is ever controlled or influenced by a malicious user.
+**Learning:** Developers sometimes use `eval()` as a shortcut for dynamic variable access, not realizing the severe security implications. In Streamlit, `st.session_state` is a dictionary-like object and should be accessed safely using keys.
+**Prevention:** Never use `eval()` to dynamically evaluate code strings or check dictionary values. Instead, use safe dictionary access methods like `dict.get(key)` or `st.session_state.get(key)` to retrieve values dynamically based on their keys.
