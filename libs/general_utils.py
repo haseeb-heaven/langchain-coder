@@ -296,6 +296,7 @@ class GeneralUtils:
                 logger.error("Error in code saving: Please enter a valid file name.")
                 return
             
+            file_name = os.path.basename(file_name)
             file_extension = file_name.split(".")[-1]
             logger.info(f"Saving code to file: {file_name} with extension: {file_extension}")
             
@@ -310,7 +311,7 @@ class GeneralUtils:
                 logger.error("Error in code saving: Generated code is empty.")
                 return
             
-            with open(f"{file_extension}/{file_name}", "w") as file:
+            with open(os.path.join(file_extension, file_name), "w") as file:
                 file.write(st.session_state.generated_code)
             
             st.toast(f"Code saved to file {file_name}", icon="✅")
@@ -412,7 +413,7 @@ class GeneralUtils:
             os.makedirs(temp_dir, exist_ok=True)
             
             logger.info(f"Saving uploaded file to {temp_dir}")
-            file_path = os.path.join(temp_dir, uploadedfile.name)
+            file_path = os.path.join(temp_dir, os.path.basename(uploadedfile.name))
             with open(file_path, "wb") as f:
                 f.write(uploadedfile.getbuffer())
                 
