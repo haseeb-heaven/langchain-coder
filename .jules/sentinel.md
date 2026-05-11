@@ -1,0 +1,4 @@
+## 2026-05-11 - Arbitrary Code Execution and Path Traversal Risks
+**Vulnerability:** Found `eval()` used directly on variable values without validation, and a missing path sanitizer in user uploaded filenames (`uploadedfile.name`) leading to arbitrary code execution and path traversal respectively.
+**Learning:** Even internal mappings like checking `st.session_state` shouldn't rely on `eval()`, especially in Streamlit environments where dynamic data comes into play. It was used as a shortcut for dynamic object lookup, which is unsafe. Path traversal risk is common when dealing with file uploads and should be mitigated by default.
+**Prevention:** Always use safe dictionary access like `.get()` instead of `eval()` for variable lookups. Always use `os.path.basename()` to sanitize filenames provided via inputs or uploads before file operations.
