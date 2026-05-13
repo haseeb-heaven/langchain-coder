@@ -1,0 +1,4 @@
+## 2024-05-13 - [eval() vulnerability in st.session_state validation]
+**Vulnerability:** The application used `eval()` to check if string keys referencing `st.session_state` variables were truthy. This is a critical security vulnerability as it evaluates arbitrary string variables as Python code, potentially leading to remote code execution (RCE) if user input makes it into these checks.
+**Learning:** Checking truthiness of session variables dynamically using `eval('st.session_state.myvar')` exposes the application to arbitrary code evaluation. Using dictionary property access `st.session_state.get(key)` is much safer and achieves the exact same result without executing python code.
+**Prevention:** Never use `eval()` to retrieve values from dictionaries or state objects dynamically. Instead, store the keys as strings (e.g. `'myvar'`) and use safe accessor methods like `st.session_state.get('myvar')` or bracket notation.
