@@ -309,6 +309,7 @@ def main():
             generate_submitted = st.form_submit_button(button_label)
             
             if generate_submitted:
+              with st.spinner("Generating code..."):
                 if st.session_state.ai_option == "Open AI":
                     if st.session_state.openai_langchain:
                         st.session_state.generated_code = st.session_state.openai_langchain.generate_code(st.session_state.code_prompt, code_language)
@@ -366,6 +367,7 @@ def main():
             debug_submitted = st.form_submit_button("Debug")
             ai_llm_selected = None
             if debug_submitted:
+              with st.spinner("Debugging code..."):
                 # checking for the selected AI option
                 if st.session_state.ai_option == "Palm AI":
                     ai_llm_selected = st.session_state.palm_langchain
@@ -390,6 +392,7 @@ def main():
             convert_submitted = st.form_submit_button("Convert")
             ai_llm_selected = None
             if convert_submitted:
+              with st.spinner("Converting code..."):
                 # checking for the selected AI option
                 if st.session_state.ai_option == "Palm AI":
                     ai_llm_selected = st.session_state.palm_langchain
@@ -406,6 +409,7 @@ def main():
         with run_code_col:
             execute_submitted = st.form_submit_button("Execute")
             if execute_submitted:          
+              with st.spinner("Executing code..."):
                 # Execute the code.
                 privacy_accepted = st.session_state.get(f'compiler_{st.session_state.compiler_mode.lower()}_privacy_accepted', False)
     
