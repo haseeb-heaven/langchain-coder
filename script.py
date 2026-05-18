@@ -160,15 +160,16 @@ def main():
                             st.toast(f"Error loading Vertex AI: {str(exception)}", icon="❌")
                             logger.error(f"Error loading Vertex AI: {str(exception)}")
                     else:
-                        # Define a dictionary mapping variable names
+                        # Define a dictionary mapping variable names to their keys
+                        # SECURITY FIX: Removed eval() which could allow arbitrary code execution
                         items = {
-                            'st.session_state.project': 'Project name',
-                            'st.session_state.region': 'App region',
-                            'st.session_state.uploaded_file': 'Credentials file'
+                            'project': 'Project name',
+                            'region': 'App region',
+                            'uploaded_file': 'Credentials file'
                         }
 
                         # Use a list comprehension to filter out the unset items
-                        unset_items = [name for var, name in items.items() if not eval(var)]
+                        unset_items = [name for key, name in items.items() if not st.session_state.get(key)]
 
                         # Construct the error message
                         error_message = "Please select all settings for Vertex AI".join([f"{item} is not selected." for item in unset_items])
