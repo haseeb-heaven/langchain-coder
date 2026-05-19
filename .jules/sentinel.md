@@ -1,0 +1,4 @@
+## 2024-06-03 - [Fix Arbitrary Code Execution Risk via eval()]
+**Vulnerability:** The application used `eval()` to dynamically check values within the `st.session_state` (e.g., `eval("st.session_state.project")`). This is a critical security anti-pattern that can lead to arbitrary code execution if the input strings are ever influenced by user input.
+**Learning:** `eval()` was used as a shortcut to check the truthiness of dynamically generated variable names. However, this pattern bypasses normal type and execution safety mechanisms, making the application vulnerable to injection attacks.
+**Prevention:** Never use `eval()` to dynamically evaluate code strings or check dictionary values. Instead, use safer alternatives like `dict.get(key)` or `st.session_state.get(key)`. Ensure all dynamically checked variables are safely parameterized.
