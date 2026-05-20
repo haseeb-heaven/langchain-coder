@@ -162,13 +162,14 @@ def main():
                     else:
                         # Define a dictionary mapping variable names
                         items = {
-                            'st.session_state.project': 'Project name',
-                            'st.session_state.region': 'App region',
-                            'st.session_state.uploaded_file': 'Credentials file'
+                            'project': 'Project name',
+                            'region': 'App region',
+                            'uploaded_file': 'Credentials file'
                         }
 
                         # Use a list comprehension to filter out the unset items
-                        unset_items = [name for var, name in items.items() if not eval(var)]
+                        # Security Check: avoid eval() and use secure dictionary access instead
+                        unset_items = [name for var, name in items.items() if not st.session_state.get(var)]
 
                         # Construct the error message
                         error_message = "Please select all settings for Vertex AI".join([f"{item} is not selected." for item in unset_items])
