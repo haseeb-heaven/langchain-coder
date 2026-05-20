@@ -64,13 +64,13 @@ def main():
         st.session_state.compiler_mode = st.session_state.get("compiler_mode", "Offline")
 
         # Dropdown for selecting AI options
-        st.selectbox("Select AI", ["Open AI", "Vertex AI", "Palm AI","Gemini AI"], key="ai_option")
+        st.selectbox("Select AI", ["Open AI", "Vertex AI", "Palm AI","Gemini AI"], key="ai_option", help="Choose the AI model you want to use for code generation or completion.")
 
         # Dropdown for selecting code language
-        st.selectbox("Select language", list(get_language_codes().keys()), key="code_language")
+        st.selectbox("Select language", list(get_language_codes().keys()), key="code_language", help="Select the programming language for the generated code.")
 
         # Radio buttons for selecting compiler mode
-        st.radio("Compiler Mode", ("Online", "Offline","API"), key="compiler_mode")
+        st.radio("Compiler Mode", ("Online", "Offline","API"), key="compiler_mode", help="Choose how the generated code should be executed: Online, Offline, or via an API.")
         credentials_file_path = None
         
         # Create checkbox for Displaying cost of generated code
@@ -270,9 +270,9 @@ def main():
     # Settings for input and output options.
     with st.expander("Input Options"):
         with st.container():
-            st.session_state.code_input = st.text_input("Input (Stdin)", placeholder="Input (Stdin)", label_visibility='collapsed',value=st.session_state.code_input)
-            st.session_state.code_output = st.text_input("Output (Stdout)", placeholder="Output (Stdout)", label_visibility='collapsed',value=st.session_state.code_output)
-            st.session_state.code_fix_instructions = st.text_input("Debug instructions", placeholder="Debug instructions", label_visibility='collapsed',value=st.session_state.code_fix_instructions)
+            st.session_state.code_input = st.text_input("Input (Stdin)", placeholder="e.g., 5, 10, or 'test input'", value=st.session_state.code_input, help="Standard input for testing your code.")
+            st.session_state.code_output = st.text_input("Output (Stdout)", placeholder="e.g., 15, or 'expected output'", value=st.session_state.code_output, help="Expected standard output to test your code against.")
+            st.session_state.code_fix_instructions = st.text_input("Debug instructions", placeholder="e.g., Fix the index out of bounds error", value=st.session_state.code_fix_instructions, help="Instructions for the AI to fix or debug the current code.")
 
     # Set the input and output to None if the input and output is empty
     if st.session_state.code_input and st.session_state.code_output: 
@@ -294,7 +294,7 @@ def main():
 
         # Input Box (for entering the file name) in the first column
         with file_name_col:
-            code_file = st.text_input("File name", value="", placeholder="File name", label_visibility='collapsed')
+            code_file = st.text_input("File name", value="", placeholder="e.g., main.py", help="Enter a filename to save your generated code.")
 
         # Save Code button in the second column
         with save_code_col:
