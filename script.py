@@ -270,9 +270,9 @@ def main():
     # Settings for input and output options.
     with st.expander("Input Options"):
         with st.container():
-            st.session_state.code_input = st.text_input("Input (Stdin)", placeholder="Input (Stdin)", label_visibility='collapsed',value=st.session_state.code_input)
-            st.session_state.code_output = st.text_input("Output (Stdout)", placeholder="Output (Stdout)", label_visibility='collapsed',value=st.session_state.code_output)
-            st.session_state.code_fix_instructions = st.text_input("Debug instructions", placeholder="Debug instructions", label_visibility='collapsed',value=st.session_state.code_fix_instructions)
+            st.session_state.code_input = st.text_input("Input (Stdin)", placeholder="e.g. 5, 10, user_input", help="Standard input provided to the code during execution", label_visibility='collapsed',value=st.session_state.code_input)
+            st.session_state.code_output = st.text_input("Output (Stdout)", placeholder="e.g. Hello World, 15", help="Expected standard output from the code execution", label_visibility='collapsed',value=st.session_state.code_output)
+            st.session_state.code_fix_instructions = st.text_input("Debug instructions", placeholder="e.g. Fix IndexError on line 5", help="Instructions for the AI to debug or fix the generated code", label_visibility='collapsed',value=st.session_state.code_fix_instructions)
 
     # Set the input and output to None if the input and output is empty
     if st.session_state.code_input and st.session_state.code_output: 
@@ -294,7 +294,7 @@ def main():
 
         # Input Box (for entering the file name) in the first column
         with file_name_col:
-            code_file = st.text_input("File name", value="", placeholder="File name", label_visibility='collapsed')
+            code_file = st.text_input("File name", value="", placeholder="e.g. script.py", help="Name of the file to save the generated code as", label_visibility='collapsed')
 
         # Save Code button in the second column
         with save_code_col:
