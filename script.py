@@ -264,15 +264,16 @@ def main():
         value=st.session_state.code_prompt if 'code_prompt' in st.session_state else "",
         height=130, 
         placeholder="Enter your prompt for code generation." if 'code_prompt' not in st.session_state else "", 
+        help="Describe what code you want to generate or complete",
         label_visibility='hidden'
     )
 
     # Settings for input and output options.
     with st.expander("Input Options"):
         with st.container():
-            st.session_state.code_input = st.text_input("Input (Stdin)", placeholder="Input (Stdin)", label_visibility='collapsed',value=st.session_state.code_input)
-            st.session_state.code_output = st.text_input("Output (Stdout)", placeholder="Output (Stdout)", label_visibility='collapsed',value=st.session_state.code_output)
-            st.session_state.code_fix_instructions = st.text_input("Debug instructions", placeholder="Debug instructions", label_visibility='collapsed',value=st.session_state.code_fix_instructions)
+            st.session_state.code_input = st.text_input("Input (Stdin)", placeholder="e.g. hello world (stdin)", help="Standard input passed to the executed code", label_visibility='collapsed',value=st.session_state.code_input)
+            st.session_state.code_output = st.text_input("Output (Stdout)", placeholder="e.g. output format (stdout)", help="Expected standard output from the executed code", label_visibility='collapsed',value=st.session_state.code_output)
+            st.session_state.code_fix_instructions = st.text_input("Debug instructions", placeholder="e.g. Fix syntax error on line 5", help="Instructions for the AI to debug or fix the code", label_visibility='collapsed',value=st.session_state.code_fix_instructions)
 
     # Set the input and output to None if the input and output is empty
     if st.session_state.code_input and st.session_state.code_output: 
@@ -294,7 +295,7 @@ def main():
 
         # Input Box (for entering the file name) in the first column
         with file_name_col:
-            code_file = st.text_input("File name", value="", placeholder="File name", label_visibility='collapsed')
+            code_file = st.text_input("File name", value="", placeholder="e.g. main.py", help="Name of the file to save code as", label_visibility='collapsed')
 
         # Save Code button in the second column
         with save_code_col:
