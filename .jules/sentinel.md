@@ -1,0 +1,4 @@
+## 2026-06-19 - [Remove eval() usage for dictionary checking]
+**Vulnerability:** The `eval()` function was being used to dynamically check the truthiness of Streamlit session state variables based on string names (e.g., `eval('st.session_state.project')`). This is a critical security anti-pattern that can lead to arbitrary code execution if the string input is ever manipulated or constructed from untrusted sources.
+**Learning:** Even for internal variable names, using `eval()` to check values is unnecessarily risky and violates the principle of failing securely. It's much safer to use dictionary lookup methods like `get()`.
+**Prevention:** Never use `eval()` for checking dictionary values or dynamically evaluating code strings. Use safer alternatives like `dict.get(key)` or `st.session_state.get(key)`.
