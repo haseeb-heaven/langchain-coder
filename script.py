@@ -263,16 +263,17 @@ def main():
         "Enter Prompt", 
         value=st.session_state.code_prompt if 'code_prompt' in st.session_state else "",
         height=130, 
-        placeholder="Enter your prompt for code generation." if 'code_prompt' not in st.session_state else "", 
-        label_visibility='hidden'
+        placeholder="e.g. Write a Python function to calculate the Fibonacci sequence..." if 'code_prompt' not in st.session_state else "",
+        label_visibility='hidden',
+        help="Enter the prompt or instructions for the AI to generate code."
     )
 
     # Settings for input and output options.
     with st.expander("Input Options"):
         with st.container():
-            st.session_state.code_input = st.text_input("Input (Stdin)", placeholder="Input (Stdin)", label_visibility='collapsed',value=st.session_state.code_input)
-            st.session_state.code_output = st.text_input("Output (Stdout)", placeholder="Output (Stdout)", label_visibility='collapsed',value=st.session_state.code_output)
-            st.session_state.code_fix_instructions = st.text_input("Debug instructions", placeholder="Debug instructions", label_visibility='collapsed',value=st.session_state.code_fix_instructions)
+            st.session_state.code_input = st.text_input("Input (Stdin)", placeholder="e.g. 5 10", label_visibility='collapsed',value=st.session_state.code_input, help="Enter the standard input (stdin) for the code execution.")
+            st.session_state.code_output = st.text_input("Output (Stdout)", placeholder="e.g. 15", label_visibility='collapsed',value=st.session_state.code_output, help="Enter the expected standard output (stdout) for verification.")
+            st.session_state.code_fix_instructions = st.text_input("Debug instructions", placeholder="e.g. Fix the index out of bounds error", label_visibility='collapsed',value=st.session_state.code_fix_instructions, help="Enter instructions for the AI to debug or fix the generated code.")
 
     # Set the input and output to None if the input and output is empty
     if st.session_state.code_input and st.session_state.code_output: 
@@ -294,7 +295,7 @@ def main():
 
         # Input Box (for entering the file name) in the first column
         with file_name_col:
-            code_file = st.text_input("File name", value="", placeholder="File name", label_visibility='collapsed')
+            code_file = st.text_input("File name", value="", placeholder="e.g. main.py", label_visibility='collapsed', help="Enter the filename (including extension) to save the generated code.")
 
         # Save Code button in the second column
         with save_code_col:
