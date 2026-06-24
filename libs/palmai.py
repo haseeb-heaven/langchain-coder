@@ -48,7 +48,7 @@ class PalmAI:
             if api_key is None or len(api_key) == 0:
                 load_dotenv()
                 self.api_key = os.getenv('PALMAI_API_KEY')
-                logger.warn("API value is {}".format(self.api_key))
+                # SECURITY: Removed plaintext logging of API key
                 if self.api_key is None or len(self.api_key) == 0:
                     raise Exception("API key not found in environment variables.")
                 else:
