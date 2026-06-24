@@ -412,7 +412,9 @@ class GeneralUtils:
             os.makedirs(temp_dir, exist_ok=True)
             
             logger.info(f"Saving uploaded file to {temp_dir}")
-            file_path = os.path.join(temp_dir, uploadedfile.name)
+            # SECURITY: Sanitize user-provided filename to prevent path traversal
+            safe_filename = os.path.basename(uploadedfile.name)
+            file_path = os.path.join(temp_dir, safe_filename)
             with open(file_path, "wb") as f:
                 f.write(uploadedfile.getbuffer())
                 
