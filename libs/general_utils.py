@@ -296,6 +296,9 @@ class GeneralUtils:
                 logger.error("Error in code saving: Please enter a valid file name.")
                 return
             
+            # Sanitize file name to prevent path traversal
+            file_name = os.path.basename(file_name)
+
             file_extension = file_name.split(".")[-1]
             logger.info(f"Saving code to file: {file_name} with extension: {file_extension}")
             
@@ -310,7 +313,7 @@ class GeneralUtils:
                 logger.error("Error in code saving: Generated code is empty.")
                 return
             
-            with open(f"{file_extension}/{file_name}", "w") as file:
+            with open(os.path.join(file_extension, file_name), "w") as file:
                 file.write(st.session_state.generated_code)
             
             st.toast(f"Code saved to file {file_name}", icon="✅")
