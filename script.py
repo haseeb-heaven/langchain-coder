@@ -168,7 +168,8 @@ def main():
                         }
 
                         # Use a list comprehension to filter out the unset items
-                        unset_items = [name for var, name in items.items() if not eval(var)]
+                        # Security: Avoid eval() for checking session state keys
+                        unset_items = [name for var, name in items.items() if not st.session_state.get(var.replace('st.session_state.', ''))]
 
                         # Construct the error message
                         error_message = "Please select all settings for Vertex AI".join([f"{item} is not selected." for item in unset_items])
