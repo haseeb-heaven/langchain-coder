@@ -383,7 +383,8 @@ def main():
                     logger.info("Setting Stderr from input to Debug instructions.")
                     
                 logger.info(f"Fixing code with instructions: {st.session_state.code_fix_instructions}")
-                st.session_state.generated_code = ai_llm_selected.fix_generated_code(st.session_state.generated_code, st.session_state.code_language,st.session_state.code_fix_instructions)
+                with st.spinner('Debugging code...'):
+                    st.session_state.generated_code = ai_llm_selected.fix_generated_code(st.session_state.generated_code, st.session_state.code_language,st.session_state.code_fix_instructions)
 
         # Debug Code button in the fourth column
         with convert_code_col:
@@ -399,7 +400,8 @@ def main():
                     ai_llm_selected = st.session_state.openai_langchain
                     
                 logger.info(f"Converting code with instructions: {st.session_state.code_fix_instructions}")
-                st.session_state.generated_code = ai_llm_selected.convert_generated_code(st.session_state.generated_code, st.session_state.code_language)
+                with st.spinner('Converting code...'):
+                    st.session_state.generated_code = ai_llm_selected.convert_generated_code(st.session_state.generated_code, st.session_state.code_language)
 
 
         # Run Code button in the fourth column
@@ -410,7 +412,8 @@ def main():
                 privacy_accepted = st.session_state.get(f'compiler_{st.session_state.compiler_mode.lower()}_privacy_accepted', False)
     
                 if privacy_accepted:
-                    st.session_state.output = st.session_state.general_utils.execute_code(st.session_state.compiler_mode)
+                    with st.spinner('Executing code...'):
+                        st.session_state.output = st.session_state.general_utils.execute_code(st.session_state.compiler_mode)
                 else:
                     st.toast(f"You didn't accept the privacy policy for {st.session_state.compiler_mode} compiler.", icon="❌")
                     logger.error(f"You didn't accept the privacy policy for {st.session_state.compiler_mode} compiler.")
