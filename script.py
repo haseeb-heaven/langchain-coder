@@ -410,7 +410,8 @@ def main():
                 privacy_accepted = st.session_state.get(f'compiler_{st.session_state.compiler_mode.lower()}_privacy_accepted', False)
     
                 if privacy_accepted:
-                    st.session_state.output = st.session_state.general_utils.execute_code(st.session_state.compiler_mode)
+                    with st.spinner("Executing code..."):
+                        st.session_state.output = st.session_state.general_utils.execute_code(st.session_state.compiler_mode)
                 else:
                     st.toast(f"You didn't accept the privacy policy for {st.session_state.compiler_mode} compiler.", icon="❌")
                     logger.error(f"You didn't accept the privacy policy for {st.session_state.compiler_mode} compiler.")
