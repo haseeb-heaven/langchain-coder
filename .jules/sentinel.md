@@ -1,0 +1,4 @@
+## 2026-07-27 - [CRITICAL] Removed eval() Anti-Pattern from Session State Checks
+**Vulnerability:** The codebase was using `eval()` to dynamically evaluate strings for checking if session state variables were set (e.g., `eval("st.session_state.project")`). This is a dangerous anti-pattern that can lead to Arbitrary Code Execution (RCE) if user input is ever incorporated into the evaluated string.
+**Learning:** Found a specific security vulnerability pattern in this codebase where `eval()` was used for dictionary value extraction and state checking instead of safer property accessor methods.
+**Prevention:** Never use `eval()` to dynamically evaluate code strings or check dictionary values. Use safer alternatives like `dict.get(key)` or `st.session_state.get(key)` to retrieve values securely without risk of code execution.
