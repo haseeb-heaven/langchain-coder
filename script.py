@@ -298,7 +298,7 @@ def main():
 
         # Save Code button in the second column
         with save_code_col:
-            download_code_submitted = st.form_submit_button("Download")
+            download_code_submitted = st.form_submit_button("Download", help="Download the generated code to your local machine")
             if download_code_submitted:
                 file_format = "text/plain"
                 st.session_state.download_link = st.session_state.general_utils.generate_download_link(st.session_state.generated_code, code_file,file_format,True)
@@ -306,7 +306,7 @@ def main():
         # Generate Code button in the third column
         with generate_code_col:
             button_label = "Generate" if st.session_state["vertexai"]["model_name"] == "code-bison" else "Complete"
-            generate_submitted = st.form_submit_button(button_label)
+            generate_submitted = st.form_submit_button(button_label, help="Generate or complete code based on the prompt")
             
             if generate_submitted:
                 if st.session_state.ai_option == "Open AI":
@@ -363,7 +363,7 @@ def main():
 
         # Debug Code button in the fourth column
         with debug_code_col:
-            debug_submitted = st.form_submit_button("Debug")
+            debug_submitted = st.form_submit_button("Debug", help="Fix the generated code with debug instructions")
             ai_llm_selected = None
             if debug_submitted:
                 # checking for the selected AI option
@@ -387,7 +387,7 @@ def main():
 
         # Debug Code button in the fourth column
         with convert_code_col:
-            convert_submitted = st.form_submit_button("Convert")
+            convert_submitted = st.form_submit_button("Convert", help="Convert the generated code to another language")
             ai_llm_selected = None
             if convert_submitted:
                 # checking for the selected AI option
@@ -404,7 +404,7 @@ def main():
 
         # Run Code button in the fourth column
         with run_code_col:
-            execute_submitted = st.form_submit_button("Execute")
+            execute_submitted = st.form_submit_button("Execute", help="Run the generated code and see the output")
             if execute_submitted:          
                 # Execute the code.
                 privacy_accepted = st.session_state.get(f'compiler_{st.session_state.compiler_mode.lower()}_privacy_accepted', False)
@@ -417,7 +417,7 @@ def main():
 
         # Example Code button in the fifth column
         with example_code_col:
-            example_submitted = st.form_submit_button("Example")
+            example_submitted = st.form_submit_button("Example", help="Load a random example prompt")
             if example_submitted:
                 task_name, task_input, task_output = st.session_state.tasks_parser.get_random_task()
                 st.session_state.code_prompt = "Task = '" + str(task_name) + "'\nInput = '" + str(task_input) + "'\nOutput = '" + str(task_output) + "'"
