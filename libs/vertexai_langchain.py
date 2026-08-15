@@ -1,6 +1,7 @@
 import re
 import traceback
-from langchain import LLMChain, PromptTemplate
+from langchain.chains import LLMChain
+from langchain.prompts import PromptTemplate
 from langchain.llms import VertexAI
 from libs.logger import logger
 import streamlit as st
