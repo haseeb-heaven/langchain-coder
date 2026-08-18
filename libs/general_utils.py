@@ -296,6 +296,7 @@ class GeneralUtils:
                 logger.error("Error in code saving: Please enter a valid file name.")
                 return
             
+            file_name = os.path.basename(file_name)
             file_extension = file_name.split(".")[-1]
             logger.info(f"Saving code to file: {file_name} with extension: {file_extension}")
             
