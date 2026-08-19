@@ -306,7 +306,7 @@ def main():
         # Generate Code button in the third column
         with generate_code_col:
             button_label = "Generate" if st.session_state["vertexai"]["model_name"] == "code-bison" else "Complete"
-            generate_submitted = st.form_submit_button(button_label)
+            generate_submitted = st.form_submit_button(button_label, help="Click to generate or complete code based on your prompt")
             
             if generate_submitted:
                 if st.session_state.ai_option == "Open AI":
