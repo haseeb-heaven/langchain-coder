@@ -298,7 +298,7 @@ def main():
 
         # Save Code button in the second column
         with save_code_col:
-            download_code_submitted = st.form_submit_button("Download")
+            download_code_submitted = st.form_submit_button("Download", help="Download the generated code to your device")
             if download_code_submitted:
                 file_format = "text/plain"
                 st.session_state.download_link = st.session_state.general_utils.generate_download_link(st.session_state.generated_code, code_file,file_format,True)
