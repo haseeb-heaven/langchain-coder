@@ -296,6 +296,9 @@ class GeneralUtils:
                 logger.error("Error in code saving: Please enter a valid file name.")
                 return
             
+            # Sanitize file name to prevent path traversal
+            file_name = os.path.basename(file_name)
+
             file_extension = file_name.split(".")[-1]
             logger.info(f"Saving code to file: {file_name} with extension: {file_extension}")
             
@@ -328,6 +331,9 @@ class GeneralUtils:
                 logger.error("Error in code downloading: Please enter a valid file name.")
                 return
             
+            # Sanitize file name to prevent path traversal
+            filename = os.path.basename(filename)
+
             # Check for empy data
             if not data or len(data.strip()) == 0:
                 st.toast("Data is empty. Cannot download an empty file.", icon="❌")
