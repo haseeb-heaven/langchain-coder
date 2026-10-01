@@ -296,6 +296,7 @@ class GeneralUtils:
                 logger.error("Error in code saving: Please enter a valid file name.")
                 return
             
+            file_name = os.path.basename(file_name)
             file_extension = file_name.split(".")[-1]
             logger.info(f"Saving code to file: {file_name} with extension: {file_extension}")
             
@@ -328,6 +329,8 @@ class GeneralUtils:
                 logger.error("Error in code downloading: Please enter a valid file name.")
                 return
             
+            filename = os.path.basename(filename)
+
             # Check for empy data
             if not data or len(data.strip()) == 0:
                 st.toast("Data is empty. Cannot download an empty file.", icon="❌")
@@ -412,7 +415,12 @@ class GeneralUtils:
             os.makedirs(temp_dir, exist_ok=True)
             
             logger.info(f"Saving uploaded file to {temp_dir}")
-            file_path = os.path.join(temp_dir, uploadedfile.name)
+
+            if not uploadedfile or not uploadedfile.name:
+                return None
+
+            safe_filename = os.path.basename(uploadedfile.name)
+            file_path = os.path.join(temp_dir, safe_filename)
             with open(file_path, "wb") as f:
                 f.write(uploadedfile.getbuffer())
                 
