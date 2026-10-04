@@ -310,7 +310,15 @@ class GeneralUtils:
                 logger.error("Error in code saving: Generated code is empty.")
                 return
             
-            with open(f"{file_extension}/{file_name}", "w") as file:
+            target_dir = os.path.abspath(file_extension)
+            file_path = os.path.abspath(os.path.join(file_extension, file_name))
+            if not file_path.startswith(target_dir + os.sep):
+                st.toast("Invalid file name.", icon="❌")
+                logger.error("Path traversal detected.")
+                return
+
+            os.makedirs(os.path.dirname(file_path), exist_ok=True)
+            with open(file_path, "w") as file:
                 file.write(st.session_state.generated_code)
             
             st.toast(f"Code saved to file {file_name}", icon="✅")
@@ -412,7 +420,7 @@ class GeneralUtils:
             os.makedirs(temp_dir, exist_ok=True)
             
             logger.info(f"Saving uploaded file to {temp_dir}")
-            file_path = os.path.join(temp_dir, uploadedfile.name)
+            file_path = os.path.join(temp_dir, os.path.basename(uploadedfile.name))
             with open(file_path, "wb") as f:
                 f.write(uploadedfile.getbuffer())
                 
