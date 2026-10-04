@@ -1,5 +1,6 @@
 import streamlit as st
 import os
+import subprocess
 from streamlit_ace import st_ace
 from libs.logger import logger
 
@@ -203,9 +204,9 @@ def display_support():
 def upgrade_pip_packages():
     try:
         # upgrade pip
-        os.system("python -m pip install --upgrade pip")
+        subprocess.run(["python", "-m", "pip", "install", "--upgrade", "pip"], check=True)
         # upgrade pip packages
-        os.system("pip install -r requirements.txt --upgrade")
+        subprocess.run(["pip", "install", "-r", "requirements.txt", "--upgrade"], check=True)
     except Exception as e:
         print(f"Error upgrading pip packages: {e}")
 
