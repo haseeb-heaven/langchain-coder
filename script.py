@@ -64,13 +64,13 @@ def main():
         st.session_state.compiler_mode = st.session_state.get("compiler_mode", "Offline")
 
         # Dropdown for selecting AI options
-        st.selectbox("Select AI", ["Open AI", "Vertex AI", "Palm AI","Gemini AI"], key="ai_option")
+        st.selectbox("Select AI", ["Open AI", "Vertex AI", "Palm AI","Gemini AI"], key="ai_option", help="Choose the AI model for code generation.")
 
         # Dropdown for selecting code language
-        st.selectbox("Select language", list(get_language_codes().keys()), key="code_language")
+        st.selectbox("Select language", list(get_language_codes().keys()), key="code_language", help="Select the programming language for the generated code.")
 
         # Radio buttons for selecting compiler mode
-        st.radio("Compiler Mode", ("Online", "Offline","API"), key="compiler_mode")
+        st.radio("Compiler Mode", ("Online", "Offline","API"), key="compiler_mode", help="Choose how the generated code should be executed.")
         credentials_file_path = None
         
         # Create checkbox for Displaying cost of generated code
