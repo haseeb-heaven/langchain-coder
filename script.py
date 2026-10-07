@@ -64,19 +64,19 @@ def main():
         st.session_state.compiler_mode = st.session_state.get("compiler_mode", "Offline")
 
         # Dropdown for selecting AI options
-        st.selectbox("Select AI", ["Open AI", "Vertex AI", "Palm AI","Gemini AI"], key="ai_option")
+        st.selectbox("Select AI", ["Open AI", "Vertex AI", "Palm AI","Gemini AI"], key="ai_option", help="Choose the AI model provider to use for code generation.")
 
         # Dropdown for selecting code language
-        st.selectbox("Select language", list(get_language_codes().keys()), key="code_language")
+        st.selectbox("Select language", list(get_language_codes().keys()), key="code_language", help="Select the programming language for the generated code.")
 
         # Radio buttons for selecting compiler mode
-        st.radio("Compiler Mode", ("Online", "Offline","API"), key="compiler_mode")
+        st.radio("Compiler Mode", ("Online", "Offline","API"), key="compiler_mode", help="Choose the execution environment for running code.")
         credentials_file_path = None
         
         # Create checkbox for Displaying cost of generated code
         with st.expander("General Settings", expanded=False):
-            st.session_state.display_cost = st.checkbox("Display Cost/API", value=False)
-            st.session_state.download_logs = st.checkbox("Download Logs", value=False)
+            st.session_state.display_cost = st.checkbox("Display Cost/API", value=False, help="Show the estimated API cost for generating the code.")
+            st.session_state.download_logs = st.checkbox("Download Logs", value=False, help="Enable downloading the application's activity logs.")
             # Display the logs
             if st.session_state.download_logs:
                 logs_filename = "langchain-coder.log"
