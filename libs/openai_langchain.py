@@ -1,7 +1,7 @@
 import traceback
 import os
 import streamlit as st
-from langchain.chat_models import ChatLiteLLM
+from langchain_community.chat_models import ChatLiteLLM
 from langchain.prompts import PromptTemplate
 from langchain.chains import LLMChain, SequentialChain
 from langchain.memory import ConversationBufferMemory
@@ -33,7 +33,7 @@ class OpenAILangChain:
             os.environ["OPENAI_API_KEY"] = api_key
         
         # Create a LiteLLM model
-        self.lite_llm = ChatLiteLLM(model=model, temperature=temprature, max_tokens=max_tokens, openai_api_key=api_key)
+        self.lite_llm = ChatLiteLLM(model=model, temperature=temprature, max_tokens=max_tokens, openai_api_key=api_key, api_key=api_key)
         
         if st.session_state.proxy_api:
             self.lite_llm.api_base = st.session_state.proxy_api
