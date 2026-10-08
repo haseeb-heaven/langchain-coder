@@ -125,7 +125,7 @@ class VertexAILangChain:
         except Exception as exception:
             stack_trace = traceback.format_exc()
             logger.error(f"Error generating code: {str(exception)} stack trace: {stack_trace}")
-            st.toast(f"Error generating code: {str(exception)} stack trace: {stack_trace}", icon="❌")
+            st.toast(f"Error generating code: An internal error occurred.", icon="❌")
 
     def generate_code_completion(self, code_prompt, code_language):
         try:
