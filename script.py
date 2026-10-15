@@ -440,26 +440,26 @@ def main():
         with st.sidebar.expander("Code Editor Settings", expanded=False):
 
             # Font size setting
-            font_size = st.slider("Font Size", min_value=8, max_value=30, value=16, step=1)
+            font_size = st.slider("Font Size", min_value=8, max_value=30, value=16, step=1, help="Adjust the font size of the code editor")
 
             # Tab size setting
-            tab_size = st.slider("Tab Size", min_value=2, max_value=8, value=4, step=1)
+            tab_size = st.slider("Tab Size", min_value=2, max_value=8, value=4, step=1, help="Set the number of spaces per tab")
 
             # Theme setting
             themes = ["monokai", "github", "tomorrow", "kuroir", "twilight", "xcode", "textmate", "solarized_dark", "solarized_light", "terminal"]
-            theme = st.selectbox("Theme", options=themes, index=themes.index("solarized_dark"))
+            theme = st.selectbox("Theme", options=themes, index=themes.index("solarized_dark"), help="Select the visual theme for the code editor")
 
             # Keybinding setting
             keybindings = ["emacs", "sublime", "vim", "vscode"]
-            keybinding = st.selectbox("Keybinding", options=keybindings, index=keybindings.index("sublime"))
+            keybinding = st.selectbox("Keybinding", options=keybindings, index=keybindings.index("sublime"), help="Select the keybinding style (e.g., vim, vscode)")
 
             # Other settings
-            show_gutter = st.checkbox("Line Number", value=True)
-            show_print_margin = st.checkbox("Print Margin", value=True)
-            wrap = st.checkbox("Wrap", value=True)
-            auto_update = st.checkbox("Auto Update", value=False)
-            readonly = st.checkbox("Readonly", value=False)
-            language = st.selectbox("Language", options=list(get_language_codes().keys()), index=list(get_language_codes().keys()).index("Python"))
+            show_gutter = st.checkbox("Line Number", value=True, help="Show line numbers in the code editor")
+            show_print_margin = st.checkbox("Print Margin", value=True, help="Show print margin guide in the editor")
+            wrap = st.checkbox("Wrap", value=True, help="Wrap long lines to fit the editor width")
+            auto_update = st.checkbox("Auto Update", value=False, help="Automatically compile and update when code changes")
+            readonly = st.checkbox("Readonly", value=False, help="Prevent code from being edited")
+            language = st.selectbox("Language", options=list(get_language_codes().keys()), index=list(get_language_codes().keys()).index("Python"), help="Select the programming language for syntax highlighting")
             
         # Display the st_ace code editor with the selected settings
         display_code_editor(font_size, tab_size, theme, keybinding, show_gutter, show_print_margin, wrap, auto_update, readonly, language)
