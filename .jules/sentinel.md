@@ -1,4 +1,8 @@
-## 2026-09-29 - Fix Path Traversal in file operations
-**Vulnerability:** User-provided filenames were used directly in file system operations in `save_code` and `generate_download_link` without sanitization, leading to a path traversal vulnerability.
-**Learning:** Always sanitize user-provided file names before using them in file operations to prevent arbitrary file writes/reads or path traversal vulnerabilities.
-**Prevention:** Use `os.path.basename()` on all user-supplied filenames before constructing file paths or using them in file-related APIs.
+## 2026-07-11 - Path Traversal Vulnerability
+**Vulnerability:** Path traversal vulnerability due to unsanitized file names.
+**Learning:** User-provided file names were used directly in file system operations without sanitization.
+**Prevention:** Always sanitize user-provided file names using `os.path.basename` before using them in file system operations.
+## 2026-10-17 - Prevent stack trace leakage in Streamlit UI
+**Vulnerability:** The application was exposing full stack traces to the user interface via `st.toast(traceback.format_exc())` in `libs/general_utils.py`, which is a security risk as it can reveal sensitive internal architecture, file paths, and environment details.
+**Learning:** In Streamlit applications, exception handling should never display internal stack traces directly to the user.
+**Prevention:** Always log the full traceback securely on the backend (e.g., using `logger.error()`) and provide only a safe, generic error message to the frontend (e.g., `st.toast("An error occurred. Please check the logs.", icon="❌")`).

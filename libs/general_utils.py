@@ -296,7 +296,7 @@ class GeneralUtils:
                 logger.error("Error in code saving: Please enter a valid file name.")
                 return
             
-            # Sanitize file name to prevent path traversal
+            # Prevent path traversal by extracting the base name
             file_name = os.path.basename(file_name)
 
             file_extension = file_name.split(".")[-1]
@@ -313,22 +313,15 @@ class GeneralUtils:
                 logger.error("Error in code saving: Generated code is empty.")
                 return
             
-            target_dir = os.path.abspath(file_extension)
-            file_path = os.path.abspath(os.path.join(file_extension, file_name))
-            if not file_path.startswith(target_dir + os.sep):
-                st.toast("Invalid file name.", icon="❌")
-                logger.error("Path traversal detected.")
-                return
-
-            os.makedirs(os.path.dirname(file_path), exist_ok=True)
-            with open(file_path, "w") as file:
+            safe_file_path = os.path.join(file_extension, file_name)
+            with open(safe_file_path, "w") as file:
                 file.write(st.session_state.generated_code)
             
             st.toast(f"Code saved to file {file_name}", icon="✅")
             logger.info(f"Code saved to file {file_name}")
             
         except Exception as e:
-            st.toast(traceback.format_exc())
+            st.toast(f"An error occurred: {str(e)}", icon="❌")
             logger.error(f"Error in code saving: {traceback.format_exc()}")
 
     def generate_download_link(self, data=None, filename="download.txt",file_extension="text/plain",auto_click=False):
@@ -339,9 +332,6 @@ class GeneralUtils:
                 logger.error("Error in code downloading: Please enter a valid file name.")
                 return
             
-            # Sanitize file name to prevent path traversal
-            filename = os.path.basename(filename)
-
             # Check for empy data
             if not data or len(data.strip()) == 0:
                 st.toast("Data is empty. Cannot download an empty file.", icon="❌")
@@ -365,7 +355,7 @@ class GeneralUtils:
             return link + auto_click_js  # return the anchor tag and JavaScript code
             
         except Exception as e:
-            st.toast(traceback.format_exc())
+            st.toast(f"An error occurred: {str(e)}", icon="❌")
             logger.error(f"Error in code downloading: {traceback.format_exc()}")
 
 
@@ -426,7 +416,9 @@ class GeneralUtils:
             os.makedirs(temp_dir, exist_ok=True)
             
             logger.info(f"Saving uploaded file to {temp_dir}")
-            file_path = os.path.join(temp_dir, os.path.basename(uploadedfile.name))
+            # Prevent path traversal by extracting the base name
+            safe_filename = os.path.basename(uploadedfile.name)
+            file_path = os.path.join(temp_dir, safe_filename)
             with open(file_path, "wb") as f:
                 f.write(uploadedfile.getbuffer())
                 
