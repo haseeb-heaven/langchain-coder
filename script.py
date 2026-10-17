@@ -162,13 +162,13 @@ def main():
                     else:
                         # Define a dictionary mapping variable names
                         items = {
-                            'project': 'Project name',
-                            'region': 'App region',
-                            'uploaded_file': 'Credentials file'
+                            'st.session_state.project': 'Project name',
+                            'st.session_state.region': 'App region',
+                            'st.session_state.uploaded_file': 'Credentials file'
                         }
 
                         # Use a list comprehension to filter out the unset items
-                        unset_items = [name for var, name in items.items() if not st.session_state.get(var)]
+                        unset_items = [name for var, name in items.items() if not eval(var)]
 
                         # Construct the error message
                         error_message = "Please select all settings for Vertex AI".join([f"{item} is not selected." for item in unset_items])
@@ -263,17 +263,16 @@ def main():
         "Enter Prompt", 
         value=st.session_state.code_prompt if 'code_prompt' in st.session_state else "",
         height=130, 
-        placeholder="e.g. Write a python script to reverse a string",
-        help="Provide instructions for code generation or completion.",
+        placeholder="Enter your prompt for code generation." if 'code_prompt' not in st.session_state else "",
         label_visibility='hidden'
     )
 
     # Settings for input and output options.
     with st.expander("Input Options"):
         with st.container():
-            st.session_state.code_input = st.text_input("Input (Stdin)", placeholder="e.g. 5 (Standard input)", help="Standard input passed to the executed code.", label_visibility='collapsed',value=st.session_state.code_input)
-            st.session_state.code_output = st.text_input("Output (Stdout)", placeholder="e.g. 120 (Expected output)", help="Expected standard output for testing.", label_visibility='collapsed',value=st.session_state.code_output)
-            st.session_state.code_fix_instructions = st.text_input("Debug instructions", placeholder="e.g. Fix index out of bounds error", help="Instructions for the AI to fix or debug the generated code.", label_visibility='collapsed',value=st.session_state.code_fix_instructions)
+            st.session_state.code_input = st.text_input("Input (Stdin)", placeholder="Input (Stdin)", label_visibility='collapsed',value=st.session_state.code_input)
+            st.session_state.code_output = st.text_input("Output (Stdout)", placeholder="Output (Stdout)", label_visibility='collapsed',value=st.session_state.code_output)
+            st.session_state.code_fix_instructions = st.text_input("Debug instructions", placeholder="Debug instructions", label_visibility='collapsed',value=st.session_state.code_fix_instructions)
 
     # Set the input and output to None if the input and output is empty
     if st.session_state.code_input and st.session_state.code_output: 
@@ -295,11 +294,11 @@ def main():
 
         # Input Box (for entering the file name) in the first column
         with file_name_col:
-            code_file = st.text_input("File name", value="", placeholder="e.g. my_script.py", help="Enter a filename to download the generated code.", label_visibility='collapsed')
+            code_file = st.text_input("File name", value="", placeholder="File name", label_visibility='collapsed')
 
         # Save Code button in the second column
         with save_code_col:
-            download_code_submitted = st.form_submit_button("Download", help="Download the generated code")
+            download_code_submitted = st.form_submit_button("Download")
             if download_code_submitted:
                 file_format = "text/plain"
                 st.session_state.download_link = st.session_state.general_utils.generate_download_link(st.session_state.generated_code, code_file,file_format,True)
@@ -307,7 +306,7 @@ def main():
         # Generate Code button in the third column
         with generate_code_col:
             button_label = "Generate" if st.session_state["vertexai"]["model_name"] == "code-bison" else "Complete"
-            generate_submitted = st.form_submit_button(button_label, help="Generate code based on your prompt")
+            generate_submitted = st.form_submit_button(button_label)
             
             if generate_submitted:
                 if st.session_state.ai_option == "Open AI":
@@ -364,7 +363,7 @@ def main():
 
         # Debug Code button in the fourth column
         with debug_code_col:
-            debug_submitted = st.form_submit_button("Debug", help="Debug and fix the generated code")
+            debug_submitted = st.form_submit_button("Debug")
             ai_llm_selected = None
             if debug_submitted:
                 # checking for the selected AI option
@@ -384,12 +383,11 @@ def main():
                     logger.info("Setting Stderr from input to Debug instructions.")
                     
                 logger.info(f"Fixing code with instructions: {st.session_state.code_fix_instructions}")
-                with st.spinner("Debugging code..."):
-                    st.session_state.generated_code = ai_llm_selected.fix_generated_code(st.session_state.generated_code, st.session_state.code_language,st.session_state.code_fix_instructions)
+                st.session_state.generated_code = ai_llm_selected.fix_generated_code(st.session_state.generated_code, st.session_state.code_language,st.session_state.code_fix_instructions)
 
         # Debug Code button in the fourth column
         with convert_code_col:
-            convert_submitted = st.form_submit_button("Convert", help="Convert the generated code to another language")
+            convert_submitted = st.form_submit_button("Convert")
             ai_llm_selected = None
             if convert_submitted:
                 # checking for the selected AI option
@@ -401,27 +399,25 @@ def main():
                     ai_llm_selected = st.session_state.openai_langchain
                     
                 logger.info(f"Converting code with instructions: {st.session_state.code_fix_instructions}")
-                with st.spinner("Converting code..."):
-                    st.session_state.generated_code = ai_llm_selected.convert_generated_code(st.session_state.generated_code, st.session_state.code_language)
+                st.session_state.generated_code = ai_llm_selected.convert_generated_code(st.session_state.generated_code, st.session_state.code_language)
 
 
         # Run Code button in the fourth column
         with run_code_col:
-            execute_submitted = st.form_submit_button("Execute", help="Run the code and see the output")
+            execute_submitted = st.form_submit_button("Execute")
             if execute_submitted:          
                 # Execute the code.
                 privacy_accepted = st.session_state.get(f'compiler_{st.session_state.compiler_mode.lower()}_privacy_accepted', False)
     
                 if privacy_accepted:
-                    with st.spinner("Executing code..."):
-                        st.session_state.output = st.session_state.general_utils.execute_code(st.session_state.compiler_mode)
+                    st.session_state.output = st.session_state.general_utils.execute_code(st.session_state.compiler_mode)
                 else:
                     st.toast(f"You didn't accept the privacy policy for {st.session_state.compiler_mode} compiler.", icon="❌")
                     logger.error(f"You didn't accept the privacy policy for {st.session_state.compiler_mode} compiler.")
 
         # Example Code button in the fifth column
         with example_code_col:
-            example_submitted = st.form_submit_button("Example", help="Load an example task")
+            example_submitted = st.form_submit_button("Example")
             if example_submitted:
                 task_name, task_input, task_output = st.session_state.tasks_parser.get_random_task()
                 st.session_state.code_prompt = "Task = '" + str(task_name) + "'\nInput = '" + str(task_input) + "'\nOutput = '" + str(task_output) + "'"
