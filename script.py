@@ -64,18 +64,18 @@ def main():
         st.session_state.compiler_mode = st.session_state.get("compiler_mode", "Offline")
 
         # Dropdown for selecting AI options
-        st.selectbox("Select AI", ["Open AI", "Vertex AI", "Palm AI","Gemini AI"], key="ai_option")
+        st.selectbox("Select AI", ["Open AI", "Vertex AI", "Palm AI","Gemini AI"], key="ai_option", help="Choose the AI model provider for code generation.")
 
         # Dropdown for selecting code language
-        st.selectbox("Select language", list(get_language_codes().keys()), key="code_language")
+        st.selectbox("Select language", list(get_language_codes().keys()), key="code_language", help="Choose the programming language for the generated code.")
 
         # Radio buttons for selecting compiler mode
-        st.radio("Compiler Mode", ("Online", "Offline","API"), key="compiler_mode")
+        st.radio("Compiler Mode", ("Online", "Offline","API"), key="compiler_mode", help="Select how you want to execute the code.")
         credentials_file_path = None
         
         # Create checkbox for Displaying cost of generated code
         with st.expander("General Settings", expanded=False):
-            st.session_state.display_cost = st.checkbox("Display Cost/API", value=False)
+            st.session_state.display_cost = st.checkbox("Display Cost/API", value=False, help="Show the estimated cost of the generated code.")
             st.session_state.download_logs = st.checkbox("Download Logs", value=False)
             # Display the logs
             if st.session_state.download_logs:
@@ -440,26 +440,26 @@ def main():
         with st.sidebar.expander("Code Editor Settings", expanded=False):
 
             # Font size setting
-            font_size = st.slider("Font Size", min_value=8, max_value=30, value=16, step=1)
+            font_size = st.slider("Font Size", min_value=8, max_value=30, value=16, step=1, help="Adjust the font size of the code editor.")
 
             # Tab size setting
-            tab_size = st.slider("Tab Size", min_value=2, max_value=8, value=4, step=1)
+            tab_size = st.slider("Tab Size", min_value=2, max_value=8, value=4, step=1, help="Set the tab size for indentation.")
 
             # Theme setting
             themes = ["monokai", "github", "tomorrow", "kuroir", "twilight", "xcode", "textmate", "solarized_dark", "solarized_light", "terminal"]
-            theme = st.selectbox("Theme", options=themes, index=themes.index("solarized_dark"))
+            theme = st.selectbox("Theme", options=themes, index=themes.index("solarized_dark"), help="Select the visual theme for the code editor.")
 
             # Keybinding setting
             keybindings = ["emacs", "sublime", "vim", "vscode"]
-            keybinding = st.selectbox("Keybinding", options=keybindings, index=keybindings.index("sublime"))
+            keybinding = st.selectbox("Keybinding", options=keybindings, index=keybindings.index("sublime"), help="Select the keybinding style.")
 
             # Other settings
-            show_gutter = st.checkbox("Line Number", value=True)
-            show_print_margin = st.checkbox("Print Margin", value=True)
-            wrap = st.checkbox("Wrap", value=True)
-            auto_update = st.checkbox("Auto Update", value=False)
-            readonly = st.checkbox("Readonly", value=False)
-            language = st.selectbox("Language", options=list(get_language_codes().keys()), index=list(get_language_codes().keys()).index("Python"))
+            show_gutter = st.checkbox("Line Number", value=True, help="Show line numbers in the editor.")
+            show_print_margin = st.checkbox("Print Margin", value=True, help="Show the print margin line.")
+            wrap = st.checkbox("Wrap", value=True, help="Enable text wrapping for long lines.")
+            auto_update = st.checkbox("Auto Update", value=False, help="Automatically update the output as you type.")
+            readonly = st.checkbox("Readonly", value=False, help="Make the code editor read-only.")
+            language = st.selectbox("Language", options=list(get_language_codes().keys()), index=list(get_language_codes().keys()).index("Python"), help="Select the syntax highlighting language.")
             
         # Display the st_ace code editor with the selected settings
         display_code_editor(font_size, tab_size, theme, keybinding, show_gutter, show_print_margin, wrap, auto_update, readonly, language)
