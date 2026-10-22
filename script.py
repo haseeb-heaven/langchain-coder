@@ -64,19 +64,19 @@ def main():
         st.session_state.compiler_mode = st.session_state.get("compiler_mode", "Offline")
 
         # Dropdown for selecting AI options
-        st.selectbox("Select AI", ["Open AI", "Vertex AI", "Palm AI","Gemini AI"], key="ai_option")
+        st.selectbox("Select AI", ["Open AI", "Vertex AI", "Palm AI","Gemini AI"], key="ai_option", help="Choose the AI model provider for generating code")
 
         # Dropdown for selecting code language
-        st.selectbox("Select language", list(get_language_codes().keys()), key="code_language")
+        st.selectbox("Select language", list(get_language_codes().keys()), key="code_language", help="Choose the target programming language for the generated code")
 
         # Radio buttons for selecting compiler mode
-        st.radio("Compiler Mode", ("Online", "Offline","API"), key="compiler_mode")
+        st.radio("Compiler Mode", ("Online", "Offline","API"), key="compiler_mode", help="Choose how the generated code should be compiled and run")
         credentials_file_path = None
         
         # Create checkbox for Displaying cost of generated code
         with st.expander("General Settings", expanded=False):
-            st.session_state.display_cost = st.checkbox("Display Cost/API", value=False)
-            st.session_state.download_logs = st.checkbox("Download Logs", value=False)
+            st.session_state.display_cost = st.checkbox("Display Cost/API", value=False, help="Display the estimated cost of the API requests")
+            st.session_state.download_logs = st.checkbox("Download Logs", value=False, help="Allow downloading the application logs")
             # Display the logs
             if st.session_state.download_logs:
                 logs_filename = "langchain-coder.log"
@@ -532,7 +532,7 @@ def main():
     # Expander for coding guidelines
     with st.sidebar.expander("Coding Guidelines"):
         # create checkbox to select all guidelines and change the state of all guidelines
-        select_all_guidelines = st.checkbox("Select All", value=False)
+        select_all_guidelines = st.checkbox("Select All", value=False, help="Select or deselect all coding guidelines")
         if select_all_guidelines:
             for key in st.session_state["coding_guidelines"]:
                 st.session_state["coding_guidelines"][key] = True
