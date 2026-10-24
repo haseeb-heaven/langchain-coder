@@ -1,5 +1,6 @@
 # general_utils.py
 import base64
+import html
 import os
 import tempfile
 from libs.code_runner import CodeRunner
@@ -129,7 +130,7 @@ class GeneralUtils:
             <script src="https://www.jdoodle.com/assets/jdoodle-pym.min.js" type="text/javascript"></script>
         </body>
         </html>
-        """.format(language=get_language_codes()[language], script_code=code_prompt)
+        """.format(language=get_language_codes()[language], script_code=html.escape(code_prompt))
         return html_template
     
 
@@ -328,7 +329,7 @@ class GeneralUtils:
             logger.info(f"Code saved to file {file_name}")
             
         except Exception as e:
-            st.toast(traceback.format_exc())
+            st.toast(f"Error in code saving: {str(e)}", icon="❌")
             logger.error(f"Error in code saving: {traceback.format_exc()}")
 
     def generate_download_link(self, data=None, filename="download.txt",file_extension="text/plain",auto_click=False):
@@ -365,7 +366,7 @@ class GeneralUtils:
             return link + auto_click_js  # return the anchor tag and JavaScript code
             
         except Exception as e:
-            st.toast(traceback.format_exc())
+            st.toast(f"Error in code downloading: {str(e)}", icon="❌")
             logger.error(f"Error in code downloading: {traceback.format_exc()}")
 
 
