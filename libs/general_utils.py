@@ -1,5 +1,6 @@
 # general_utils.py
 import base64
+import html
 import os
 import tempfile
 from libs.code_runner import CodeRunner
@@ -129,7 +130,7 @@ class GeneralUtils:
             <script src="https://www.jdoodle.com/assets/jdoodle-pym.min.js" type="text/javascript"></script>
         </body>
         </html>
-        """.format(language=get_language_codes()[language], script_code=code_prompt)
+        """.format(language=get_language_codes()[language], script_code=html.escape(code_prompt))
         return html_template
     
 
